@@ -1,0 +1,360 @@
+.container{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #ffffff;
+  
+}
+
+/* Left Column Styling */
+.leftColumn {
+  padding: 40px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rightColumn{
+  padding: 40px;
+  background-color: #828894;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 300px;
+}
+
+/* Headers */
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  line-height: 1.3;
+}
+
+.titlePurple{
+  color: #d8b6fa;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.titleCyan{
+  color: #38bdf8;
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.subtitle{
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  margin: 4px 0 0 0;
+}
+
+.subtitleLight{
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  margin: 4px 0 0 0;
+}
+
+/* Header Buttons */
+.filterBtn{
+  background-color: #27272a;
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.awardPointsBtn {
+  background-color: #a855f7;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Cards - Left Side */
+.card{
+  background-color: #474b54;
+  border-radius: 14px;
+  padding: 15px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 220px;
+}
+
+.cardHeader{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarPlaceholder{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #27272a;
+  flex-shrink: 0;
+}
+
+.username{
+  display: block;
+  font-size: 0.95rem;
+}
+
+.flagReason{
+  display: block;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.statusBadge{
+  font-size: 0.75rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.badgeHigh{
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+.badgeReview{
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #fcd34d;
+}
+
+.postText{
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #e5e7eb;
+}
+
+/* Image Placeholder */
+.imageOverlayContainer {
+  position: relative;
+  height: 140px;
+  width: 100%;
+  background: #1e2128;
+  overflow: hidden;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blurImage{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px) brightness(0.6);
+  transform: scale(1.1);
+}
+
+.hiddenIcon{
+  position: absolute;
+  font-size: 1.8rem;
+  color: #fff;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Action Rows */
+.actionRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.actionRowGrid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btnSecondary {
+  background-color: #2d3139;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btnDangerLight, .btnDangerSolid {
+  background: #fca5a5;
+  color: #7f1d1d;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btnPurple{
+  background-color: #c084fc;
+  color: #4c1d95;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* Leaderboard - Right Side */
+.leaderboardCard {
+  background: #2d3139;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #fff;
+}
+
+.borderCyan{
+  border-left: 4px solid #38bdf8;
+}
+
+.rankNumber{
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #9ca3af;
+  width: 16px;
+}
+
+.rankCyan{
+  color: #38bdf8;
+}
+
+.leaderboardInfo{
+  flex: 1;
+}
+
+.userBadgeRow{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.verifiedCheck{
+  background-color: #38bdf8;
+  color: #000;
+  font-size: 0.6rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.userLevel{
+  font-size: 0.75rem;
+  color: #9ca3af;
+  display: block;
+}
+
+.xpMeta{
+  text-align: right;
+}
+
+.xpMeta strong{
+  display: block;
+  font-size: 0.9rem;
+}
+
+.xpMeta span{
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.moreOptions{
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Manual Action Form */
+.formCard{
+  background: #2d3139;
+  border-radius: 14px;
+  padding: 24px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.formCard h2{
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.fieldGroup label {
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+.fieldGroup input{
+  width: 90%;
+}
+
+.fieldGroup input, .fieldGroup select {
+  background: #1e2128;
+  border: 1px solid #374151;
+  padding: 12px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.fieldRow {
+  display: flex;
+  gap: 16px;
+}
+
+.btnGrantReward {
+  background: #38bdf8;
+  color: #0f172a;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 8px;
+}

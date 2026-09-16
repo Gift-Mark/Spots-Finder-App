@@ -1,0 +1,207 @@
+/* Design Tokens for Jos Pulse */
+:root {
+  --evergreen: #1A365D;
+  --gold: #D97706;
+  --gold-hover: #B46204;
+  --sand-bg: #F8F9FA;
+  --text-dark: #1A365D;
+  --border-light: #E5E7EB;
+  --header-height: 80px;
+}
+
+/* Fixed Header Layout */
+.jp-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-light);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.jp-header-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 ;
+  padding: 0 ;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Brand Logo Styling */
+.jp-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding-right: 12px;
+  margin-left: 8px
+}
+
+.jp-logo-text {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--evergreen);
+  letter-spacing: -0.5px;
+}
+
+.jp-logo-accent {
+  color: var(--gold);
+}
+
+/* Horizontal Desktop Navigation */
+.jp-nav-menu {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jp-nav-link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--evergreen);
+  text-decoration: none;
+  padding-bottom: 4px;
+  transition: color 0.2s ease, border-bottom 0.2s ease;
+}
+
+.jp-nav-link:hover,
+.jp-nav-link.active {
+  color: var(--gold);
+  border-bottom: 2px solid var(--gold);
+}
+
+/* Header Buttons: Guest & Auth Controls */
+.jp-header-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.jp-menu-dots-btn {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--evergreen);
+  transition: all 0.2s ease;
+}
+
+.jp-menu-dots-btn:hover,
+.jp-menu-dots-btn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.jp-dots-icon {
+  font-size: 1.3rem;
+}
+
+/* Vertical Dropdown Menu (No Gray Backgrounds) */
+.jp-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: 0 12px 30px -5px rgba(26, 54, 93, 0.15);
+  padding: 8px;
+  z-index: 1050;
+  display: flex;
+  flex-direction: column; /* Explicit vertical stacking */
+  gap: 4px;
+  animation: fadeInDown 0.18s ease-out forwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Individual Vertical Menu Items */
+.jp-dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--evergreen);
+  text-decoration: none;
+  border-radius: 8px;
+  border: none;
+  background: #FFFFFF;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.jp-dropdown-item:hover {
+  color: var(--gold);
+  background-color: #FFFDF9; /* Subtle gold tint on hover instead of gray */
+}
+
+/* High-Contrast "Join" Button inside Dropdown */
+.jp-dropdown-item.jp-dropdown-join {
+  background-color: #FFFFFF;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  width: 90%;
+}
+
+.jp-dropdown-guest,
+.jp-dropdown-signin{
+  width: 90%;
+}
+
+.jp-dropdown-guest:hover {
+  background-color: var(--gold-hover);
+  color: #FFFFFF;
+}
+
+.jp-dropdown-signin:hover {
+  background-color: var(--gold-hover);
+  color: #FFFFFF;
+}
+
+.jp-dropdown-item.jp-dropdown-join:hover {
+  background-color: var(--gold-hover);
+  color: #FFFFFF;
+}
+
+/* Log Out Item */
+.jp-dropdown-item.jp-dropdown-logout {
+  color: #DC2626;
+  border-top: 1px solid var(--border-light);
+  border-radius: 0 0 8px 8px;
+  margin-top: 4px;
+  padding-top: 12px;
+}
+
+.jp-dropdown-item.jp-dropdown-logout:hover {
+  background-color: #FEF2F2;
+  color: #991B1B;
+}

@@ -1,0 +1,24 @@
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 16px 10px 16px;
+}
+
+.top-nav h1 {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--cyan-electric);
+  letter-spacing: 0.5px;
+}
+
+.top-nav i {
+  font-size: 20px;
+  color: var(--cyan-electric);
+  cursor: pointer;
+}
+
+.top-nav .right-icons {
+  display: flex;
+  gap: 20px;
+}

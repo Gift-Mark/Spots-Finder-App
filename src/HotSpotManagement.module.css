@@ -1,0 +1,450 @@
+/* Layout & Sidebar Base */
+.adminContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0b0e17;
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #121624;
+  border-right: 1px solid #1e2438;
+  padding: 32px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.brandHeader {
+  margin-bottom: 36px;
+}
+
+.logoTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.logoSub {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.navMenu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navMenu li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.navMenu li:hover {
+  color: #f1f5f9;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.navMenu li.activeNav {
+  background-color: #a78bfa;
+  color: #ffffff;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.quickVibeBtn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #f59e0b, #a78bfa);
+  border: none;
+  color: #ffffff;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #1e2438;
+}
+
+.avatarPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop') center/cover;
+}
+
+.adminName {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+/* Main Area Layout */
+.mainContent {
+  flex: 1;
+  padding: 24px 40px 60px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+.topHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.breadcrumbs {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.currentBreadcrumb {
+  color: #cbd5e1;
+}
+
+.topActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.iconBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notificationDot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #f43f5e;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.primaryActionBtn {
+  background: #a78bfa;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pageHeader h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+}
+
+.descriptionText {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Table Outer Container */
+.tableCard {
+  background-color: #121624;
+  border: 1px solid #1e2438;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Search Controls Header */
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.searchBar {
+  position: relative;
+  flex: 1;
+  max-width: 480px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.searchBar input {
+  width: 100%;
+  background: #0b0e17;
+  border: 1px solid #1e2438;
+  padding: 10px 16px 10px 42px;
+  border-radius: 10px;
+  color: #ffffff;
+  outline: none;
+  font-size: 0.85rem;
+}
+
+.searchBar input::placeholder {
+  color: #475569;
+}
+
+.dropdownGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.selectWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.selectWrapper select {
+  appearance: none;
+  background: #0b0e17;
+  border: 1px solid #1e2438;
+  padding: 10px 36px 10px 16px;
+  border-radius: 10px;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.dropdownIcon {
+  position: absolute;
+  right: 14px;
+  font-size: 0.75rem;
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* Data Table Styling */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dataTable th {
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  border-bottom: 1px solid #1e2438;
+  letter-spacing: 0.5px;
+}
+
+.dataTable td {
+  padding: 16px;
+  border-bottom: 1px solid #1e2438;
+  vertical-align: middle;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+/* Table Cells */
+.venueCell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.venueThumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.venueName {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #f1f5f9;
+}
+
+.venueId {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.locationText {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+/* Vibe Badges */
+.vibeBadge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.vibeLively {
+  background-color: rgba(6, 182, 212, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.vibeChill {
+  background-color: rgba(168, 85, 247, 0.15);
+  color: #c084fc;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.vibeTechno {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Status Cell */
+.statusCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.activeDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #38bdf8;
+}
+
+.inactiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #64748b;
+}
+
+.statusText {
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
+
+/* Action Icons */
+.actionsCell {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.actionIconBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.actionIconBtn:hover {
+  color: #f1f5f9;
+}
+
+/* Pagination Footer */
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+}
+
+.paginationInfo {
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.paginationControls {
+  display: flex;
+  gap: 6px;
+}
+
+.pageArrowBtn, .pageNumberBtn {
+  background: #0b0e17;
+  border: 1px solid #1e2438;
+  color: #94a3b8;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.pageNumberBtn.activePage {
+  background: #a78bfa;
+  border-color: #a78bfa;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.pageArrowBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

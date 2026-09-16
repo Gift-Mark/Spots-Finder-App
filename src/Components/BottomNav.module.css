@@ -1,0 +1,75 @@
+:root {
+  --bg-main: #0c1322;
+  --bg-container: #191f2f;
+  --bg-container-low: #141b2b;
+  --border-color: #2e3545;
+  --text-main: #dce2f7;
+  --text-muted: #cbc3d7;
+  --cyan-electric: #03b5d3;
+  --purple-electric: #a078ff;
+  --purple-dim: #d0bcff;
+  --accent-gold: #ffb95f;
+}
+
+/* Fixed App Navbar Menu */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 55px;
+  background: #0a0a0a;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 8px 8px;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.nav-item,
+.profile-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  border: none;
+  font-size: 11px;
+  font-weight: 600;
+  min-width: 60px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.nav-item i,
+.profile-pill i {
+  font-size: 18px;
+}
+
+.nav-item-active {
+  background-color: var(--cyan-electric);
+  color: var(--bg-main);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.2);
+  padding: 8px 16px;
+}
+
+.profile-pill {
+  /* default: same look as other nav items */
+  background: transparent;
+  color: var(--text-muted);
+  padding: 6px 8px;
+  font-weight: 600;
+}
+
+.profile-pill-active {
+  background-color: var(--cyan-electric);
+  color: var(--bg-main);
+  padding: 8px 16px;
+  font-weight: 700;
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.35);
+}

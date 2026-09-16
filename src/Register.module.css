@@ -1,0 +1,186 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 62px 16px 32px;
+  background:
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(171, 125, 255, 0.55),
+      transparent 25%
+    ),
+    #071222;
+  color: #ede9f7;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.card {
+  width: min(100%, 358px);
+  padding: 28px 32px;
+  border: 1px solid rgba(159, 174, 204, 0.22);
+  border-radius: 24px;
+  background: rgba(11, 20, 39, 0.92);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.logo {
+  margin: 0 0 25px;
+  font-size: 2.6rem;
+  font-weight: 500;
+  color: #c8a9ff;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.65rem;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  color: #dbd4e5;
+  font-size: 0.98rem;
+}
+
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.inputGroup {
+  display: grid;
+  gap: 8px;
+  text-align: left;
+}
+
+.inputGroup label {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.inputGroup input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 49px;
+  padding: 0 14px;
+  border: 1px solid #aeb4c3;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  color: #171629;
+  font: inherit;
+}
+
+.inputGroup input::placeholder {
+  color: #d2cce5;
+}
+
+.passwordWrapper {
+  display: flex;
+  align-items: center;
+  min-height: 49px;
+  padding: 0 12px;
+  border: 1px solid #aeb4c3;
+  border-radius: 8px;
+  background: white;
+}
+
+.passwordWrapper input {
+  min-width: 0;
+  border: 0;
+  padding: 0 8px;
+}
+
+.lockIcon {
+  font-size: 0.9rem;
+}
+
+.visibilityButton {
+  border: 0;
+  background: transparent;
+  color: #c5bfd2;
+  font-size: 0.83rem;
+  cursor: pointer;
+}
+
+.requirements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px 18px;
+  margin-top: -5px;
+}
+
+.requirement,
+.validRequirement {
+  font-family: Arial, sans-serif;
+  font-size: 0.72rem;
+  color: #8d98ad;
+}
+
+.validRequirement {
+  color: #64e6c1;
+}
+
+.createButton {
+  min-height: 52px;
+  margin-top: 3px;
+  border: 0;
+  border-radius: 12px;
+  background: #c5a4fa;
+  color: #43168e;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.createButton:hover {
+  background: #d3b8ff;
+}
+
+.terms {
+  margin: 24px 0 32px;
+  text-align: center;
+  color: #d9d3e3;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.terms a,
+.signInText a {
+  color: #39d0f5;
+  text-decoration: none;
+}
+
+.divider {
+  height: 1px;
+  background: #26344b;
+}
+
+.signInText {
+  margin: 27px 0 0;
+  text-align: center;
+  color: #dbd6e4;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.error {
+  margin: 0;
+  color: #ff9ca4;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+@media (max-width: 380px) {
+  .card {
+    padding: 28px 24px;
+  }
+
+  .header {
+    margin-bottom: 42px;
+  }
+}
