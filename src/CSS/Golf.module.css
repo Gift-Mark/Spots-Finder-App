@@ -1,0 +1,363 @@
+.pageWrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.mainContainer {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+/* BADGES & HEADER */
+.headerMeta {
+  margin-bottom: 24px;
+}
+
+.badgeGroup {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blueBadge {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.orangeBadge {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+}
+
+.ratingsLocation {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #f59e0b;
+}
+
+.reviewCount {
+  color: #64748b;
+  margin-left: 4px;
+}
+
+.locationText {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* GALLERY GRID */
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+  height: 380px;
+}
+
+.largePic img, 
+.smallPic img, 
+.smallPicOverlayContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.rightSideGallery {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.smallPic {
+  height: calc(50% - 8px);
+}
+
+.smallPicOverlayContainer {
+  position: relative;
+  height: calc(50% - 8px);
+}
+
+.imageMetaBar {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  font-size: 11px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.viewAllBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* LAYOUT GRID (LEFT CONTENT + SIDEBAR) */
+.contentLayout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.sectionBlock {
+  margin-bottom: 36px;
+}
+
+.sectionBlock h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 16px 0;
+}
+
+.sectionBlock p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+/* AMENITIES */
+.amenitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.amenityItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.amenityItem svg {
+  color: #0284c7;
+  width: 16px;
+}
+
+/* SIDEBAR CARD */
+.visitCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.visitCard h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+}
+
+.infoRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 12px;
+}
+
+.infoIcon {
+  color: #f97316;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.infoRow strong {
+  display: block;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.infoRow p {
+  margin: 0;
+  color: #64748b;
+}
+
+.bookBtn {
+  width: 100%;
+  background-color: #f97316;
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.directionsBtn {
+  width: 100%;
+  background: transparent;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* MAP CONTAINER */
+.mapContainer {
+  background-color: #e2e8f0;
+  height: 200px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  gap: 8px;
+}
+
+.mapIcon {
+  font-size: 28px;
+}
+
+/* NEARBY ATTRACTIONS */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.viewAllLink {
+  color: #f97316;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.attractionsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.attractionCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.cardImageWrapper {
+  position: relative;
+  height: 120px;
+  margin-bottom: 10px;
+}
+
+.cardImageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.attractionBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #0f172a;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.attractionCard h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+
+}
+
+.attractionCard p {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .contentLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .attractionsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .galleryGrid {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
