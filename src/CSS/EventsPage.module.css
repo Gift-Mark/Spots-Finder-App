@@ -1,0 +1,11 @@
+.pageWrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  /* Add top padding to clear the fixed header height */
+  padding-top: 80px; 
+}

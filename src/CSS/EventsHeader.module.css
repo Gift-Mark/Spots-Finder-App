@@ -1,0 +1,108 @@
+.headerContainer {
+  max-width: 1200px;
+  margin: 32px auto 24px;
+  padding: 0 24px;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  max-width: 580px;
+  line-height: 1.5;
+}
+
+/* TIMEFRAME DROPDOWN */
+.timeframeDropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.calendarIcon {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.arrowIcon {
+  color: #64748b;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.timeframeDropdown select {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  width: 100%;
+  appearance: none;
+}
+
+/* PILLS ROW */
+.pillsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pill:hover {
+  background: #e2e8f0;
+}
+
+.activePill {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.pillIcon {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .topRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

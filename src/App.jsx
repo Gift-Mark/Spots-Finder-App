@@ -8,6 +8,7 @@ const Explore = lazy(() => import("./Explore"));
 const Discover = lazy(() => import("./discover"));
 const Culture = lazy(() => import("./culture"));
 const Golf = lazy(() => import("./Golf"));
+const EventsPage = lazy(() => import("./EventsPage"));
 const Profile = lazy(() => import("./profile").then(({ Profile }) => ({ default: Profile })));
 const Map = lazy(() => import("./map"));
 const Feed = lazy(() => import("./feed").then(({ Feed }) => ({ default: Feed })));
@@ -84,6 +85,7 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/golf" element={<Golf />} />
+        <Route path="/events" element={<EventsPage />} />
         <Route path="/dashboard" element={<MainAnalyticsDashboard />} />
         <Route path="/ModerationDashboard" element={<ModerationDashboard />} />
         <Route path="/discover" element={renderPage()} />
