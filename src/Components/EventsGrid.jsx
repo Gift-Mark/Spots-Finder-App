@@ -29,11 +29,17 @@ const defaultEvents = [
   },
 ];
 
-export const EventsGrid = ({ events, onLoadMore, hasMore = true }) => {
+export const EventsGrid = ({
+  events = defaultEvents,
+  onLoadMore,
+  hasMore = true,
+}) => {
+  const safeEvents = Array.isArray(events) ? events : defaultEvents;
+
   return (
     <div className={styles.gridContainer}>
       <div className={styles.cardsGrid}>
-        {events.map((event) => (
+        {safeEvents.map((event) => (
           <div key={event.id} className={styles.eventCard}>
             <div className={styles.imageWrapper}>
               <img src={event.image} alt={event.title} className={styles.cardImage} />

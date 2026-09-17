@@ -1,0 +1,199 @@
+.heroSection {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  background-image: url('../../assets/images/dining-hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px 60px; /* Top padding clears fixed navbar */
+  box-sizing: border-box;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.78) 0%, rgba(15, 23, 42, 0.92) 100%);
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  max-width: 860px;
+  width: 100%;
+  text-align: left;
+}
+
+.sectionBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  color: #f97316;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  letter-spacing: 0.05em;
+}
+
+.orangeDot {
+  width: 6px;
+  height: 6px;
+  background-color: #f97316;
+  border-radius: 50%;
+}
+
+.title {
+  color: #ffffff;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 12px 0;
+  letter-spacing: -0.02em;
+}
+
+.subtitle {
+  color: #cbd5e1;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+  max-width: 780px;
+}
+
+/* SEARCH & FILTER CARD */
+.searchCard {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 8px 8px 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  margin-bottom: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.searchIcon {
+  color: #64748b;
+  font-size: 15px;
+}
+
+.inputGroup input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.inputGroup input::placeholder {
+  color: #94a3b8;
+}
+
+.controlsGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.priceSelectWrapper {
+  display: flex;
+  align-items: center;
+  background: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 8px;
+  gap: 6px;
+}
+
+.priceLabel {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.03em;
+}
+
+.priceSelectWrapper select {
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+}
+
+.filterBtn {
+  background: #f97316;
+  color: #ffffff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.filterBtn:hover {
+  background: #ea580c;
+}
+
+/* POPULAR TAGS */
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tagPill {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tagPill:hover {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 28px;
+  }
+
+  .searchCard {
+    flex-direction: column;
+    padding: 12px;
+  }
+
+  .controlsGroup {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filterBtn {
+    flex: 1;
+    justify-content: center;
+  }
+}
