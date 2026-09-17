@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faSliders } from '@fortawesome/free-solid-svg-icons';
-import styles from './DiningHero.module.css';
+import styles from '../CSS/DiningHero.module.css';
 
 const popularTags = [
   'Rayfield',
