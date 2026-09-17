@@ -1,0 +1,35 @@
+.pageWrapper {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.mainContent {
+  flex: 1;
+  width: 100%;
+}
+
+.noResults {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 48px 24px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.noResults h3 {
+  font-size: 18px;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.noResults p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
