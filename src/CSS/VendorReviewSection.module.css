@@ -1,0 +1,167 @@
+.reviewsCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerIcon {
+  color: #f97316;
+  font-size: 16px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.sortWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortLabel {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.sortSelect {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+
+/* REVIEWS LIST */
+.reviewsList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reviewItem {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 16px;
+}
+
+.reviewItem:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.reviewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.authorGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f1f5f9;
+}
+
+.authorName {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.timeAgo {
+  font-size: 10px;
+  color: #94a3b8;
+  display: block;
+}
+
+.starsRow {
+  display: flex;
+  gap: 3px;
+}
+
+.starFilled {
+  color: #f59e0b;
+  font-size: 12px;
+}
+
+.starEmpty {
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.commentText {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 10px 0;
+  padding-left: 48px;
+}
+
+.actionRow {
+  padding-left: 48px;
+}
+
+.replyBtn {
+  background: #f1f5f9;
+  border: none;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.replyBtn:hover {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.replyIcon {
+  font-size: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .commentText,
+  .actionRow {
+    padding-left: 0;
+  }
+}
