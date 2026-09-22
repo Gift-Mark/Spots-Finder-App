@@ -4,12 +4,12 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import BottomNav from "./Components/BottomNav";
 
 // Load route screens on demand so the initial bundle does not include every page.
-const Explore = lazy(() => import("./Explore"));
 const Discover = lazy(() => import("./discover"));
 const Culture = lazy(() => import("./culture"));
 const Golf = lazy(() => import("./Golf"));
 const EventsPage = lazy(() => import("./EventsPage"));
-const NightlifePage = lazy(() => import("./Nightlife"));
+const NightlifePage = lazy(() => import("./Nightlife")); 
+const LoungesPage = lazy(() => import("./LoungesPage"))
 const DiningPage = lazy(() => import("./DiningPage"));
 const Profile = lazy(() => import("./profile").then(({ Profile }) => ({ default: Profile })));
 const Map = lazy(() => import("./map"));
@@ -54,11 +54,11 @@ function App() {
   // Authentication and admin screens use their own layouts without bottom navigation.
   const hideBottomNav =
   location.pathname === "/" ||
-    location.pathname === "/login" || 
-    location.pathname === "/register" || 
-    location.pathname === "/dashboard" || 
-    location.pathname === "/moderationDashboard" || location.pathname.startsWith === "/adminDashboard" || 
-    location.pathname === "/management";
+    location.pathname === "/nightlife" || 
+    location.pathname === "/lounge" || 
+    location.pathname === "/dining" || 
+    location.pathname === "/golf" || location.pathname === "/culture" || 
+    location.pathname === "/explore";
 
   return (
     <>
@@ -84,11 +84,12 @@ function App() {
             <HotSpotManagement />
           }
         />
-        <Route path="/explore" element={<Explore />} />
+        <Route path="/explore" element={<Discover />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/golf" element={<Golf />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/nightlife" element={<NightlifePage />} />
+        <Route path="/lounges" element={<LoungesPage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/dashboard" element={<MainAnalyticsDashboard />} />
         <Route path="/ModerationDashboard" element={<ModerationDashboard />} />

@@ -1,0 +1,118 @@
+.sectionWrapper {
+  max-width: 1200px;
+  margin: 0 auto 56px;
+  padding: 0 24px;
+}
+
+.sectionCard {
+  background: #1e293b;
+  border-radius: 16px;
+  padding: 48px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.2);
+}
+
+/* Subtle decorative graphic ring */
+.sectionCard::after {
+  content: '';
+  position: absolute;
+  right: -60px;
+  bottom: -60px;
+  width: 260px;
+  height: 260px;
+  border: 40px solid rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(249, 115, 22, 0.2);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  color: #f97316;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 12px 0;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  max-width: 720px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.65;
+  margin: 0 0 36px 0;
+  max-width: 780px;
+}
+
+/* 3-COLUMN FEATURE GRID */
+.vibeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.vibeCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.vibeCard:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.iconBox {
+  background: rgba(249, 115, 22, 0.15);
+  color: #f97316;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.vibeTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+}
+
+.vibeDesc {
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+  .sectionCard {
+    padding: 32px 24px;
+  }
+
+  .vibeGrid {
+    grid-template-columns: 1fr;
+  }
+}

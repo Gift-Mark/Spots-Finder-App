@@ -16,7 +16,7 @@ const Header = () => {
     { name: 'Culture & Heritage', path: '/culture' },
     { name: 'Golf & Sports', path: '/golf' },
     { name: 'Restaurants & Diners', path: '/dining' },
-    { name: 'Lounges & Bars', path: '/nightlife' },
+    { name: 'Lounges & Bars', path: '/lounges' },
     { name: 'Events', path: '/events' },
   ];
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { 
   faGolfBallTee, 
   faMasksTheater, 
@@ -16,6 +16,7 @@ import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
 
 export const Discover = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
 
@@ -35,6 +36,11 @@ export const Discover = () => {
   };
 
   const handleCategorySelect = (category) => {
+    if (category === "Nightlife") {
+      navigate("/nightlife");
+      return;
+    }
+
     setActiveCategory(category);
   };
 

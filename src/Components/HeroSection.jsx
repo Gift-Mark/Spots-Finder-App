@@ -9,8 +9,8 @@ export const HeroSection = ({
   subtitle = "Your premier guide to the Plateau's vibrant nightlife, lounges, historic landmarks, and breathtaking landscapes.",
   placeholder = "What are you looking for?",
   filterPills = [],
-  videoSrc, // Pass video path for Discover page
-  heroImage, // Pass image path for Culture page
+  videoSrc, 
+  heroImage, 
   onSearch,
   onCategorySelect,
 }) => {
