@@ -1,0 +1,265 @@
+.sectionContainer {
+  max-width: 1200px;
+  margin: 0 auto 48px auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 24px;
+  box-sizing: border-box;
+  width: 90%;
+}
+
+/* SECTION HEADERS */
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 28px;
+}
+
+.sectionTitle {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.seeAllBtn {
+  background: transparent;
+  border: none;
+  color: #f97316;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: gap 0.2s ease;
+}
+
+.seeAllBtn:hover {
+  gap: 10px;
+}
+
+.arrowIcon {
+  font-size: 10px;
+}
+
+/* LEFT COLUMN: PROMOTED CARD */
+.promotedColumn {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.promotedCard {
+  background-color: #ffffff;
+  border: 1.5px solid #ffedd5;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.promotedImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.adBadge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f97316;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+
+.promotedBody {
+  padding: 14px 4px 4px 4px;
+}
+
+.promotedTitle {
+  font-size: 15px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.promotedDescription {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.4;
+  margin: 0 0 16px 0;
+}
+
+.bookTableBtn {
+  width: 100%;
+  background-color: #ffffff;
+  border: 1px solid #0f172a;
+  color: #0f172a;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bookTableBtn:hover {
+  background-color: #0f172a;
+  color: #ffffff;
+}
+
+/* RIGHT COLUMN: FEATURED EVENTS */
+.eventsColumn {
+  flex: 1;
+  min-width: 0;
+}
+
+.eventsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.eventCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.eventCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.eventImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 150px;
+}
+
+.eventImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dateBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 4px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  min-width: 32px;
+}
+
+.dateMonth {
+  font-size: 9px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.dateDay {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1;
+}
+
+.eventBody {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.eventTitle {
+  font-size: 14px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.mapIcon {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.eventFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 10px;
+}
+
+.eventPrice {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.actionBtn {
+  font-size: 10px;
+  font-weight: 800;
+  color: #f97316;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.actionBtn:hover {
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .sectionContainer {
+    flex-direction: column;
+  }
+
+  .promotedColumn {
+    width: 100%;
+  }
+
+  .eventsGrid {
+    grid-template-columns: 1fr;
+  }
+}

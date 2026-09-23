@@ -1,129 +1,105 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faStar, 
-  faLocationDot, 
-  faGolfBallTee, 
-  faTree, 
-  faWater, 
-  faLandmark 
-} from '@fortawesome/free-solid-svg-icons';
+import { faStar, faChevronRight, faUmbrellaBeach, faWater, faLandmark } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopTouristSpots.module.css';
+import rayfieldResortImage from '../assets/images/Rayfield Resort.jpg';
+import kurraFallsImage from '../assets/images/Kurra-Falls.jpg';
+import josMuseumImage from '../assets/images/Jos Museum.jpg';
 
-const touristSpots = [
+const mainSpot = {
+  id: 1,
+  name: 'Rayfield Holiday Resort',
+  category: 'Resort',
+  icon: faUmbrellaBeach,
+  rating: 4.8,
+  reviewsCount: 32,
+  image: rayfieldResortImage,
+};
+
+const rightSpots = [
   {
-    id: 'rayfield-holiday-resort',
-    title: 'Rayfield Holiday Resort',
-    category: 'Resort',
-    rating: 4.8,
-    image: '/assets/images/Rayfield Resort.jpg',
-    reviews: 128,
-    location: 'Jos East, Plateau State',
-    large:true,
-    icon: faTree,
-    featured: true,
-  },
-  {
-    id: 'assop-falls',
-    title: 'Assop Falls',
+    id: 2,
+    name: 'Kurra Falls',
     category: 'Nature',
-    rating: 4.7,
-    image: '/assets/images/Kurra-Falls.jpg',
-    reviews: 95,
-    location: 'Rayfield, Jos',
-    icon: faGolfBallTee,
-    featured: true,
-  },
-  {
-    id: 'jos-museum',
-    title: 'Jos Museum',
-    category: 'Heritage',
-    rating: 4.5,
-    image: '/assets/images/assop_falls.jpg',
-    reviews: 110,
-    location: 'Hawan Kibo, Jos',
     icon: faWater,
-    featured: false,
+    rating: 4.7,
+    reviewsCount: 28,
+    image: kurraFallsImage,
   },
   {
-    id: 'jos-wildlife-park',
-    title: 'Jos Wildlife Park',
-    category: 'Culture & Wildlife',
-    rating: 4.6,
-    reviews: 84,
-    location: 'Tudun Wada, Jos',
-    image: '/assets/images/jos_wildlife.jpg',
+    id: 3,
+    name: 'Jos Museum',
+    category: 'Heritage',
     icon: faLandmark,
-    featured: false,
+    rating: 4.5,
+    reviewsCount: 19,
+    image: josMuseumImage,
   },
 ];
 
-export const TopTouristSpots = ({ onSpotClick }) => {
+export const TopTouristSpots = ({ onSeeAll }) => {
   return (
-    <section className={styles['jp-spots-section']}>
-      <div className={styles['jp-spots-container']}>
-        
-        {/* Section Header */}
-        <div className={styles['jp-spots-header']}>
-          <div>
-            <span className={styles['jp-spots-badge']}>Discover Plateau</span>
-            <h2 className={styles['jp-spots-title']}>Top Tourist Spots in Jos</h2>
+    <section className={styles.sectionContainer}>
+      {/* Section Header */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>Top Tourist Spots</h2>
+        <button type="button" className={styles.seeAllBtn} onClick={onSeeAll}>
+          <span>See all</span>
+          <FontAwesomeIcon icon={faChevronRight} className={styles.arrowIcon} />
+        </button>
+      </div>
+
+      {/* Asymmetrical Grid Container */}
+      <div className={styles.gridContainer}>
+        {/* Left Featured Main Card */}
+        <div className={styles.mainCard}>
+          <img src={mainSpot.image} alt={mainSpot.name} className={styles.cardImage} />
+          <div className={styles.imageOverlay} />
+
+          {/* Category Pill Badge */}
+          <div className={styles.categoryBadge}>
+            <FontAwesomeIcon icon={mainSpot.icon} />
+            <span>{mainSpot.category}</span>
           </div>
-          <p className={styles['jp-spots-description']}>
-            Explore world-class landscapes, iconic landmarks, and historic recreational destinations across the Plateau.
-          </p>
+
+          {/* Card Content Overlay */}
+          <div className={styles.cardContent}>
+            <h3 className={styles.spotNameLarge}>{mainSpot.name}</h3>
+            <div className={styles.ratingRow}>
+              <FontAwesomeIcon icon={faStar} className={styles.starIcon} />
+              <span className={styles.ratingScore}>{mainSpot.rating}</span>
+              <span className={styles.reviewsCount}>({mainSpot.reviewsCount})</span>
+            </div>
+          </div>
         </div>
 
-        {/* Spot Cards Grid */}
-        <div className={styles['jp-spots-grid']}>
-          {touristSpots.map((spot) => (
-            <article 
-              key={spot.id} 
-              className={styles['jp-spot-card']}
-              onClick={() => onSpotClick && onSpotClick(spot.id)}
-            >
-              {/* Card Image Wrapper */}
-              <div className={styles['jp-spot-image-wrapper']}>
-                <img 
-                  src={spot.image} 
-                  alt={spot.title} 
-                  className={styles['jp-spot-image']}  
-                  loading="lazy"
-                />
-                {spot.featured && (
-                  <span className={styles['jp-spot-featured-badge']}>Featured</span>
-                )}
-                <div className={styles['jp-spot-category-tag']}>
-                  <FontAwesomeIcon icon={spot.icon} className={styles['jp-spot-category-icon']} />
-                  <span>{spot.category}</span>
-                </div>
+        {/* Right Stacked Column */}
+        <div className={styles.rightColumn}>
+          {rightSpots.map((spot) => (
+            <div key={spot.id} className={styles.smallCard}>
+              <img src={spot.image} alt={spot.name} className={styles.cardImage} />
+              <div className={styles.imageOverlay} />
+
+              {/* Category Badge */}
+              <div className={styles.categoryBadge}>
+                <FontAwesomeIcon icon={spot.icon} />
+                <span>{spot.category}</span>
               </div>
 
-              {/* Card Content */}
-              <div className={styles['jp-spot-body']}>
-                <div className={styles['jp-spot-rating']}>
-                  <FontAwesomeIcon icon={faStar} className={styles['jp-star-icon']} />
-                  <span className={styles['jp-rating-score']}>{spot.rating}</span>
-                  <span className={styles['jp-rating-count']}>({spot.reviews} reviews)</span>
-                </div>
-
-                <h3 className={styles['jp-spot-card-title']}>{spot.title}</h3>
-
-                <div className={styles['jp-spot-location']}>
-                  <FontAwesomeIcon icon={faLocationDot} className={styles['jp-location-icon']} />
-                  <span>{spot.location}</span>
-                </div>
-
-                <div className={styles['jp-spot-footer']}>
-                  <button type="button" className="jp-spot-action-btn">
-                    Explore Details
-                  </button>
+              {/* Card Content Overlay */}
+              <div className={styles.cardContent}>
+                <h4 className={styles.spotNameSmall}>{spot.name}</h4>
+                <div className={styles.ratingRow}>
+                  <FontAwesomeIcon icon={faStar} className={styles.starIcon} />
+                  <span className={styles.ratingScore}>{spot.rating}</span>
+                  <span className={styles.reviewsCount}>({spot.reviewsCount})</span>
                 </div>
               </div>
-            </article>
+            </div>
           ))}
         </div>
-
       </div>
     </section>
   );
 };
+
+export default TopTouristSpots;

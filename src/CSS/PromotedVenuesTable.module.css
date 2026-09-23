@@ -1,0 +1,262 @@
+.tableCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.cardSubtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filterBtn {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.newListingBtn {
+  background-color: #f97316;
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.25);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.newListingBtn:hover {
+  background-color: #ea580c;
+  transform: translateY(-1px);
+}
+
+/* TABLE */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.04em;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.actionsHeader {
+  text-align: right;
+}
+
+.table td {
+  padding: 14px;
+  font-size: 12px;
+  border-bottom: 1px solid #f8fafc;
+  vertical-align: middle;
+}
+
+.venueCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.venueThumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  background-color: #f1f5f9;
+}
+
+.venueName {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.categoryBadge {
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.emailCell {
+  color: #64748b;
+  font-weight: 500;
+}
+
+.planCell {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* STATUS BADGES */
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.statusActive {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.statusActive .statusDot {
+  background-color: #16a34a;
+}
+
+.statusPending {
+  background-color: #ffedd5;
+  color: #c2410c;
+}
+
+.statusPending .statusDot {
+  background-color: #ea580c;
+}
+
+.statusExpired {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.statusExpired .statusDot {
+  background-color: #ef4444;
+}
+
+/* ACTIONS */
+.actionsCell {
+  text-align: right;
+}
+
+.editBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.editBtn:hover {
+  color: #0f172a;
+}
+
+.pendingActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.approveBtn,
+.rejectBtn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.approveBtn {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.rejectBtn {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.approveBtn:hover,
+.rejectBtn:hover {
+  transform: scale(1.1);
+}
+
+/* FOOTER */
+.cardFooter {
+  text-align: center;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.viewAllLink {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+.viewAllLink:hover {
+  text-decoration: underline;
+}

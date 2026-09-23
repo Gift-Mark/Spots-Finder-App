@@ -1,4 +1,4 @@
-.dashboardContainer {
+.adminContainer {
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
@@ -22,9 +22,6 @@
 }
 
 .pageHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 24px;
 }
 
@@ -42,33 +39,8 @@
   margin: 0;
 }
 
-.createEventBtn {
-  background-color: #f97316;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.25);
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.createEventBtn:hover {
-  background-color: #ea580c;
-  transform: translateY(-1px);
-}
-
-.btnIcon {
-  font-size: 12px;
-}
-
-/* MIDDLE GRID */
-.middleSectionGrid {
+/* BOTTOM SPLIT GRID */
+.bottomSectionGrid {
   display: flex;
   gap: 20px;
   align-items: stretch;
@@ -76,27 +48,17 @@
 
 /* RESPONSIVE BREAKPOINTS */
 @media (max-width: 1024px) {
-  .middleSectionGrid {
+  .bottomSectionGrid {
     flex-direction: column;
   }
 }
 
 @media (max-width: 768px) {
-  .dashboardContainer {
+  .adminContainer {
     flex-direction: column;
   }
 
   .contentBody {
     padding: 16px;
-  }
-
-  .pageHeader {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .createEventBtn {
-    width: 100%;
-    justify-content: center;
   }
 }

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import VendorSidebar from './VendorSidebar';
-import VendorHeader from './VendorHeader';
-import VendorStatsRow from './VendorStatsRow';
-import VendorEventsTable from './VendorEventsTable';
-import PromoteSpotCard from './PromoteSpotCard';
-import VendorReviewsSection from './VendorReviewsSection';
+import VendorSidebar from './Components/VendorSidebar';
+import VendorHeader from './Components/VendorHeader';
+import VendorStatsRow from './Components/VendorStatsRow';
+import VendorEventsTable from './Components/VendorEventsTable';
+import PromoteSpotCard from './Components/PromoteSpotCard';
+import VendorReviewsSection from './Components/VendorReviewsSection';
 import styles from './CSS/VendorDashboard.module.css';
 
 export const VendorDashboard = () => {

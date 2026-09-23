@@ -12,6 +12,7 @@ const NightlifePage = lazy(() => import("./Nightlife"));
 const LoungesPage = lazy(() => import("./LoungesPage"))
 const DiningPage = lazy(() => import("./DiningPage"));
 const VendorDashboard = lazy(() => import("./VendorDashboard"))
+const AdminDashboard = lazy(() => import("./AdminDashboard"))
 const Login = lazy(() => import("./Login").then(({ Login }) => ({ default: Login })));
 const Register = lazy(() => import("./Register").then(({ Register }) => ({ default: Register })));
 
@@ -30,7 +31,7 @@ function App() {
     location.pathname === "/lounge" || 
     location.pathname === "/dining" || 
     location.pathname === "/golf" || location.pathname === "/culture" || 
-    location.pathname === "/explore";
+    location.pathname === "/explore" || location.pathname === "/vendor";
 
   return (
     <>
@@ -45,6 +46,7 @@ function App() {
         <Route path="/lounges" element={<LoungesPage />} />
         <Route path="/dining" element={<DiningPage />} />
         <Route path="/vendor" element={<VendorDashboard />} />
+        <Route path="/SuperAdmin" element={<AdminDashboard />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         </Routes>
