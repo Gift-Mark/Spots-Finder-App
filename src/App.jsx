@@ -37,8 +37,8 @@ function App() {
     <>
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/explore" element={<Discover />} />
+        <Route path="/" element={<Discover />} />
+       {/*  <Route path="/explore" element={<Discover />} /> */}
         <Route path="/culture" element={<Culture />} />
         <Route path="/golf" element={<Golf />} />
         <Route path="/events" element={<EventsPage />} />
