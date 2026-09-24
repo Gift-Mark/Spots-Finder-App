@@ -2,6 +2,10 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopsVenueGrid.module.css';
+import silkSuiteImage from '../assets/images/Silk Suite.jpg';
+import varlaineImage from '../assets/images/varlaine.jpg';
+import barcardiImage from '../assets/images/Barcardi.jpg';
+import hillStationImage from '../assets/images/Hill Station.jpg';
 
 const filterTabs = [
   'Popular Right Now',
@@ -13,59 +17,59 @@ const filterTabs = [
 const defaultVenues = [
   {
     id: 1,
-    name: 'Aura Sky Lounge',
+    name: 'Silk Suites Rooftop',
     badge: 'Open Now',
     badgeVariant: 'green',
-    rating: '4.8',
-    reviewsCount: '192',
-    location: 'Old Airport Road',
-    cuisine: 'Rooftop & Tapas Bar',
+    rating: '4.2',
+    reviewsCount: '1,177',
+    location: 'Rayfield/Bukuru Road area',
+    cuisine: 'Rooftop Bar & Chill Drinks',
     description: 'Elevated scenic views overlooking Jos plateau sunset with artisan craft drinks.',
     tags: ['Scenic Views', 'Rooftop Bar'],
     buttonText: 'Book Table',
-    image: './assets/images/aura-sky.jpg',
+    image: silkSuiteImage,
   },
   {
     id: 2,
-    name: 'The Rock Room Bar',
+    name: 'Varlaine Park',
     badge: 'Featured Pick of the Week',
     badgeVariant: 'orange',
-    rating: '4.9',
+    rating: '3.2',
     reviewsCount: '210',
-    location: 'Rayfield, Jos',
+    location: 'No 2 Chan Road Rayfield Road, opposite New Govt House, Little, Jos, Plateau',
     cuisine: 'Cocktail Lounge / Grill',
     description: 'Rustic subterranean speakeasy vibe combined with an open-air granite terrace.',
     tags: ['Live Acoustic', 'Craft Cocktails'],
     buttonText: 'View Menu & Details',
-    image: './assets/images/rock-room.jpg',
+    image: varlaineImage,
   },
   {
     id: 3,
-    name: 'Highland Velvet Lounge',
+    name: 'Barcardi Restaurant',
     badge: 'Open Now',
     badgeVariant: 'green',
-    rating: '4.7',
-    reviewsCount: '154',
-    location: 'Rayfield, Jos',
+    rating: '4.4',
+    reviewsCount: '251',
+    location: '11  Dandaura Road Off Wase Road',
     cuisine: 'Speakeasy & Jazz Bar',
     description: 'Intimate seating, premium scotch menu, and warm acoustic jazz performances.',
     tags: ['Whiskey Lounge', 'Live Jazz'],
     buttonText: 'Book Table',
-    image: './assets/images/highland-velvet.jpg',
+    image: barcardiImage,
   },
   {
     id: 4,
-    name: 'The Cellar at Hill Station',
+    name: 'Hill Station Hotel',
     badge: 'Vintage Wine Tasting',
     badgeVariant: 'dark',
-    rating: '4.8',
-    reviewsCount: '118',
-    location: 'Central Jos',
+    rating: '3.7',
+    reviewsCount: '401',
+    location: '10 Tudun Wada Road, Jos, Plateau State',
     cuisine: 'Wine Cellar & Bistro',
     description: 'Historic cellar atmosphere with private wine tasting and European bistro bites.',
     tags: ['Wine Cellar', 'Private Dining'],
     buttonText: 'Book Table',
-    image: './assets/images/cellar-hill.jpg',
+    image: hillStationImage,
   },
 ];
 

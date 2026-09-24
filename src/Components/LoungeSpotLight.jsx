@@ -1,20 +1,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faMusic, faGlassMartiniAlt, faTag, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/LoungeSpotlight.module.css';
+import meesPalaceImage from '../assets/images/Mees Palace.webp';
 
 export const LoungeSpotlight = ({ spotlight }) => {
   const defaultSpotlight = {
-    title: 'The Rock Room & Skyline Terrace',
-    rating: '4.9',
-    reviewsCount: '210',
+    title: 'Mees Palace',
+    rating: '4.1',
+    reviewsCount: '600',
     location: 'Rayfield, Jos',
     badge: 'SPOTLIGHT PICK',
-    description: 'Perched high along the granite ridge of Rayfield, this venue blends a rustic subterranean stone speakeasy with an open-air rooftop granite terrace. Sensational hand-crafted botanical cocktails paired with bespoke fiery wood-fired suya grill for the crisp highland breeze.',
-    signatureDrink: 'Plateau Botanical Spritz',
+    description: 'Family-friendly recreation hub in Rayfield with cinema, arcade, event hall, and open-air lounge. Cold drinks, grilled bites, and relaxed outdoor seating in a spacious, serene setting.',
+    signatureDrink: 'Chapman',
     vibe: 'Highland Sunset & Chill',
-    averagePrice: '$$$',
-    liveEventNotice: 'Live Acoustic & Jazz Trio on Friday, 7:30 PM',
-    image: './assets/images/rock-room-skyline.jpg',
+    averagePrice: '₦10,000',
+    liveEventNotice: 'Check Instagram @meespalace for weekend movie premieres',
+    image: meesPalaceImage,
   };
 
   const data = spotlight || defaultSpotlight;
