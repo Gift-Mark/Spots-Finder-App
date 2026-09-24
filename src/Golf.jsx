@@ -1,6 +1,13 @@
 import Header from './Components/headerNav';
 import Footer from './Components/Footer';
 import styles from './CSS/Golf.module.css';
+import golfMainView from './assets/images/Golf Main view.webp';
+import ballOnTee from './assets/images/Ball on Tee.webp';
+import golfInterior from './assets/images/Golf interior.jpg';
+import SugarSalfCafeImage from './assets/images/Sugar Salt Cafe.jpg';
+import PeaceIslandImage from './assets/images/Peace Island lake.jpg';
+import TencommandmentsImage from './assets/images/Ten commandments.jpg';
+import StopRestaurantImage from './assets/images/Stop Restaurant.webp';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
@@ -34,7 +41,7 @@ export const GolfAndSports = () => {
               <FontAwesomeIcon icon={faGolfBallTee} className={styles.badgeIcon} /> Golf & Sports
             </span>
             <span className={`${styles.badge} ${styles.orangeBadge}`}>
-              Africa's Oldest Golf Course
+              Nigeria's Oldest Golf Course
             </span>
           </div>
 
@@ -56,16 +63,16 @@ export const GolfAndSports = () => {
         {/* Media Gallery Grid */}
         <div className={styles.galleryGrid}>
           <div className={styles.largePic}>
-            <img src="./assets/images/golf-course-main.jpg" alt="Rayfield Golf Course Main View" />
+            <img src={golfMainView} alt="Rayfield Golf Course Main View" />
           </div>
           <div className={styles.rightSideGallery}>
             <div className={styles.smallPic}>
-              <img src="./assets/images/golf-ball.jpg" alt="Golf Ball on Tee" />
+              <img src={ballOnTee} alt="Golf Ball on Tee" />
             </div>
             <div className={styles.smallPicOverlayContainer}>
-              <img src="./assets/images/clubhouse.jpg" alt="Clubhouse Interior" />
+              <img src={golfInterior} alt="Clubhouse Interior" />
               <div className={styles.imageMetaBar}>
-                <span>Golf Club - Est 1923</span>
+                <span>Golf Club - Est 1913</span>
                 <button className={styles.viewAllBtn}>
                   <FontAwesomeIcon icon={faImages} /> View All (12)
                 </button>
@@ -139,7 +146,7 @@ export const GolfAndSports = () => {
                 <FontAwesomeIcon icon={faPhone} className={styles.infoIcon} />
                 <div>
                   <strong>Contact</strong>
-                  <p>+234 (0) 800 123 4567</p>
+                  <p>+234 (0) 803 451-6941</p>
                 </div>
               </div>
 
@@ -174,37 +181,37 @@ export const GolfAndSports = () => {
           <div className={styles.attractionsGrid}>
             <div className={styles.attractionCard}>
               <div className={styles.cardImageWrapper}>
-                <img src="./assets/images/alpine-cafe.jpg" alt="The Alpine Cafe" />
+                <img src={SugarSalfCafeImage} alt="Sugar and Salt Cafe" />
                 <span className={styles.attractionBadge}>Dining</span>
               </div>
-              <h4>The Alpine Cafe</h4>
+              <h4>Sugar and Salt Cafe</h4>
               <p><FontAwesomeIcon icon={faLocationDot} /> 2.3km away</p>
             </div>
 
             <div className={styles.attractionCard}>
               <div className={styles.cardImageWrapper}>
-                <img src="./assets/images/rayfield-resort.jpg" alt="Rayfield Resort" />
+                <img src={PeaceIslandImage} alt="Peace Island Lake" />
                 <span className={styles.attractionBadge}>Nature</span>
               </div>
-              <h4>Rayfield Resort</h4>
+              <h4>Peace Island Lake</h4>
               <p><FontAwesomeIcon icon={faLocationDot} /> 0.8km away</p>
             </div>
 
             <div className={styles.attractionCard}>
               <div className={styles.cardImageWrapper}>
-                <img src="./assets/images/jos-museum.jpg" alt="Jos Museum" />
+                <img src={TencommandmentsImage} alt="Ten Commandments" />
                 <span className={styles.attractionBadge}>Culture</span>
               </div>
-              <h4>Jos Museum</h4>
+              <h4>Ten Commandments Monuments</h4>
               <p><FontAwesomeIcon icon={faLocationDot} /> 5.2km away</p>
             </div>
 
             <div className={styles.attractionCard}>
               <div className={styles.cardImageWrapper}>
-                <img src="./assets/images/plateau-grill.jpg" alt="Plateau Grill" />
+                <img src={StopRestaurantImage} alt="Stop Restaurant" />
                 <span className={styles.attractionBadge}>Dining</span>
               </div>
-              <h4>Plateau Grill</h4>
+              <h4>Stop Restaurant</h4>
               <p><FontAwesomeIcon icon={faLocationDot} /> 3.1km away</p>
             </div>
           </div>
