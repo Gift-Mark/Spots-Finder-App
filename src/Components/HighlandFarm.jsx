@@ -1,6 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSeedling, faCarrot, faAppleWhole } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/HighlandFarmAdvantage.module.css';
+import tevaImage from '../assets/images/Teva.jpg';
+import farmChefImage from '../assets/images/image_386a62b7.jpg';
 
 const features = [
   {
@@ -55,14 +57,14 @@ export const HighlandFarmAdvantage = () => {
         <div className={styles.imageGrid}>
           <div className={styles.imageCardLarge}>
             <img 
-              src="./assets/images/farm-tea-estate.jpg" 
-              alt="Plateau Farm Estate" 
+              src={tevaImage}
+              alt="Jos-1 Greenhouse Farm Estate" 
               className={styles.image}
             />
           </div>
           <div className={styles.imageCardSmall}>
             <img 
-              src="./assets/images/chef-fresh-salad.jpg" 
+              src={farmChefImage}
               alt="Chef preparing fresh Jos farm salad" 
               className={styles.image}
             />

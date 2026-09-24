@@ -1,6 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/DiningStylesGrid.module.css';
+import barcardiImage from '../assets/images/Barcardi.jpg';
+import amoraImage from '../assets/images/Amora.jpg';
+import netCafeImage from '../assets/images/The net cafe.jpg';
+import grillsImage from '../assets/images/Grills.jpg';
 
 const defaultStyles = [
   {
@@ -8,28 +12,28 @@ const defaultStyles = [
     title: 'Highland Fine Dining',
     description: 'Elevated 3-course menus with scenic mountain views and wine pairings.',
     placesCount: 14,
-    image: './assets/images/style-fine-dining.jpg',
+    image: barcardiImage,
   },
   {
     id: 2,
     title: 'Authentic Plateau Bites',
     description: 'Traditional Gwete, Achicha, Masa, and local artisanal soups made daily.',
     placesCount: 28,
-    image: './assets/images/style-plateau-bites.jpg',
+    image: amoraImage,
   },
   {
     id: 3,
     title: 'Cozy Cafes & Breakfast',
-    description: 'Freshly roasted coffee, mountain berries, and baked highland treats.',
+    description: 'Freshly roasted coffee, Ice cream bar, and baked treats.',
     placesCount: 19,
-    image: './assets/images/style-cafes.jpg',
+    image: netCafeImage,
   },
   {
     id: 4,
     title: 'Suya Spots & Grills',
     description: 'Freshly spiced Suya, Kilishi, and cold drinks in outdoor open-air setups.',
     placesCount: 32,
-    image: './assets/images/style-suya.jpg',
+    image: grillsImage,
   },
 ];
 

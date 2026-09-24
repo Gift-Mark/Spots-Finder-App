@@ -1,17 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/FeaturedCulinarySpotlight.module.css';
+import crispanImage from '../assets/images/Crispan.jpg';
 
 export const FeaturedCulinarySpotlight = ({ spotlight }) => {
   const defaultSpotlight = {
-    title: 'The Crest View Restaurant & Lounge',
-    rating: '4.9',
-    reviewsCount: '214',
-    badges: ['Fine Dining', 'Scenic View'],
-    description: 'Perched high on Rayfield Hill, offering panoramic plateau vistas paired with an artisan culinary menu. Signature dishes include locally spiced beef tenderloin and Jos mountain berry tart.',
-    location: 'Rayfield, Plateau State',
-    cuisine: 'Fusion / Ridge Cuisine',
-    image: './assets/images/crest-view.jpg',
+    title: 'The Crispan Hotel & Event Centre',
+    rating: '4.5',
+    reviewsCount: '1,536',
+    badges: ['Fine Dining', 'Hot Tub'],
+    description: 'Nestled along the scenic Jonah Jang Expressway in the vibrant Yingi district, offering panoramic city views paired with an artisan culinary menu. Signature dishes include locally spiced beef tenderloin and Jos mountain berry tart.',
+    location: 'Before Gold and Base Round About, Jonah Jang Express Way, Shaka Rd, Yingi, Jos, Plateau State',
+    cuisine: 'Intercontinental Fusion / Continental Cuisine',
+    image: crispanImage,
   };
 
   const data = spotlight || defaultSpotlight;

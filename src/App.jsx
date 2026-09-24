@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 
 import BottomNav from "./Components/BottomNav";
 
@@ -37,7 +37,7 @@ function App() {
     <>
       <Suspense fallback={<p>Loading...</p>}>
         <Routes>
-        <Route path="/" element={<Discover />} />
+        <Route path="/" element={<Navigate to="/explore" replace />} />
         <Route path="/explore" element={<Discover />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/golf" element={<Golf />} />

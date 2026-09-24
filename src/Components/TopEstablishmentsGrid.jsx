@@ -2,61 +2,65 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar} from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopEstablishedGrid.module.css';
+import barcardiImage from '../assets/images/Barcardi.jpg';
+import valadaImage from '../assets/images/Valada.jpg';
+import varlaineImage from '../assets/images/varlaine.jpg';
+import tinCityCafeImage from '../assets/images/Tin City cafe.jpg';
 
 const filterTabs = ['Popular', 'Top Rated', 'Highest Reviewed'];
 
 const defaultEstablishments = [
   {
     id: 1,
-    name: 'Rayfield Terrace & Bistro',
+    name: 'Barcardi Jos',
     badge: 'Highland Fine Dining',
-    rating: '4.9',
-    reviewsCount: '180',
-    price: '$$$',
-    cuisine: 'Fine Dining / Outdoor',
-    description: 'Scenic outdoor garden dining overlooking Rayfield water body.',
+    rating: '4.4',
+    reviewsCount: '245+',
+    price: ' ₦4,500',
+    cuisine: 'Italian / Outdoor',
+    description: 'Scenic outdoor garden dining in GRA with romantic ambience and call-button service.',
     buttonText: 'Book Table',
     buttonVariant: 'secondary',
-    image: './assets/images/rayfield-terrace.jpg'
+    image: barcardiImage
   },
   {
     id: 2,
-    name: 'Plateau Heritage Kitchen',
+    name: 'Valada',
     badge: '100% Traditional Choice',
-    rating: '4.8',
-    reviewsCount: '230',
-    price: '$$',
+    rating: '4.0',
+    reviewsCount: '1,163',
+    price: '₦4,000',
     cuisine: 'Local Plateau Cuisine',
     description: 'Renowned for fresh Gwete, Masa, and highland herbal teas.',
     buttonText: 'Reserve a Table',
     buttonVariant: 'primary',
-    image: './assets/images/heritage-kitchen.jpg'
+    image: valadaImage
   },
   {
     id: 3,
-    name: 'Aura Sky Lounge & Eatery',
+    name: 'Varlaine Lounge',
     badge: 'New & Trending',
-    rating: '4.7',
-    reviewsCount: '128',
-    price: '$$$',
+    rating: '4.2',
+    reviewsCount: '1.7K',
+    price: '₦8,000',
     cuisine: 'Rooftop Lounge',
-    description: 'Upmarket mountain view lounge featuring craft cocktails.',
+    description: 'Boast a rooftop lounge with panoramic city views with craft cocktails.',
     buttonText: 'Book Table',
     buttonVariant: 'secondary',
-    image: './assets/images/aura-sky-lounge.jpg'
+    image: varlaineImage
   },
   {
     id: 4,
-    name: 'Highland Strawberry Cafe',
+    name: 'The Tin City Cafe',
     badge: 'Outdoor Garden',
-    rating: '4.9',
-    reviewsCount: '310',
-    price: '$$',
+    rating: '4.5',
+    reviewsCount: '462',
+    price: '₦3,500',
     cuisine: 'Cafe / Bakery',
-    description: 'Specializing in fresh local Jos strawberries and organic pastries.',
+    description: 'Best cafe in Nigeria from Experience. Pastries staright from oven mornings.',
     buttonText: 'Explore Menu',
     buttonVariant: 'outline',
-    image: './assets/images/strawberry-cafe.jpg'
+    image: tinCityCafeImage
   }
 ];
 
