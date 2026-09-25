@@ -15,11 +15,11 @@ export const Profile = () => {
 
   const saves = [
     {
-      image: "../images/Net Bar.jpg",
+      image: "/images/The net bar.avif",
       title: "The Net Bar"
     },
     {
-      image: "../images/plateau room.avif",
+      image: "/images/plateau room.avif",
       title: "Plateau Room"
     }
   ];
@@ -42,7 +42,7 @@ export const Profile = () => {
       name: "NaijaVibes",
       score: "12.4k",
       icon: "fa-solid fa-bolt-lightning",
-      image: "../images/Naija Vibes.avif",
+      image: "/images/Naija Vibes.avif",
       className: styles["rank-2"]
     },
     {
@@ -51,7 +51,7 @@ export const Profile = () => {
       name: "TinCityQ...",
       score: "15.8k",
       icon: "fa-solid fa-fire",
-      image: "../images/TinCityQ.avif",
+      image: "/images/TinCityQ.avif",
       className: styles["rank-1"]
     },
     {
@@ -60,7 +60,7 @@ export const Profile = () => {
       name: "Zion_Flow",
       score: "10.1k",
       icon: "fa-solid fa-water",
-      image: "../images/Zion Flow.avif",
+      image: "/images/Zion Flow.avif",
       className: styles["rank-3"]
     }
   ];
@@ -68,7 +68,7 @@ export const Profile = () => {
   const leaders = [
     {
       rank: "04",
-      image: "../images/StreetPulse.avif",
+      image: "/images/StreetPulse.avif",
       name: "StreetPulse",
       level: "LVL 42 KINETIC MASTER",
       score: "8,940",
@@ -77,7 +77,7 @@ export const Profile = () => {
     },
     {
       rank: "05",
-      image: "../images/John Doe.avif",
+      image: "/images/John Doe.avif",
       name: "John Doe",
       level: "LVL 42 URBAN EXPLORER",
       score: "2,450",
@@ -90,7 +90,7 @@ export const Profile = () => {
     <div className={styles["profile-container"]}>
       <Navbar title="JOS PULSE" />
       <ProfileHeader
-        avatarUrl="../images/John Doe.avif"
+        avatarUrl="/images/John Doe.avif"
         level={5}
         name="John Doe"
         subtext="Software Engineer"

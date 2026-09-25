@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/DiningStylesGrid.module.css';
-import barcardiImage from '../assets/images/Barcardi.jpg';
-import amoraImage from '../assets/images/Amora.jpg';
-import netCafeImage from '../assets/images/The net cafe.jpg';
-import grillsImage from '../assets/images/Grills.jpg';
+const barcardiImage = '/images/Barcardi.jpg';
+const amoraImage = '/images/Amora.jpg';
+const netCafeImage = '/images/The net cafe.jpg';
+const grillsImage = '/images/Grills.jpg';
 
 const defaultStyles = [
   {

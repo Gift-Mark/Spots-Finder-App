@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faMapMarkerAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/HeritageGrid.module.css';
-import josMuseumImage from '../assets/images/Jos Museum.jpg';
-import nokImage from '../assets/images/Nok.jpg';
-import riyomRockImage from '../assets/images/Riyom-Rock-2-768x513.jpg';
-import nzemBeromImage from '../assets/images/nzem berom.jpg';
-import motnaImage from '../assets/images/MOTNA.jpg';
+const josMuseumImage = '/images/Jos Museum.jpg';
+const nokImage = '/images/Nok.jpg';
+const riyomRockImage = '/images/Riyom-Rock-2-768x513.jpg';
+const nzemBeromImage = '/images/nzem berom.jpg';
+const motnaImage = '/images/MOTNA.jpg';
 
 // Mock/Default data matching the design screenshot
 const defaultItems = [

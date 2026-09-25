@@ -18,7 +18,7 @@ const defaultSpots = [
     reviewsCount: '182',
     price: '$$',
     location: 'GRA, Jos',
-    image: './assets/images/evergreen-garden.jpg',
+    image: '/images/garden bar.avif',
   },
   {
     id: 2,
@@ -29,7 +29,7 @@ const defaultSpots = [
     reviewsCount: '306',
     price: '$$$',
     location: 'Secretariat Junction',
-    image: './assets/images/pulse-lounge.jpg',
+    image: '/images/Net bar.avif',
   },
   {
     id: 3,
@@ -40,7 +40,7 @@ const defaultSpots = [
     reviewsCount: '94',
     price: '$$',
     location: 'Laminga Route',
-    image: './assets/images/hills-view-club.jpg',
+    image: '/images/Hills.avif',
   },
 ];
 

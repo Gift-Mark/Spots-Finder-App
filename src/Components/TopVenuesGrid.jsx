@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopsVenueGrid.module.css';
-import silkSuiteImage from '../assets/images/Silk Suite.jpg';
-import varlaineImage from '../assets/images/varlaine.jpg';
-import barcardiImage from '../assets/images/Barcardi.jpg';
-import hillStationImage from '../assets/images/Hill Station.jpg';
+const silkSuiteImage = '/images/Silk Suite.jpg';
+const varlaineImage = '/images/varlaine.jpg';
+const barcardiImage = '/images/Barcardi.jpg';
+const hillStationImage = '/images/Hill Station.jpg';
 
 const filterTabs = [
   'Popular Right Now',

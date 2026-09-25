@@ -2,7 +2,7 @@
   position: relative;
   width: 100%;
   min-height: 520px;
-  background-image: url('../assets/images/Southern fried.jpg');
+  background-image: url('/images/Southern fried.jpg');
   background-size: cover;
   background-position: center;
   display: flex;

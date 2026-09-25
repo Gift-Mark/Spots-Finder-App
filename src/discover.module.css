@@ -36,7 +36,7 @@
       rgba(15, 23, 42, 0.45),
       rgba(15, 23, 42, 0.75)
     ),
-    url("../src/assets/images/shere\ hills.jpg");
+    url("/images/shere hills.jpg");
   background-size: cover;
   background-position: center;
   color: #ffffff;
@@ -495,7 +495,7 @@
       rgba(15, 23, 42, 0.85),
       rgba(15, 23, 42, 0.4)
     ),
-    url("/images/golf-course.jpg");
+    url("/images/Golf Main view.webp");
   background-size: cover;
   background-position: center;
   border-radius: 20px;

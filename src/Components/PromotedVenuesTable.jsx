@@ -12,7 +12,7 @@ const listingsData = [
   {
     id: 1,
     name: 'Rayfield Resort & Spa',
-    image: './assets/images/rayfield-resort.jpg',
+    image: '/images/Rayfield Resort.jpg',
     category: 'Leisure',
     ownerEmail: 'admin@rayfield.com',
     plan: 'Premium Gold',
@@ -21,7 +21,7 @@ const listingsData = [
   {
     id: 2,
     name: 'Jos Museum Heritage Center',
-    image: './assets/images/jos-museum.jpg',
+    image: '/images/Jos Museum.jpg',
     category: 'Historical',
     ownerEmail: 'curator@josmuseum.ng',
     plan: 'Basic Free',
@@ -30,7 +30,7 @@ const listingsData = [
   {
     id: 3,
     name: 'The Cave Lounge',
-    image: './assets/images/cave-lounge.jpg',
+    image: '/images/Mees Palace.webp',
     category: 'Nightlife',
     ownerEmail: 'hello@cavelounge.com',
     plan: 'Standard',

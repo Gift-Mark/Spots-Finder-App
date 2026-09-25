@@ -41,6 +41,11 @@ export const Discover = () => {
   };
 
   const handleCategorySelect = (category) => {
+    if (category === "Golf") {
+      navigate("/golf");
+      return;
+    }
+
     if (category === "Nightlife") {
       navigate("/nightlife");
       return;

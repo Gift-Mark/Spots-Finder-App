@@ -7,7 +7,7 @@ export const places = [
     section: 'tourist_spots',
     rating: 4.9,
     reviewsCount: 84,
-    image: '../assets/images/Shere hills hike.jpg',
+    image: '/images/Shere hills hike.jpg',
     description: 'Standing at roughly 6,000 feet above sea level, this is the highest point in Plateau State and a premier destination for rock climbing and steep hiking. The terrain features undulating granite formations, caves, and challenging ridges.'
   },
   {
@@ -17,7 +17,7 @@ export const places = [
     section: 'tourist_spots',
     rating: '3.5',
     reviewsCount: '55',
-    image: '../assets/images/Gog and Magog.jpg',
+    image: '/images/Gog and Magog.jpg',
     description: 'Located near Jos North (starting around Tina Junction), these renowned twin rock formations offer panoramic views during organized community hikes.'
   },
   {
@@ -27,7 +27,7 @@ export const places = [
     section: 'tourist_spots',
     rating: '4.2',
     reviewsCount: '64',
-    image: '../assets/images/Riyom Rock.jpg',
+    image: '/images/Riyom Rock.jpg',
     description: 'A famous, highly photographed natural rock stack outside the city that serves as a staple for local day-hikes and scrambling.'
   },
   {
@@ -37,7 +37,7 @@ export const places = [
     section: 'tourist_spots',
     rating: '4.0',
     reviewsCount: '70',
-    image: '../assets/images/100 steps.jpg',
+    image: '/images/100 steps.jpg',
     description: 'Situated near the Jos Museum, this steep rock-hewn stairway is popular for quick fitness climbs, stamina training, and exercise.'
   },
   {
@@ -67,7 +67,7 @@ export const places = [
     section: 'trending',
     rating: 4.8,
     reviewsCount: 29,
-    image: '../assets/images/Bennie Purrie.jpg',
+    image: '/images/Bennie Purrie.jpg',
     description: 'A vibrant ecosystem of local engineers, fabricators, and custom car builders specializing in terrain-adapted vehicles and prototype sports cars.'
   },
   {
@@ -77,7 +77,7 @@ export const places = [
     section: 'trending',
     rating: 4.7,
     reviewsCount: 56,
-    image: '../assets/images/Tennis club.jpg',
+    image: '/images/Tennis club.jpg',
     description: 'Premier tennis facility featuring newly renovated, floodlit hard courts that host active local networks and vibrant night matches.'
   },
   {
@@ -87,7 +87,7 @@ export const places = [
     section: 'trending',
     rating: 4.5,
     reviewsCount: 22,
-    image: '../assets/images/recreation-hub.jpg',
+    image: '/images/recreation-hub.jpg',
     description: 'Premium indoor squash courts hosted within exclusive social clubs and private corporate hubs, offering high-intensity match play and coaching.'
   },
 
@@ -100,7 +100,7 @@ export const places = [
     month: 'MAY',
     day: '03',
     price: 'Free',
-    image: '../assets/images/nzem berom.jpg',
+    image: '/images/nzem berom.jpg',
     location: 'Rwang Pam Township Stadium'
   },
   {
@@ -111,7 +111,7 @@ export const places = [
     month: 'APR',
     day: '25',
     price: 'Free',
-    image: '../assets/images/Puus kaat.jpg',
+    image: '/images/Puus kaat.jpg',
     location: 'Mangu Amphitheatre'
   },
   {
@@ -122,7 +122,7 @@ export const places = [
     month: 'MAY',
     day: '10',
     price: 'Free',
-    image: '../assets/images/anaguta-fest.jpg',
+    image: '/images/anaguta-fest.png',
     location: 'Jos Polo Field'
   },
    {
@@ -133,7 +133,7 @@ export const places = [
     month: 'MAY',
     day: '03',
     price: 'Free',
-    image: '../assets/images/Tarok day.jpg',
+    image: '/images/Tarok day.jpg',
     location: 'Langtang Mini Stadium'
   },
   {
@@ -144,7 +144,7 @@ export const places = [
     month: 'APR',
     day: '26',
     price: 'Free',
-    image: '../assets/images/Pusdung festival.jpg',
+    image: '/images/Pusdung festival.jpg',
     location: 'Pankshin Mini Stadium'
   },
 
@@ -156,7 +156,7 @@ export const places = [
     section: 'tourist_spots',
     rating: 3.8,
     reviewsCount: 500,
-    image: '../assets/images/Jos Museum.jpg',
+    image: '/images/Jos Museum.jpg',
     description: 'Established in 1952, housing Nok terracotta heads and traditional architecture exhibits.'
   },
   {
@@ -166,7 +166,7 @@ export const places = [
     section: 'tourist_spots',
     rating: 4.1,
     reviewsCount: 320,
-    image: '../assets/images/MOTNA 2.jpg',
+    image: '/images/MOTNA 2.jpg',
     description: 'An open-air architectural museum featuring life-sized replicas of diverse indigenous Nigerian palaces and homesteads.'
   },
   {
@@ -176,7 +176,7 @@ export const places = [
     section: 'tourist_spots',
     rating: 4.3,
     reviewsCount: 180,
-    image: '../assets/images/leather works.jpg',
+    image: '/images/leather works.jpg',
     description: 'A historic artisanal village showcasing traditional, centuries-old manual leather tanning and craftsmanship.'
   },
   {
@@ -186,7 +186,7 @@ export const places = [
   section: 'tourist_spots',
   rating: 4.4,
   reviewsCount: 185,
-  image: '../assets/images/solomon-lar-park.jpg',
+  image: '/images/solomon lar.jpg',
   description: 'A serene urban green space featuring artificial lakes, recreational picnic grounds, and family entertainment amenities named after a legacy state governor.'
 },
 {
@@ -196,7 +196,7 @@ export const places = [
   section: 'tourist_spots',
   rating: 4.2,
   reviewsCount: 310,
-  image: '../assets/images/jos-wildlife-park.jpg',
+  image: '/images/wildlife park.jpg',
   description: 'One of Nigerias premier nature reserves, offering vast pine forests, scenic wildlife viewing, and a dedicated habitat conservation environment.'
 },
 {
@@ -206,7 +206,7 @@ export const places = [
   section: 'tourist_spots',
   rating: 4.9,
   reviewsCount: 34,
-  image: '../assets/images/nology-arts-pottery.jpg',
+  image: '/images/Jos Museum.jpg',
   description: 'A creative pottery and ceramics studio located within the Jos Museum, hosting interactive "Sip and Mould" sessions to preserve traditional clay craftsmanship.'
 }
 ];

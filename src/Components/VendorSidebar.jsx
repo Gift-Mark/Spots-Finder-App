@@ -29,7 +29,7 @@ export const VendorSidebar = ({ activeTab = 'Overview', onTabChange }) => {
       {/* Account Info */}
       <div className={styles.accountCard}>
         <img 
-          src="./assets/images/rayfield-golf-logo.jpg" 
+          src="/images/Rayfield Golf club.webp"
           alt="Rayfield Golf Club" 
           className={styles.accountAvatar}
         />

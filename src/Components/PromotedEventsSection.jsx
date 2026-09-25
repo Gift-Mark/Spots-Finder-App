@@ -2,9 +2,9 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/PromotedEventsSection.module.css';
-import nzemBeromImage from '../assets/images/nzem berom.jpg';
-import WaterwayResort from '../assets/images/Waterway Resort.avif';
-import tastyFingersImage from '../assets/images/Tasty Fingers.webp';
+const nzemBeromImage = '/images/nzem berom.jpg';
+const WaterwayResort = '/images/Waterway Resort.avif';
+const tastyFingersImage = '/images/Tasty Fingers.webp';
 const defaultEvents = [
   {
     id: 1,

@@ -10,7 +10,7 @@ export const FeaturedVenue = ({ venue }) => {
     priceRange: "$$$",
     description: "The premier destination for luxury nightlife in Rayfield. Featuring international DJs, expertly crafted cocktails, and exclusive VIP experiences.",
     tags: ["Premium Club", "Rayfield"],
-    image: "./assets/images/net-club.jpg"
+    image: "/images/The net cafe.jpg"
   };
 
   const data = venue || defaultVenue;

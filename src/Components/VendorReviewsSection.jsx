@@ -9,7 +9,7 @@ const reviewsData = [
     author: 'Nnenna Okonkwo',
     timeAgo: '2 days ago',
     rating: 5,
-    avatar: './assets/images/user-nnenna.jpg',
+    avatar: '/images/Alex Rivera.avif',
     comment:
       'Absolutely stunning greens. The weather in Jos makes playing a full 18 holes a breeze. Highly recommend the clubhouse restaurant afterward!',
   },
@@ -18,7 +18,7 @@ const reviewsData = [
     author: 'David M.',
     timeAgo: '5 days ago',
     rating: 4,
-    avatar: './assets/images/user-david.jpg',
+    avatar: '/images/Jordan K.avif',
     comment:
       'Great event venue for the tournament. Customer service at the registration desk was smooth, though parking got a bit tight around 3 PM.',
   },

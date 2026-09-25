@@ -1,9 +1,9 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faChevronRight, faUmbrellaBeach, faWater, faLandmark } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopTouristSpots.module.css';
-import rayfieldResortImage from '../assets/images/Rayfield Resort.jpg';
-import kurraFallsImage from '../assets/images/Kurra-Falls.jpg';
-import josMuseumImage from '../assets/images/Jos Museum.jpg';
+const rayfieldResortImage = '/images/Rayfield Resort.jpg';
+const kurraFallsImage = '/images/Kurra-Falls.jpg';
+const josMuseumImage = '/images/Jos Museum.jpg';
 
 const mainSpot = {
   id: 1,

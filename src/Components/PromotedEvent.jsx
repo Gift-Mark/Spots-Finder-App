@@ -16,7 +16,7 @@ export const PromotedEvent = ({ event }) => {
     description: "Experience three days of electrifying performances, local artisanal markets, and traditional culinary showcases set against the breathtaking backdrop...",
     location: "Shere Hills Arena, Jos",
     price: "Tickets from ₦5,000",
-    image: "./assets/images/promoted-festival.jpg"
+    image: "/images/anaguta-fest.png"
   };
 
   const data = event || defaultEvent;

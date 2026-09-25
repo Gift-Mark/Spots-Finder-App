@@ -19,7 +19,7 @@ export const FlaggedContentQueue = ({ onGoToModeration }) => {
         <div className={styles.itemHeader}>
           <div className={styles.userGroup}>
             <img
-              src="./assets/images/user-flagged.jpg"
+              src="/images/John Doe.avif"
               alt="Reported User"
               className={styles.userAvatar}
             />

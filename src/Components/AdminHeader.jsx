@@ -29,7 +29,7 @@ export const AdminHeader = ({ onSearch }) => {
 
         {/* Super Admin Profile Avatar */}
         <div className={styles.profileAvatar}>
-          <img src="./assets/images/super-admin-avatar.jpg" alt="Super Admin Profile" />
+          <img src="/images/John Doe.avif" alt="Super Admin Profile" />
         </div>
       </div>
     </header>

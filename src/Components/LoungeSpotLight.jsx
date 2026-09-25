@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faMusic, faGlassMartiniAlt, faTag, faDollarSign } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/LoungeSpotlight.module.css';
-import meesPalaceImage from '../assets/images/Mees Palace.webp';
+const meesPalaceImage = '/images/Mees Palace.webp';
 
 export const LoungeSpotlight = ({ spotlight }) => {
   const defaultSpotlight = {

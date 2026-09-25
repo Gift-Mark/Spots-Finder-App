@@ -1,13 +1,13 @@
 import Header from './Components/headerNav';
 import Footer from './Components/Footer';
 import styles from './CSS/Golf.module.css';
-import golfMainView from './assets/images/Golf Main view.webp';
-import ballOnTee from './assets/images/Ball on Tee.webp';
-import golfInterior from './assets/images/Golf interior.jpg';
-import SugarSalfCafeImage from './assets/images/Sugar Salt Cafe.jpg';
-import PeaceIslandImage from './assets/images/Peace Island lake.jpg';
-import TencommandmentsImage from './assets/images/Ten commandments.jpg';
-import StopRestaurantImage from './assets/images/Stop Restaurant.webp';
+const golfMainView = '/images/Golf Main view.webp';
+const ballOnTee = '/images/Ball on Tee.webp';
+const golfInterior = '/images/Golf interior.jpg';
+const SugarSalfCafeImage = '/images/Sugar Salt Cafe.jpg';
+const PeaceIslandImage = '/images/Peace Island lake.jpg';
+const TencommandmentsImage = '/images/Ten commandments.jpg';
+const StopRestaurantImage = '/images/Stop Restaurant.webp';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 

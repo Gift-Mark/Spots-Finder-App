@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/FeaturedCulinarySpotlight.module.css';
-import crispanImage from '../assets/images/Crispan.jpg';
+const crispanImage = '/images/Crispan.jpg';
 
 export const FeaturedCulinarySpotlight = ({ spotlight }) => {
   const defaultSpotlight = {

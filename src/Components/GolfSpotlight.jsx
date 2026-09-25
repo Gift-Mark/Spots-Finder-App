@@ -3,7 +3,7 @@ export const GolfSpotlight = () => {
   return(
     <section className={styles.contentSection}>
       <div className={styles.golfBanner}>
-        <img src="/assets/images/golf_banner.jpg" alt="Golf Banner" className={styles.golfBannerImage} />
+        <img src="/images/Golf Main view.webp" alt="Golf Banner" className={styles.golfBannerImage} />
         <div className={styles.golfOverlay}>
           <span className={styles.spotlightLabel}>Heritage Spotlight</span>
 

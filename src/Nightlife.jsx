@@ -21,7 +21,7 @@ const ALL_SPOTS = [
     reviewsCount: '182',
     price: '$$',
     location: 'GRA, Jos',
-    image: './assets/images/evergreen-garden.jpg',
+    image: '/images/garden bar.avif',
   },
   {
     id: 2,
@@ -33,7 +33,7 @@ const ALL_SPOTS = [
     reviewsCount: '306',
     price: '$$$',
     location: 'Secretariat Junction',
-    image: './assets/images/pulse-lounge.jpg',
+    image: '/images/Net bar.avif',
   },
   {
     id: 3,
@@ -45,7 +45,7 @@ const ALL_SPOTS = [
     reviewsCount: '94',
     price: '$$',
     location: 'Laminga Route',
-    image: './assets/images/hills-view-club.jpg',
+    image: '/images/Hills.avif',
   },
   {
     id: 4,
@@ -57,7 +57,7 @@ const ALL_SPOTS = [
     reviewsCount: '120',
     price: '$',
     location: 'Ahmadu Bello Way',
-    image: './assets/images/late-suya.jpg',
+    image: '/images/Sharwarma.jpg',
   },
 ];
 

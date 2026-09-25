@@ -8,7 +8,7 @@ import {
   faMasksTheater 
 } from '@fortawesome/free-solid-svg-icons';
 import { Footer } from './Components/Footer';
-import heroImage from './assets/images/shere hills.jpg';
+const heroImage = '/images/shere hills.jpg';
 
 export const CulturePage = () => {
   const culturePills = [

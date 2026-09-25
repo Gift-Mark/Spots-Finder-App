@@ -6,7 +6,7 @@ const defaultEvents = [
   {
     id: 1,
     category: 'Golf & Sports',
-    image: './assets/images/golf-event.jpg',
+    image: '/images/Ball on Tee.webp',
     dateText: 'This Saturday, 7:00 AM',
     title: 'Rayfield Annual Classic Tournament',
     location: 'Rayfield Golf Club',
@@ -14,7 +14,7 @@ const defaultEvents = [
   {
     id: 2,
     category: 'Dining',
-    image: './assets/images/dining-event.jpg',
+    image: '/images/Southern fried.jpg',
     dateText: 'Next Friday, 6:30 PM',
     title: 'Plateau Culinary Heritage Dinner',
     location: 'The View Restaurant',
@@ -22,7 +22,7 @@ const defaultEvents = [
   {
     id: 3,
     category: 'Adventure',
-    image: './assets/images/adventure-event.jpg',
+    image: '/images/Shere hills hike.jpg',
     dateText: 'Dec 5, 8:00 AM',
     title: 'Wase Rock Expedition Challenge',
     location: 'Wase Town Basecamp',

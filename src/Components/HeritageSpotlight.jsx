@@ -1,5 +1,5 @@
 import styles from '../CSS/HeritageSpotlight.module.css';
-import heritageImage from '../assets/images/Rayfield Golf club.webp';
+const heritageImage = '/images/Rayfield Golf club.webp';
 
 export const HeritageSpotlight = ({ onBookTeeTime, onLearnMore }) => {
   return (

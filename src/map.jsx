@@ -56,7 +56,7 @@ export default function Map() {
                 <Popup>
                   <div style={{ minWidth: "180px", textAlign: "left" }}>
                     <img
-                      src={place.image || "/images/placeholder.jpg"}
+                      src={place.image || "/images/Jos Museum.jpg"}
                       alt={place.title}
                       style={{
                         width: "100%",

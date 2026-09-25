@@ -1,8 +1,8 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSeedling, faCarrot, faAppleWhole } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/HighlandFarmAdvantage.module.css';
-import tevaImage from '../assets/images/Teva.jpg';
-import farmChefImage from '../assets/images/image_386a62b7.jpg';
+const tevaImage = '/images/Teva.jpg';
+const farmChefImage = '/images/image_386a62b7.jpg';
 
 const features = [
   {

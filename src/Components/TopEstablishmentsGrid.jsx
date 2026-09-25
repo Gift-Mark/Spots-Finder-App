@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar} from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopEstablishedGrid.module.css';
-import barcardiImage from '../assets/images/Barcardi.jpg';
-import valadaImage from '../assets/images/Valada.jpg';
-import varlaineImage from '../assets/images/varlaine.jpg';
-import tinCityCafeImage from '../assets/images/Tin City cafe.jpg';
+const barcardiImage = '/images/Barcardi.jpg';
+const valadaImage = '/images/Valada.jpg';
+const varlaineImage = '/images/varlaine.jpg';
+const tinCityCafeImage = '/images/Tin City cafe.jpg';
 
 const filterTabs = ['Popular', 'Top Rated', 'Highest Reviewed'];
 

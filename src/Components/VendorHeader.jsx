@@ -33,7 +33,7 @@ export const VendorHeader = ({ onSearch }) => {
 
         {/* User Profile Avatar */}
         <div className={styles.profileAvatar}>
-          <img src="./assets/images/rayfield-golf-logo.jpg" alt="Rayfield Golf Club Manager" />
+          <img src="/images/Rayfield Golf club.webp" alt="Rayfield Golf Club Manager" />
         </div>
       </div>
     </header>
