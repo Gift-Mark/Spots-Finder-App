@@ -1,335 +1,212 @@
-const places = [
+export const places = [
+  // SPORTS
   {
-    id: 1,
-    section: "vibe",
-    slug: "shere-hills-sunset-party",
-
-    title: "Shere Hills Sunset Party",
-
-    image: "../images/Shere hills party 1.jpg",
-
-    location: "Lamingo, Jos",
-
-    latitude: 9.9428,
-    longitude: 8.9304,
-
-    address: "Shere Hills Resort, Lamingo, Jos",
-
-    category: ["Party", "Outdoor", "Live Music"],
-
-    subtitle: "This Saturday",
-
+    id: 'sp-1',
+    title: 'Shere Hills Rock Climbing & Trail Trek',
+    category: ['Sports', 'Hiking', 'Adventure'],
+    section: 'tourist_spots',
+    rating: 4.9,
+    reviewsCount: 84,
+    image: '../assets/images/Shere hills hike.jpg',
+    description: 'Standing at roughly 6,000 feet above sea level, this is the highest point in Plateau State and a premier destination for rock climbing and steep hiking. The terrain features undulating granite formations, caves, and challenging ridges.'
+  },
+  {
+    id: 'sp-2',
+    title: 'Gog and Magog',
+    category: ['Sports', 'Hiking', 'Adventure'],
+    section: 'tourist_spots',
+    rating: '3.5',
+    reviewsCount: '55',
+    image: '../assets/images/Gog and Magog.jpg',
+    description: 'Located near Jos North (starting around Tina Junction), these renowned twin rock formations offer panoramic views during organized community hikes.'
+  },
+  {
+    id: 'sp-3',
+    title: 'Riyom Rock',
+    category: ['Sports', 'Hiking', 'Adventure'],
+    section: 'tourist_spots',
+    rating: '4.2',
+    reviewsCount: '64',
+    image: '../assets/images/Riyom Rock.jpg',
+    description: 'A famous, highly photographed natural rock stack outside the city that serves as a staple for local day-hikes and scrambling.'
+  },
+  {
+    id: 'sp-4',
+    title: 'Aiserary 100 Steps',
+    category: ['Sports', 'Hiking', 'Adventure'],
+    section: 'tourist_spots',
+    rating: '4.0',
+    reviewsCount: '70',
+    image: '../assets/images/100 steps.jpg',
+    description: 'Situated near the Jos Museum, this steep rock-hewn stairway is popular for quick fitness climbs, stamina training, and exercise.'
+  },
+  {
+    id: 'sp-5',
+    title: 'Jos Polo Club',
+    category: ['Sports', 'Polo', 'Equestrian'],
+    section: 'trending',
+    rating: 4.6,
+    reviewsCount: 42,
+    image: '/images/jos polo.jpg',
+    description: 'Historic polo ground hosting annual national tournaments and horseback riding.'
+  },
+  {
+    id: 'sp-6',
+    title: 'Natural Enduro Tracks',
+    category: ['Sports', 'Motorsport', 'Motoring'],
+    section: 'trending',
+    rating: 4.6,
+    reviewsCount: 42,
+    image: '/images/Enduro Tracks.jpg',
+    description: 'Rugged backcountry trails featuring a technical mix of loose gravel, mud pits, and steep granite inclines ideal for dirt biking and 4x4 off-roading.'
+  },
+  {
+    id: 'sp-7',
+    title: 'Local Car Culture & Innovation',
+    category: ['Sports', 'Motorsport', 'Motoring'],
+    section: 'trending',
     rating: 4.8,
-
-    reviews: 128,
-
-    percent: "96%",
-
-    open: "4:00 PM",
-
-    close: "11:30 PM",
-
-    phone: "+2348011111111",
-
-    description:
-      "Experience one of the most beautiful sunset parties in Jos with live DJs, food, drinks, and breathtaking views of Shere Hills.",
-
-    gallery: [
-      "../images/Shere hills party 1.jpg",
-      "../images/Crispan Suites.avif",
-      "../images/shere hills party 2.jpg",
-    ],
-
-    events: [
-      {
-        title: "Sunset Party",
-        date: "26 July",
-        time: "5:00 PM",
-      },
-      {
-        title: "Live DJ Session",
-        date: "2 August",
-        time: "7:00 PM",
-      },
-    ],
+    reviewsCount: 29,
+    image: '../assets/images/Bennie Purrie.jpg',
+    description: 'A vibrant ecosystem of local engineers, fabricators, and custom car builders specializing in terrain-adapted vehicles and prototype sports cars.'
   },
-
   {
-    id: 2,
-    section: "trending",
-    slug: "rayfield-gardens",
-
-    title: "Rayfield Gardens",
-
-    image: "../images/Rayfield gardens.avif",
-
-    location: "Rayfield, Jos",
-
-    latitude: 9.8406,
-    longitude: 8.8995,
-
-    address: "Rayfield Road, Jos",
-
-    category: ["Garden", "Lounge", "Outdoor"],
-
-    badge: "LIVE VIBE",
-
-    badgeClass: "badge-live",
-
-    wrapperClass: "trending-card",
-
-    rating: 4.9,
-
-    reviews: 248,
-
-    percent: "98%",
-
-    open: "6:00 PM",
-
-    close: "2:00 AM",
-
-    phone: "+2348022222222",
-
-    description:
-      "One of the most popular nightlife venues in Jos with outdoor seating, DJs and weekend events.",
-
-    gallery: [
-      "../images/garden bar.avif",
-      "../images/rayfield water.jpg",
-      "../images/rayfield bar.jpg",
-    ],
-
-    events: [
-      {
-        title: "Friday Vibes",
-        date: "25 July",
-        time: "8:00 PM",
-      },
-      {
-        title: "DJ Neptune Live",
-        date: "2 August",
-        time: "9:00 PM",
-      },
-    ],
-  },
-
-  {
-    id: 3,
-    section: "trending",
-    slug: "plateau-room",
-
-    title: "Plateau Room",
-
-    image: "../images/plateau room.avif",
-
-    location: "Anglo Jos",
-
-    latitude: 9.9183,
-    longitude: 8.8892,
-
-    address: "Anglo Jos, Plateau State",
-
-    category: ["Lounge", "Cocktails", "Indoor"],
-
-    badge: "CHILL",
-
-    badgeClass: "badge-chill",
-
-    wrapperClass: "trending-card-plateau",
-
+    id: 'sp-8',
+    title: 'Rayfield Tennis Club',
+    category: ['Sports', 'Racquet Sports', 'Recreation'],
+    section: 'trending',
     rating: 4.7,
-
-    reviews: 184,
-
-    percent: "93%",
-
-    open: "5:00 PM",
-
-    close: "1:00 AM",
-
-    phone: "+2348033333333",
-
-    description:
-      "A relaxed premium lounge offering cocktails, music and a comfortable atmosphere for friends and families.",
-
-    gallery: [
-      "../images/plateau room.avif",
-      "../images/plateu eatery.jpg",
-      "../images/plateau eatery.avif",
-    ],
-
-    events: [
-      {
-        title: "Cocktail Night",
-        date: "31 July",
-        time: "7:00 PM",
-      },
-    ],
-  },
-
-  {
-    id: 4,
-    section: "recommended",
-    slug: "the-rock-lounge",
-
-    title: "The Rock Lounge",
-
-    image: "../images/Net Bar.jpg",
-
-    location: "Rayfield, Jos",
-
-    latitude: 9.8431,
-    longitude: 8.8967,
-
-    address: "Rayfield, Jos",
-
-    category: ["Music", "Grill", "Lounge"],
-
-    rating: 4.9,
-
-    reviews: 321,
-
-    percent: "98%",
-
-    open: "5:00 PM",
-
-    close: "2:00 AM",
-
-    phone: "+2348044444444",
-
-    description:
-      "A lively venue famous for grilled meals, live music and an energetic nightlife experience.",
-
-    badgeClass: "percentage-badge-cyan",
-
-    gallery: [
-      "../images/Net Bar.jpg",
-      "../images/Crispan Suites.avif",
-      "../images/Grilled Meat.jpg",
-    ],
-
-    events: [
-      {
-        title: "Grill & Groove",
-        date: "Every Friday",
-        time: "7:30 PM",
-      },
-    ],
-  },
-
-  {
-    id: 5,
-    section: "recommended",
-    slug: "terminus-suya-hub",
-
-    title: "Terminus Suya Hub",
-
-    image: "../images/Terminus Food Hub.jpg",
-
-    location: "Terminus, Jos",
-
-    latitude: 9.9287,
-    longitude: 8.8914,
-
-    address: "Terminus Roundabout, Jos",
-
-    category: ["Dining", "Local", "Suya"],
-
-    rating: 4.7,
-
-    reviews: 197,
-
-    percent: "85%",
-
-    open: "12:00 PM",
-
-    close: "12:00 AM",
-
-    phone: "+2348055555555",
-
-    description:
-      "Popular local food destination serving freshly grilled suya, barbecue and traditional Nigerian dishes.",
-
-    badgeClass: "percentage-badge-purple",
-
-    showMapButton: true,
-
-    gallery: [
-      "../images/Terminus Food Hub.jpg",
-      "../images/Grilled Meat.jpg",
-      "../images/Suya Festival.jpg",
-    ],
-
-    events: [
-      {
-        title: "Suya Festival",
-        date: "10 August",
-        time: "6:00 PM",
-      },
-    ],
+    reviewsCount: 56,
+    image: '../assets/images/Tennis club.jpg',
+    description: 'Premier tennis facility featuring newly renovated, floodlit hard courts that host active local networks and vibrant night matches.'
   },
   {
-    id: 6,
-    section: "recommended",
-    slug: "chillers-roof-top-bar",
-
-    title: "Chillers Roof Top Bar",
-
-    image:
-      "../images/Chillers Roof Top.avif",
-
-    location: "Chillers, Jos",
-
-    latitude: 9.8965,
-    longitude: 8.8583,
-
-    address: "Chillers Junction, Jos",
-
-    category: ["Bar", "RoofTop", "Restaurant"],
-
-    rating: 4.9,
-
-    reviews: 250,
-
-    percent: "95%",
-
-    open: "6:00 PM",
-
-    close: "12:00 AM",
-
-    phone: "+234806666666",
-
-    description:
-      "Perched above the city, this rooftop lounge combines elegant dining, premium cocktails, and stunning sunset views. It's the ideal spot for date nights, celebrations, or simply unwinding under the stars.",
-
-    badgeClass: "percentage-badge-cyan",
-
-    showMapButton: true,
-
-    gallery: [
-      "../images/plateau room.avif",
-      "../images/Chillers special.avif",
-      "../images/Chillers mocktail.avif",
-    ],
-
-    events: [
-      {
-        title: "Rooftop Sunset Party",
-        date: "15 August",
-        time: "6:00 PM",
-      },
-      {
-        title: "DJ Vibes Night",
-        date: "22 August",
-        time: "8:00 PM",
-      },
-      {
-        title: "Cocktail & Jazz Evening",
-        date: "29 August",
-        time: "7:00 PM",
-      },
-    ],
+    id: 'sp-9',
+    title: 'Private Recreation Hubs (Squash)',
+    category: ['Sports', 'Racquet Sports', 'Recreation'],
+    section: 'trending',
+    rating: 4.5,
+    reviewsCount: 22,
+    image: '../assets/images/recreation-hub.jpg',
+    description: 'Premium indoor squash courts hosted within exclusive social clubs and private corporate hubs, offering high-intensity match play and coaching.'
   },
+
+  // FESTIVALS
+  {
+    id: 'fest-1',
+    title: 'Nzem Berom Cultural Festival',
+    category: ['Festivals', 'Culture'],
+    section: 'events',
+    month: 'MAY',
+    day: '03',
+    price: 'Free',
+    image: '../assets/images/nzem berom.jpg',
+    location: 'Rwang Pam Township Stadium'
+  },
+  {
+    id: 'fest-2',
+    title: 'Puus Kaat Cultural Festival',
+    category: ['Festivals', 'Heritage'],
+    section: 'events',
+    month: 'APR',
+    day: '25',
+    price: 'Free',
+    image: '../assets/images/Puus kaat.jpg',
+    location: 'Mangu Amphitheatre'
+  },
+  {
+    id: 'fest-3',
+    title: 'Ishokori-Anaguta Cultural Festival',
+    category: ['Festivals', 'Heritage'],
+    section: 'events',
+    month: 'MAY',
+    day: '10',
+    price: 'Free',
+    image: '../assets/images/anaguta-fest.jpg',
+    location: 'Jos Polo Field'
+  },
+   {
+    id: 'fest-4',
+    title: "I'lum O'Tarok (Tarok Cultural Day)",
+    category: ['Festivals', 'Heritage'],
+    section: 'events',
+    month: 'MAY',
+    day: '03',
+    price: 'Free',
+    image: '../assets/images/Tarok day.jpg',
+    location: 'Langtang Mini Stadium'
+  },
+  {
+    id: 'fest-5',
+    title: 'Puus Dung Cultural Festival',
+    category: ['Festivals', 'Heritage'],
+    section: 'events',
+    month: 'APR',
+    day: '26',
+    price: 'Free',
+    image: '../assets/images/Pusdung festival.jpg',
+    location: 'Pankshin Mini Stadium'
+  },
+
+  // CULTURAL LANDMARKS
+  {
+    id: 'lm-1',
+    title: 'Jos Museum & Prehistoric Pottery',
+    category: ['Cultural Landmarks', 'Heritage'],
+    section: 'tourist_spots',
+    rating: 3.8,
+    reviewsCount: 500,
+    image: '../assets/images/Jos Museum.jpg',
+    description: 'Established in 1952, housing Nok terracotta heads and traditional architecture exhibits.'
+  },
+  {
+    id: 'lm-2',
+    title: 'Museum of Nigerian Traditional Architecture (MOTNA)',
+    category: ['Cultural Landmarks', 'Heritage'],
+    section: 'tourist_spots',
+    rating: 4.1,
+    reviewsCount: 320,
+    image: '../assets/images/MOTNA 2.jpg',
+    description: 'An open-air architectural museum featuring life-sized replicas of diverse indigenous Nigerian palaces and homesteads.'
+  },
+  {
+    id: 'lm-3',
+    title: 'Naraguta Leather Works',
+    category: ['Cultural Landmarks', 'Heritage'],
+    section: 'tourist_spots',
+    rating: 4.3,
+    reviewsCount: 180,
+    image: '../assets/images/leather works.jpg',
+    description: 'A historic artisanal village showcasing traditional, centuries-old manual leather tanning and craftsmanship.'
+  },
+  {
+  id: 'lm-4',
+  title: 'Solomon Lar Amusement Park',
+  category: ['Cultural Landmarks', 'Recreation'],
+  section: 'tourist_spots',
+  rating: 4.4,
+  reviewsCount: 185,
+  image: '../assets/images/solomon-lar-park.jpg',
+  description: 'A serene urban green space featuring artificial lakes, recreational picnic grounds, and family entertainment amenities named after a legacy state governor.'
+},
+{
+  id: 'lm-5',
+  title: 'Jos Wildlife Park',
+  category: ['Cultural Landmarks', 'Nature & Wildlife'],
+  section: 'tourist_spots',
+  rating: 4.2,
+  reviewsCount: 310,
+  image: '../assets/images/jos-wildlife-park.jpg',
+  description: 'One of Nigerias premier nature reserves, offering vast pine forests, scenic wildlife viewing, and a dedicated habitat conservation environment.'
+},
+{
+  id: 'lm-6',
+  title: 'Nology Arts Impression',
+  category: ['Artisanal Spaces', 'Heritage', 'Arts'],
+  section: 'tourist_spots',
+  rating: 4.9,
+  reviewsCount: 34,
+  image: '../assets/images/nology-arts-pottery.jpg',
+  description: 'A creative pottery and ceramics studio located within the Jos Museum, hosting interactive "Sip and Mould" sessions to preserve traditional clay craftsmanship.'
+}
 ];
-
-export default places;

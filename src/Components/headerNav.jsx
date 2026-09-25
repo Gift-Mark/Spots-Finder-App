@@ -1,44 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faEllipsisVertical} from '@fortawesome/free-solid-svg-icons';
+import { Link, useLocation } from 'react-router-dom';
 import '../CSS/Header.css';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const navigate = useNavigate();
-  const dropdownRef = useRef(null);
 
-  // Primary Desktop Categories
+  // Updated navigation categories matching the UI
   const navLinks = [
     { name: 'Explore', path: '/explore' },
     { name: 'Culture & Heritage', path: '/culture' },
-    { name: 'Golf & Sports', path: '/golf' },
-    { name: 'Restaurants & Diners', path: '/dining' },
-    { name: 'Lounges & Bars', path: '/lounges' },
+    { name: 'Sports', path: '/sports' }, // Changed from Golf & Sports
+    { name: 'Dining', path: '/dining' },
     { name: 'Events', path: '/events' },
   ];
 
-  //Close dropdown when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    setIsMenuOpen(false);
-    navigate('/login');
-  };
   return (
     <header className="jp-header">
       <div className="jp-header-container">
@@ -50,8 +24,8 @@ const Header = () => {
           </span>
         </Link>
 
-        {/* Desktop Navigation Bar */}
-        <nav>
+        {/* Navigation Bar */}
+        <nav className="jp-nav">
           <ul className="jp-nav-menu">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
@@ -69,54 +43,14 @@ const Header = () => {
           </ul>
         </nav>
 
-        {/* Right Action Controls */}
-        <div className="jp-header-actions" ref={dropdownRef}>
-           <button
-            type="button"
-            className={`jp-menu-dots-btn ${isMenuOpen ? 'active' : ''}`}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle user navigation menu"
-            aria-expanded={isMenuOpen}
-          >
-            <FontAwesomeIcon icon={faEllipsisVertical} />
-          </button>
-
-          {/* Action Dropdown Menu */}
-          {isMenuOpen && (
-            <div className="jp-dropdown-menu">
-              <Link
-                to="/login"
-                className="jp-dropdown-item jp-dropdown-signin"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </Link>
-
-              <Link
-                to="/"
-                className="jp-dropdown-item jp-dropdown-guest"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Continue as Guest
-              </Link>
-
-              <Link
-                to="/register"
-                className="jp-dropdown-item jp-dropdown-join"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Join
-              </Link>
-
-              <button
-                type="button"
-                className="jp-dropdown-item jp-dropdown-logout"
-                onClick={handleLogout}
-              >
-                Log Out
-              </button>
-            </div>
-          )}
+        {/* Direct Action Buttons matching UI (Register & Login) */}
+        <div className="jp-header-actions">
+          <Link to="/register" className="jp-action-link">
+            Register
+          </Link>
+          <Link to="/login" className="jp-btn-login">
+            Login
+          </Link>
         </div>
 
       </div>

@@ -14,10 +14,11 @@ import TopTouristSpots from "./Components/TopTouristSpots.jsx";
 import PromotedEventsSection from "./Components/PromotedEventsSection.jsx";
 import HeritageSpotlight from "./Components/HeritageSpotlight.jsx";
 import Footer from "./Components/Footer.jsx";
-import places from "../server/data/places.js";
+import { places } from "../server/data/places.js";
 import { filterPlaces } from "./utils/filterPlaces";
 import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
+import JosPulseAI from "./Components/JosPulseAI.jsx"
 
 export const Discover = () => {
   const navigate = useNavigate();
@@ -100,6 +101,9 @@ export const Discover = () => {
             alert("Navigating to Rayfield Golf Club details...")
           }
         />
+
+        {/* AI */}
+        <JosPulseAI />
       </main>
 
       {/* 4. Footer */}

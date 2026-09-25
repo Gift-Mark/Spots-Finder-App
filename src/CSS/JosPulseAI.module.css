@@ -1,0 +1,121 @@
+/* JosPulseAI.module.css */
+.chatWrapper {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+}
+
+.floatingBtn {
+  background-color: #f97316;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.floatingBtn:hover {
+  transform: translateY(-2px);
+}
+
+.chatBox {
+  width: 340px;
+  height: 420px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.chatHeader {
+  background-color: #0f172a;
+  color: #ffffff;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.messagesArea {
+  flex: 1;
+  padding: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: #f8fafc;
+}
+
+.aiMsg {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  border-radius: 12px 12px 12px 2px;
+  font-size: 12px;
+  color: #0f172a;
+  line-height: 1.4;
+  max-width: 85%;
+}
+
+.userMsg {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 10px 12px;
+  border-radius: 12px 12px 2px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+  align-self: flex-end;
+  max-width: 85%;
+}
+
+.inputArea {
+  display: flex;
+  padding: 10px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.inputArea input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  outline: none;
+}
+
+.inputArea button {
+  background-color: #f97316;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-left: 6px;
+  cursor: pointer;
+}
