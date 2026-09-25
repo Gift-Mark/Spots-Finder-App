@@ -5,7 +5,7 @@ import L from "leaflet";
 
 import Navbar from "./Components/NavBar";
 import BottomNav from "./Components/BottomNav";
-import places from "../server/data/places";
+import places from "../backend/data/places";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
