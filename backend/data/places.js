@@ -1,4 +1,4 @@
-export const places = [
+const places = [
   // SPORTS
   {
     id: 'sp-1',
@@ -210,3 +210,5 @@ export const places = [
   description: 'A creative pottery and ceramics studio located within the Jos Museum, hosting interactive "Sip and Mould" sessions to preserve traditional clay craftsmanship.'
 }
 ];
+
+module.exports = { places };

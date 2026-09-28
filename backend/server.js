@@ -11,9 +11,10 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/places', require('./routes/placeRoutes'));
+app.use('/api/places', require('./routes/placeRouter'));
 app.use('/api/behavior', require('./routes/behaviorRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/subscribe', require('./routes/subscriberRoutes'));

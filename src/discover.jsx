@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   faGolfBallTee,
@@ -14,16 +14,29 @@ import TopTouristSpots from "./Components/TopTouristSpots.jsx";
 import PromotedEventsSection from "./Components/PromotedEventsSection.jsx";
 import HeritageSpotlight from "./Components/HeritageSpotlight.jsx";
 import Footer from "./Components/Footer.jsx";
-import { places } from "../backend/data/places.js";
-import { filterPlaces } from "./utils/filterPlaces";
 import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
-import JosPulseAI from "./Components/JosPulseAI.jsx"
+import JosPulseAI from "./Components/JosPulseAI.jsx";
+
+// API Services
+import { fetchPlaces, logUserBehavior } from "../src/api/client.js";
 
 export const Discover = () => {
   const navigate = useNavigate();
+  const [places, setPlaces] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const [loading, setLoading] = useState(false);
+
+  // Maintain persistent user session for behavioral logs
+  const [sessionId] = useState(() => {
+    let id = localStorage.getItem("jos_session_id");
+    if (!id) {
+      id = `sess_${Math.random().toString(36).substring(2, 11)}`;
+      localStorage.setItem("jos_session_id", id);
+    }
+    return id;
+  });
 
   // Reusable Hero Pills Configuration
   const discoverPills = [
@@ -34,6 +47,38 @@ export const Discover = () => {
     { id: "Cultural Landmarks", label: "Cultural Landmarks", icon: faLandmark },
   ];
 
+  // Fetch Places from Express API with Debounce
+  useEffect(() => {
+    const loadPlacesData = async () => {
+      setLoading(true);
+      try {
+        const queryParams = {};
+        if (searchQuery.trim()) queryParams.search = searchQuery;
+        if (activeCategory !== "all" && activeCategory !== "All") {
+          queryParams.category = activeCategory;
+        }
+
+        const response = await fetchPlaces(queryParams);
+        setPlaces(response.data || []);
+
+        // Log search event if user typed a query
+        if (searchQuery.trim()) {
+          logUserBehavior(sessionId, "SEARCH", { query: searchQuery });
+        }
+      } catch (err) {
+        console.error("Failed to load discover places:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      loadPlacesData();
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, activeCategory, sessionId]);
+
   // Hero Search and Pill Event Handlers
   const handleSearch = (query, category) => {
     setSearchQuery(query);
@@ -41,6 +86,8 @@ export const Discover = () => {
   };
 
   const handleCategorySelect = (category) => {
+    logUserBehavior(sessionId, "CATEGORY_CLICK", { category });
+
     if (category === "Golf") {
       navigate("/golf");
       return;
@@ -54,21 +101,13 @@ export const Discover = () => {
     setActiveCategory(category);
   };
 
-  // Filter Data Logic
-  const searchedPlaces = filterPlaces(places, searchQuery);
-
-  const categoryFilteredPlaces =
-    activeCategory === "all" || activeCategory === "All"
-      ? searchedPlaces
-      : searchedPlaces.filter((place) =>
-          place.category?.includes(activeCategory),
-        );
-
-  const featuredEvents = categoryFilteredPlaces.filter(
-    (place) => place.section === "events" || place.section === "recommended",
+  // Derive featured events from API data
+  const featuredEvents = places.filter(
+    (place) => place.section === "events" || place.section === "recommended"
   );
 
   const handleBookTable = () => {
+    logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "The Crest Restaurant" });
     alert("Opening booking modal for The Crest Restaurant...");
   };
 
@@ -97,18 +136,22 @@ export const Discover = () => {
         <PromotedEventsSection
           events={featuredEvents.length > 0 ? featuredEvents : undefined}
           onBookTable={handleBookTable}
+          loading={loading}
         />
 
         {/* HERITAGE SPOTLIGHT */}
         <HeritageSpotlight
-          onBookTeeTime={() => alert("Opening Tee Time Booking...")}
+          onBookTeeTime={() => {
+            logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "Rayfield Golf Club" });
+            alert("Opening Tee Time Booking...");
+          }}
           onLearnMore={() =>
             alert("Navigating to Rayfield Golf Club details...")
           }
         />
 
-        {/* AI */}
-        <JosPulseAI />
+        {/* AI CONCIERGE */}
+        <JosPulseAI sessionId={sessionId} />
       </main>
 
       {/* 4. Footer */}
