@@ -7,6 +7,11 @@ export const fetchPlaces = async (params = {}) => {
   return response.data;
 };
 
+export const fetchPlaceBySlug = async (slug) => {
+  const response = await axios.get(`${API_BASE_URL}/places/${slug}`);
+  return response.data;
+};
+
 export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   try {
     await axios.post(`${API_BASE_URL}/behavior/log`, { sessionId, eventType, payload });

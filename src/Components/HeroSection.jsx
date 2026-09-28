@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/HeroSection.module.css';
 
 export const HeroSection = ({
@@ -36,15 +36,37 @@ export const HeroSection = ({
     };
   }, [videoSrc]);
 
+  // Live input handler: fires search filter on every keystroke
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    if (onSearch) {
+      onSearch(value, activePill);
+    }
+  };
+
+  // Form submit handler for explicit Enter key / button clicks
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (onSearch) onSearch(searchValue, activePill);
+    if (onSearch) {
+      onSearch(searchValue, activePill);
+    }
+  };
+
+  // Quick clear button handler
+  const handleClear = () => {
+    setSearchValue("");
+    if (onSearch) {
+      onSearch("", activePill);
+    }
   };
 
   const handlePillClick = (pillId) => {
     const nextActive = activePill === pillId ? null : pillId;
     setActivePill(nextActive);
-    if (onCategorySelect) onCategorySelect(nextActive);
+    if (onCategorySelect) {
+      onCategorySelect(nextActive);
+    }
   };
 
   return (
@@ -83,9 +105,22 @@ export const HeroSection = ({
               type="text"
               placeholder={placeholder}
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              onChange={handleInputChange}
               className={styles.searchInput}
             />
+
+            {/* Clear Search Button */}
+            {searchValue && (
+              <button 
+                type="button" 
+                onClick={handleClear} 
+                className={styles.clearButton}
+                aria-label="Clear search input"
+              >
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            )}
+
             <button type="submit" className={styles.searchButton}>
               Search
             </button>

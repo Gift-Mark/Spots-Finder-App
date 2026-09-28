@@ -103,7 +103,51 @@
 }
 
 @media (max-width: 680px) {
+  .jp-header-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "nav nav";
+    gap: 10px 16px;
+    padding: 12px 16px 8px;
+  }
+
+  .jp-brand-logo {
+    grid-area: brand;
+    font-size: 20px;
+  }
+
   .jp-nav {
-    display: none; /* Can be toggled with a mobile hamburger menu if needed */
+    display: block;
+    grid-area: nav;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  .jp-nav-menu {
+    width: auto;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+  }
+
+  .jp-nav-link {
+    display: block;
+    padding: 6px 0;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .jp-header-actions {
+    grid-area: actions;
+    gap: 12px;
+  }
+
+  .jp-action-link {
+    font-size: 12px;
+  }
+
+  .jp-btn-login {
+    padding: 8px 14px;
   }
 }

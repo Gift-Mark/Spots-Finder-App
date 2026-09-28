@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import places from "../../server/data/places.js";
+import { fetchPlaceBySlug } from "../api/client";
 import PlaceMap from "../Components/PlaceMap";
 
 import styles from "./PlaceDetails.module.css";
@@ -8,94 +9,101 @@ import styles from "./PlaceDetails.module.css";
 export default function PlaceDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [place, setPlace] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const place = places.find(
-    (p) => p.slug === slug
-  );
+  useEffect(() => {
+    const loadPlace = async () => {
+      try {
+        const data = await fetchPlaceBySlug(slug);
+        setPlace(data.data || data);
+      } catch (error) {
+        console.error("Failed to load place details:", error);
+        setPlace(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    if (slug) loadPlace();
+  }, [slug]);
 
-  // Slugs are the stable public identifier used by place-card links.
+  if (loading) {
+    return <h2>Loading place details...</h2>;
+  }
+
   if (!place) {
     return <h2>Place not found</h2>;
   }
 
+  const gallery = Array.isArray(place.gallery) ? place.gallery : [];
+  const events = Array.isArray(place.events) ? place.events : [];
+  const categories = Array.isArray(place.category) ? place.category : [place.category].filter(Boolean);
+
   return (
     <div className={styles.page}>
-
-      {/* Back Button */}
-      <button
-        className={styles.backButton}
-        onClick={() => navigate(-1)}
-      >
+      <button className={styles.backButton} onClick={() => navigate(-1)}>
         ← Back
       </button>
 
-      {/* Hero Image */}
-      <img
-        src={place.image}
-        alt={place.title}
-        className={styles.hero}
-      />
+      <img src={place.image} alt={place.title} className={styles.hero} />
 
-      {/* Venue Info */}
       <div className={styles.content}>
         <h1>{place.title}</h1>
+        <p>⭐ {place.rating || 4.5}</p>
+        <p>📍 {place.location || place.address || "Jos, Plateau State"}</p>
 
-        <p>⭐ {place.rating}</p>
+        {place.open && place.close && (
+          <p>
+            🕒 {place.open} - {place.close}
+          </p>
+        )}
 
-        <p>📍 {place.location}</p>
+        {categories.length > 0 && (
+          <div className={styles.categories}>
+            {categories.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+        )}
 
-        <p>
-          🕒 {place.open} - {place.close}
-        </p>
-
-        {/* Categories */}
-        <div className={styles.categories}>
-          {place.category.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-
-        {/* About */}
         <h2>About</h2>
         <p className={styles.about}>{place.description}</p>
 
-        {/* Gallery */}
-        <h2>Gallery</h2>
+        {gallery.length > 0 && (
+          <>
+            <h2>Gallery</h2>
+            <div className={styles.gallery}>
+              {gallery.map((image) => (
+                <img key={image} src={image} alt={`${place.title} gallery`} />
+              ))}
+            </div>
+          </>
+        )}
 
-        <div className={styles.gallery}>
-          {place.gallery.map((image) => (
-            <img
-              key={image}
-              src={image}
-              alt={`${place.title} gallery`}
-            />
-          ))}
+        {events.length > 0 && (
+          <>
+            <h2>Upcoming Events</h2>
+            {events.map((event) => (
+              <div key={event.title || event.date}>
+                <h3>{event.title}</h3>
+                <p>{event.date}</p>
+                <p>{event.time}</p>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      {place.latitude && place.longitude && (
+        <div className={styles.mapWrapper}>
+          <PlaceMap
+            latitude={place.latitude}
+            longitude={place.longitude}
+            title={place.title}
+          />
         </div>
-
-        {/* Upcoming Events */}
-        <h2>Upcoming Events</h2>
-
-        {place.events.map((event) => (
-          <div key={event.title}>
-            <h3>{event.title}</h3>
-
-            <p>{event.date}</p>
-
-            <p>{event.time}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Map */}
-      <div className={styles.mapWrapper}>
-        <PlaceMap
-          latitude={place.latitude}
-          longitude={place.longitude}
-          title={place.title}
-        />
-      </div>
-
+      )}
     </div>
   );
 }

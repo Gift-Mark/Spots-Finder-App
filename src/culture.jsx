@@ -34,7 +34,7 @@ export const CulturePage = () => {
         title="Culture & Heritage of the Plateau"
         subtitle="Discover the rugged beauty, ancient historical sites, and vibrant traditions that define the heart of Nigeria."
         placeholder="Search landmarks, museums..."
-        heroImage={heroImage}
+        heroImage="/images/shere hills.jpg"
         filterPills={culturePills}
         onSearch={handleSearch}
       />

@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   faGolfBallTee,
   faMasksTheater,
@@ -106,6 +106,31 @@ export const Discover = () => {
     (place) => place.section === "events" || place.section === "recommended"
   );
 
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query && activeCategory === "all") {
+      return places;
+    }
+
+    return places.filter((place) => {
+      const matchesQuery =
+        !query ||
+        place.title?.toLowerCase().includes(query) ||
+        place.location?.toLowerCase().includes(query) ||
+        place.description?.toLowerCase().includes(query) ||
+        place.category?.some((item) => item.toLowerCase().includes(query));
+
+      const matchesCategory =
+        activeCategory === "all" ||
+        activeCategory === "All" ||
+        !place.category ||
+        place.category.some((item) => item.toLowerCase() === activeCategory.toLowerCase());
+
+      return matchesQuery && matchesCategory;
+    });
+  }, [places, searchQuery, activeCategory]);
+
   const handleBookTable = () => {
     logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "The Crest Restaurant" });
     alert("Opening booking modal for The Crest Restaurant...");
@@ -129,6 +154,48 @@ export const Discover = () => {
 
       {/* 3. Main Page Content */}
       <main className={styles.mainContent}>
+        {(searchQuery.trim() || activeCategory !== "all") && (
+          <section className={styles.searchResultsSection}>
+            <div className={styles.searchResultsHeader}>
+              <h2>
+                {searchQuery.trim()
+                  ? `Results for “${searchQuery.trim()}”`
+                  : `Showing ${activeCategory}`}
+              </h2>
+            </div>
+
+            {loading ? (
+              <p className={styles.loadingText}>Loading results...</p>
+            ) : searchResults.length > 0 ? (
+              <div className={styles.resultsGrid}>
+                {searchResults.slice(0, 6).map((place) => (
+                  <Link
+                    key={place._id || place.id || place.slug}
+                    to={`/place/${place.slug || place._id || place.id}`}
+                    className={styles.resultCard}
+                  >
+                    <img src={place.image} alt={place.title} className={styles.resultImage} />
+                    <div className={styles.resultContent}>
+                      <span className={styles.resultBadge}>{place.badge || place.section}</span>
+                      <h3>{place.title}</h3>
+                      <p>{place.location}</p>
+                      <div className={styles.resultMeta}>
+                        <span>⭐ {place.rating || 4.5}</span>
+                        <span>{place.price || "Free"}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className={styles.noResultsBox}>
+                <h3>No spots match your search</h3>
+                <p>Try another keyword, category, or location in Jos.</p>
+              </div>
+            )}
+          </section>
+        )}
+
         {/* TOP TOURIST SPOTS COMPONENT */}
         <TopTouristSpots onSeeAll={() => navigate("/spots")} />
 

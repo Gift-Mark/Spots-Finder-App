@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 
 import BottomNav from "./Components/BottomNav";
+import PlaceDetails from "./pages/PlaceDetails";
 
 // Load route screens on demand so the initial bundle does not include every page.
 const Discover = lazy(() => import("./discover"));
@@ -39,6 +40,7 @@ function App() {
         <Routes>
         <Route path="/" element={<Navigate to="/explore" replace />} />
         <Route path="/explore" element={<Discover />} />
+        <Route path="/place/:slug" element={<PlaceDetails />} />
         <Route path="/culture" element={<Culture />} />
         <Route path="/golf" element={<Golf />} />
         <Route path="/events" element={<EventsPage />} />

@@ -11,7 +11,11 @@ const filterPills = [
   { id: 'late-night-eats', label: 'Late Night Eats' },
 ];
 
-export const NightlifeHero = ({ onSearch, onCategorySelect }) => {
+export const NightlifeHero = ({
+  onSearch,
+  onCategorySelect,
+  heroImage = '/images/nightlife hero backup.jpg',
+}) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [query, setQuery] = useState('');
 
@@ -27,7 +31,12 @@ export const NightlifeHero = ({ onSearch, onCategorySelect }) => {
   };
 
   return (
-    <section className={styles.heroSection}>
+    <section
+      className={styles.heroSection}
+      style={{
+        backgroundImage: `linear-gradient(180deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.9)), url(${heroImage})`,
+      }}
+    >
       <div className={styles.heroOverlay} />
       <div className={styles.heroContent}>
         <h1 className={styles.title}>Experience the Pulse of Jos After Dark</h1>
