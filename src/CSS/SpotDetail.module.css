@@ -1,0 +1,245 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 90px;
+  position: relative;
+  font-family: inherit;
+}
+
+.topNav {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+}
+
+.iconBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  color: #1e293b;
+}
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: #111827;
+}
+
+.heroImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+}
+
+.categoryBadge {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  background: #f97316;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.contentCard {
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  margin-top: -20px;
+  position: relative;
+  padding: 24px 20px;
+  z-index: 2;
+}
+
+.headerInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fff7ed;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+
+.starIcon {
+  color: #f59e0b;
+}
+
+.ratingScore {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.reviewsCount {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.locationText {
+  color: #475569;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.orangeIcon {
+  color: #f97316;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.infoBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.infoBox small {
+  display: block;
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.infoBox p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.tabBar {
+  display: flex;
+  border-bottom: 2px solid #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.tabBtn {
+  flex: 1;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.activeTab {
+  color: #f97316;
+  border-bottom: 2px solid #f97316;
+}
+
+.descriptionText {
+  color: #334155;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.contactItem a {
+  color: #f97316;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.featureList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureList li {
+  padding: 8px 0;
+  color: #334155;
+  font-weight: 500;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 12px 20px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 12px;
+  z-index: 20;
+}
+
+.directionBtn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.primaryBtn {
+  flex: 1.2;
+  background: #f97316;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 14px 0;
+}

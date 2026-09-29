@@ -1,6 +1,8 @@
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faChevronRight, faUmbrellaBeach, faWater, faLandmark } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopTouristSpots.module.css';
+
 const rayfieldResortImage = '/images/Rayfield Resort.jpg';
 const kurraFallsImage = '/images/Kurra-Falls.jpg';
 const josMuseumImage = '/images/Jos Museum.jpg';
@@ -37,6 +39,13 @@ const rightSpots = [
 ];
 
 export const TopTouristSpots = ({ onSeeAll }) => {
+  const navigate = useNavigate();
+
+  // Navigation handler
+  const handleSpotClick = (spotId) => {
+    navigate(`/place/${spotId === 1 ? 'rayfield-resort' : spotId}`);
+  };
+
   return (
     <section className={styles.sectionContainer}>
       {/* Section Header */}
@@ -51,7 +60,13 @@ export const TopTouristSpots = ({ onSeeAll }) => {
       {/* Asymmetrical Grid Container */}
       <div className={styles.gridContainer}>
         {/* Left Featured Main Card */}
-        <div className={styles.mainCard}>
+        <div 
+          className={styles.mainCard} 
+          onClick={() => handleSpotClick(mainSpot.id)}
+          role="button"
+          tabIndex={0}
+          style={{ cursor: 'pointer' }}
+        >
           <img src={mainSpot.image} alt={mainSpot.name} className={styles.cardImage} />
           <div className={styles.imageOverlay} />
 
@@ -75,7 +90,14 @@ export const TopTouristSpots = ({ onSeeAll }) => {
         {/* Right Stacked Column */}
         <div className={styles.rightColumn}>
           {rightSpots.map((spot) => (
-            <div key={spot.id} className={styles.smallCard}>
+            <div 
+              key={spot.id} 
+              className={styles.smallCard}
+              onClick={() => handleSpotClick(spot.id)}
+              role="button"
+              tabIndex={0}
+              style={{ cursor: 'pointer' }}
+            >
               <img src={spot.image} alt={spot.name} className={styles.cardImage} />
               <div className={styles.imageOverlay} />
 
