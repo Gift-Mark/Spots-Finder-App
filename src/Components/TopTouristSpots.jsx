@@ -9,6 +9,7 @@ const josMuseumImage = '/images/Jos Museum.jpg';
 
 const mainSpot = {
   id: 1,
+  slug: 'rayfield-resort', // Added string slug for URL routing
   name: 'Rayfield Holiday Resort',
   category: 'Resort',
   icon: faUmbrellaBeach,
@@ -20,6 +21,7 @@ const mainSpot = {
 const rightSpots = [
   {
     id: 2,
+    slug: 'kurra-falls', // Added string slug for URL routing
     name: 'Kurra Falls',
     category: 'Nature',
     icon: faWater,
@@ -29,6 +31,7 @@ const rightSpots = [
   },
   {
     id: 3,
+    slug: 'jos-museum', // Added string slug for URL routing
     name: 'Jos Museum',
     category: 'Heritage',
     icon: faLandmark,
@@ -41,9 +44,9 @@ const rightSpots = [
 export const TopTouristSpots = ({ onSeeAll }) => {
   const navigate = useNavigate();
 
-  // Navigation handler
-  const handleSpotClick = (spotId) => {
-    navigate(`/place/${spotId === 1 ? 'rayfield-resort' : spotId}`);
+  // Dynamic Navigation Handler using the spot slug
+  const handleSpotClick = (spot) => {
+    navigate(`/place/${spot.slug}`);
   };
 
   return (
@@ -62,7 +65,7 @@ export const TopTouristSpots = ({ onSeeAll }) => {
         {/* Left Featured Main Card */}
         <div 
           className={styles.mainCard} 
-          onClick={() => handleSpotClick(mainSpot.id)}
+          onClick={() => handleSpotClick(mainSpot)}
           role="button"
           tabIndex={0}
           style={{ cursor: 'pointer' }}
@@ -92,8 +95,9 @@ export const TopTouristSpots = ({ onSeeAll }) => {
           {rightSpots.map((spot) => (
             <div 
               key={spot.id} 
+              id={spot.slug === 'jos-museum' ? 'cultural-landmark' : undefined}
               className={styles.smallCard}
-              onClick={() => handleSpotClick(spot.id)}
+              onClick={() => handleSpotClick(spot)}
               role="button"
               tabIndex={0}
               style={{ cursor: 'pointer' }}

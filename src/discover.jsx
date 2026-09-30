@@ -88,8 +88,19 @@ export const Discover = () => {
   const handleCategorySelect = (category) => {
     logUserBehavior(sessionId, "CATEGORY_CLICK", { category });
 
-    if (category === "Golf") {
-      navigate("/golf");
+    const categoryTargets = {
+      Golf: "golf-spotlight",
+      Festivals: "festival-events",
+      Restaurants: "tasty-fingers-promo",
+      "Cultural Landmarks": "cultural-landmark",
+    };
+    const targetId = categoryTargets[category];
+
+    if (targetId) {
+      document.getElementById(targetId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
       return;
     }
 
@@ -132,8 +143,8 @@ export const Discover = () => {
   }, [places, searchQuery, activeCategory]);
 
   const handleBookTable = () => {
-    logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "The Crest Restaurant" });
-    alert("Opening booking modal for The Crest Restaurant...");
+    logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "Tasty Fingers Restaurant" });
+    navigate("/place/tasty-fingers");
   };
 
   return (
@@ -212,9 +223,7 @@ export const Discover = () => {
             logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "Rayfield Golf Club" });
             alert("Opening Tee Time Booking...");
           }}
-          onLearnMore={() =>
-            alert("Navigating to Rayfield Golf Club details...")
-          }
+          onLearnMore={() => navigate("/golf")}
         />
 
         {/* AI CONCIERGE */}

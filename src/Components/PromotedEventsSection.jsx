@@ -1,13 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/PromotedEventsSection.module.css';
+
 const nzemBeromImage = '/images/nzem berom.jpg';
 const WaterwayResort = '/images/Waterway Resort.avif';
 const tastyFingersImage = '/images/Tasty Fingers.webp';
+
 const defaultEvents = [
   {
-    id: 1,
+    id: 'nzem-berom',
     title: 'Nzem Berom Cultural Festival',
     location: 'Rwang Pam Stadium',
     month: 'OCT',
@@ -17,7 +19,7 @@ const defaultEvents = [
     image: nzemBeromImage,
   },
   {
-    id: 2,
+    id: 'plateau-live-music',
     title: 'Plateau Live Music Night',
     location: 'Waterway Resort',
     month: 'OCT',
@@ -29,6 +31,8 @@ const defaultEvents = [
 ];
 
 export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) => {
+  const navigate = useNavigate();
+
   const displayEvents = events?.every(
     (event) => event.month && event.day && event.price && event.actionText && event.image
   )
@@ -43,7 +47,12 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
           <h2 className={styles.sectionTitle}>Promoted</h2>
         </div>
 
-        <div className={styles.promotedCard}>
+        <div 
+          id="tasty-fingers-promo"
+          className={styles.promotedCard}
+          onClick={() => navigate('/place/tasty-fingers')}
+          style={{ cursor: 'pointer' }}
+        >
           <div className={styles.imageWrapper}>
             <img
               src={tastyFingersImage}
@@ -61,7 +70,14 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
             <button
               type="button"
               className={styles.bookTableBtn}
-              onClick={onBookTable}
+              onClick={(e) => {
+                e.stopPropagation(); // Prevents card click navigation if custom booking handler is passed
+                if (onBookTable) {
+                  onBookTable();
+                } else {
+                  navigate('/place/tasty-fingers');
+                }
+              }}
             >
               Book a Table
             </button>
@@ -70,7 +86,7 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
       </div>
 
       {/* RIGHT COLUMN: FEATURED WEEKEND EVENTS */}
-      <div className={styles.eventsColumn}>
+      <div id="festival-events" className={styles.eventsColumn}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>Featured Weekend Events</h2>
           <Link to="/events" className={styles.seeAllBtn}>
@@ -81,7 +97,12 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
 
         <div className={styles.eventsGrid}>
           {displayEvents.map((event) => (
-            <div key={event.id} className={styles.eventCard}>
+            <div 
+              key={event.id} 
+              className={styles.eventCard}
+              onClick={() => navigate(`/place/${event.id}`)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className={styles.eventImageWrapper}>
                 <img
                   src={event.image}
@@ -103,7 +124,11 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
 
                 <div className={styles.eventFooter}>
                   <span className={styles.eventPrice}>{event.price}</span>
-                  <Link to={`/events/${event.id}`} className={styles.actionBtn}>
+                  <Link 
+                    to={`/place/${event.id}`} 
+                    className={styles.actionBtn}
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {event.actionText}
                   </Link>
                 </div>

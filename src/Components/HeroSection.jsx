@@ -72,7 +72,7 @@ export const HeroSection = ({
   return (
     <section 
       className={styles.heroWrapper}
-      style={!videoSrc && heroImage ? { backgroundImage: `url(${heroImage})` } : {}}
+      style={!videoSrc && heroImage ? { backgroundImage: `url("${heroImage}")` } : {}}
     >
       {/* Conditionally render Video element if videoSrc prop exists */}
       {videoSrc && (

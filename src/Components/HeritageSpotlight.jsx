@@ -3,7 +3,7 @@ const heritageImage = '/images/Rayfield Golf club.webp';
 
 export const HeritageSpotlight = ({ onBookTeeTime, onLearnMore }) => {
   return (
-    <section className={styles.spotlightBanner}>
+    <section id="golf-spotlight" className={styles.spotlightBanner}>
       {/* Background Image Container */}
       <img
         src={heritageImage}

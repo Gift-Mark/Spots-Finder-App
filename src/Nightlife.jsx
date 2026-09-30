@@ -98,7 +98,7 @@ export const NightlifePage = () => {
       <NightlifeHero
         onSearch={setSearchQuery}
         onCategorySelect={setSelectedCategory}
-        heroImage="/images/nightlife hero backup.jpg"
+        heroImage="./images/nightlife-hero-backup.jpg"
       />
 
       {/* 3. Main Content Section */}

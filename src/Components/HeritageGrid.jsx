@@ -1,74 +1,10 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faMapMarkerAlt, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { heritageItems } from '../data/heritageItems';
 import styles from '../CSS/HeritageGrid.module.css';
-const josMuseumImage = '/images/Jos Museum.jpg';
-const nokImage = '/images/Nok.jpg';
-const riyomRockImage = '/images/Riyom-Rock-2-768x513.jpg';
-const nzemBeromImage = '/images/nzem berom.jpg';
-const motnaImage = '/images/MOTNA.jpg';
 
-// Mock/Default data matching the design screenshot
-const defaultItems = [
-  {
-    id: 'jos-museum',
-    title: 'Jos National Museum',
-    type: 'featured',
-    category: 'Museum',
-    rating: '4.9',
-    ratingLabel: 'Heritage Rating',
-    description:
-      'One of the oldest and most important museums in Nigeria, housing significant Nok terracotta artifacts and a vast collection of traditional...',
-    image: josMuseumImage,
-    link: '/culture/jos-museum',
-  },
-  {
-    id: 'nok-terracottas',
-    title: 'The Nok Terracottas',
-    type: 'artifact',
-    category: 'Artifacts',
-    description:
-      'Discover the enigmatic clay figures that date back to 500 BC, representing one of the earliest known sculptural traditions in...',
-    subtext: 'Museum Gallery',
-    image: nokImage,
-    link: '/culture/nok-terracottas',
-  },
-  {
-    id: 'riyom-rock',
-    title: 'Riyom Rock',
-    type: 'card',
-    category: 'Historical Site',
-    description:
-      'A natural wonder and historical landmark that perfectly resembles the map of Plateau state, standing as a testament to geologic...',
-    location: 'Riyom Local Govt',
-    image: riyomRockImage,
-    link: '/culture/riyom-rock',
-  },
-  {
-    id: 'nzem-berom',
-    title: 'Nzem Berom',
-    type: 'card',
-    category: 'Traditional Festival',
-    description:
-      "Experience the vibrant colors, music, and dance of the Berom people's annual cultural festival, celebrating harvest and heritage.",
-    date: 'Coming in May',
-    image: nzemBeromImage,
-    link: '/culture/nzem-berom',
-  },
-  {
-    id: 'motna',
-    title: 'MOTNA',
-    type: 'card',
-    category: 'Architecture',
-    description:
-      'Wander through full-scale replicas of major Nigerian architectural styles, from the Katsina Palace to traditional Mbari houses.',
-    location: 'Museum Complex',
-    image: motnaImage,
-    link: '/culture/motna',
-  },
-];
-
-export const HeritageGrid = ({ items = defaultItems, onLoadMore }) => {
+export const HeritageGrid = ({ items = heritageItems, onLoadMore }) => {
   const featuredItem = items.find((i) => i.type === 'featured') || items[0];
   const artifactItem = items.find((i) => i.type === 'artifact') || items[1];
   const standardItems = items.filter(
