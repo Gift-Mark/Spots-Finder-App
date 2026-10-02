@@ -8,8 +8,8 @@ const Header = () => {
   const navLinks = [
     { name: 'Explore', path: '/explore' },
     { name: 'Culture & Heritage', path: '/culture' },
-    { name: 'Sports', path: '/sports' }, // Changed from Golf & Sports
-    { name: 'Dining', path: '/dining' },
+    { name: 'Flights', path: '/flights' },
+    { name: 'Restaurants', path: '/dining' },
     { name: 'Events', path: '/events' },
   ];
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useAudio } from './AudioPlayerContext';
+import { useAudio } from './audioContext';
 import styles from '../CSS/HeritageGrid.module.css';
 
 export function HeritageCard({ spot, distance }) {

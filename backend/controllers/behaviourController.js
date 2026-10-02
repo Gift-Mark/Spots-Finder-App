@@ -33,7 +33,19 @@ exports.getAnalytics = async (req, res) => {
       { $sort: { count: -1 } },
     ]);
 
-    res.status(200).json({ success: true, analytics: { topSearches, popularCategories } });
+    const aiSupportUsage = await BehaviorLog.aggregate([
+      { $match: { eventType: 'AI_CHAT' } },
+      {
+        $group: {
+          _id: { intent: '$payload.intent', pagePath: '$payload.pagePath' },
+          count: { $sum: 1 },
+          resolvedCount: { $sum: { $cond: ['$payload.resolved', 1, 0] } },
+        },
+      },
+      { $sort: { count: -1 } },
+    ]);
+
+    res.status(200).json({ success: true, analytics: { topSearches, popularCategories, aiSupportUsage } });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

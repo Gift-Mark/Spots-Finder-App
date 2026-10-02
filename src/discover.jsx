@@ -16,7 +16,6 @@ import HeritageSpotlight from "./Components/HeritageSpotlight.jsx";
 import Footer from "./Components/Footer.jsx";
 import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
-import JosPulseAI from "./Components/JosPulseAI.jsx";
 
 // API Services
 import { fetchPlaces, logUserBehavior } from "../src/api/client.js";
@@ -226,8 +225,6 @@ export const Discover = () => {
           onLearnMore={() => navigate("/golf")}
         />
 
-        {/* AI CONCIERGE */}
-        <JosPulseAI sessionId={sessionId} />
       </main>
 
       {/* 4. Footer */}

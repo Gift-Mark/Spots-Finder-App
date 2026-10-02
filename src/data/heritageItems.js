@@ -27,7 +27,7 @@ export const heritageItems = [
     description:
       'Discover the enigmatic clay figures that date back to 500 BC, representing one of the earliest known sculptural traditions in...',
     subtext: 'Museum Gallery',
-    image: nokImage,
+    image: '/images/Nok.jpg',
     link: '/culture/nok-terracottas',
     icon: '🏺',
     mapCoords: { top: '34%', left: '46%' },
@@ -40,7 +40,7 @@ export const heritageItems = [
     description:
       'A natural wonder and historical landmark that perfectly resembles the map of Plateau state, standing as a testament to geologic...',
     location: 'Riyom Local Govt',
-    image: riyomRockImage,
+    image: '/images/Riyom Rock.jpg',
     link: '/culture/riyom-rock',
     icon: '⛰️',
     mapCoords: { top: '59%', left: '33%' },
@@ -66,7 +66,7 @@ export const heritageItems = [
     description:
       'Wander through full-scale replicas of major Nigerian architectural styles, from the Katsina Palace to traditional Mbari houses.',
     location: 'Museum Complex',
-    image: motnaImage,
+    image: '/images/MOTNA.jpg',
     link: '/culture/motna',
     icon: '🏘️',
     mapCoords: { top: '66%', left: '50%' },

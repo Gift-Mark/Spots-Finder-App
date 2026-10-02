@@ -1,66 +1,77 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faPaperPlane, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { askWebsiteSupport } from '../api/client';
 import styles from '../CSS/JosPulseAI.module.css';
 
 export const JosPulseAI = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [input, setInput] = useState('');
+  const [sessionId] = useState(() => {
+    const existingId = localStorage.getItem('jos_session_id');
+    if (existingId) return existingId;
+
+    const newId = `sess_${crypto.randomUUID()}`;
+    localStorage.setItem('jos_session_id', newId);
+    return newId;
+  });
+  const messagesEndRef = useRef(null);
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: "Hello! I'm your Jos Pulse AI Guide. Are you looking for adventure sports, cultural heritage, or local dining in Jos today?",
+      text: "Hi, I'm Jos Pulse support. Ask me about places, opening hours, entry prices, events, flights, or using the website.",
     },
   ]);
 
-  const handleSend = (e) => {
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isSending]);
+
+  const handleSend = async (e) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    const prompt = input.trim();
+    if (!prompt || isSending) return;
 
-    const userMsg = { sender: 'user', text: input };
-    setMessages((prev) => [...prev, userMsg]);
-
-    // Simple rule/heuristic AI inference based on user input
-    setTimeout(() => {
-      let reply = "I recommend checking out Shere Hills for hiking or the Jos Museum for cultural history!";
-      const query = input.toLowerCase();
-
-      if (query.includes('sport') || query.includes('hike') || query.includes('golf')) {
-        reply = "For sports lovers, I recommend hiking at Shere Hills or teeing off at Africa's oldest course, Rayfield Golf Club!";
-      } else if (query.includes('festival') || query.includes('culture') || query.includes('heritage')) {
-        reply = "You shouldn't miss the Nzem Berom Cultural Festival or a trip to the historic Jos Museum!";
-      } else if (query.includes('food') || query.includes('eat') || query.includes('restaurant')) {
-        reply = "Check out The Crest Restaurant for panoramic views and local cuisine!";
-      }
-
-      setMessages((prev) => [...prev, { sender: 'ai', text: reply }]);
-    }, 600);
-
+    setMessages((previous) => [...previous, { sender: 'user', text: prompt }].slice(-30));
     setInput('');
+    setIsSending(true);
+
+    try {
+      const response = await askWebsiteSupport(prompt, sessionId, window.location.pathname);
+      setMessages((previous) => [...previous, { sender: 'ai', text: response.reply }].slice(-30));
+    } catch {
+      setMessages((previous) => [
+        ...previous,
+        { sender: 'ai', text: 'Support chat is temporarily unavailable. Please try again shortly.' },
+      ].slice(-30));
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
     <div className={styles.chatWrapper}>
       {!isOpen && (
-        <button className={styles.floatingBtn} onClick={() => setIsOpen(true)}>
+        <button className={styles.floatingBtn} onClick={() => setIsOpen(true)} aria-label="Open Jos Pulse support chat">
           <FontAwesomeIcon icon={faRobot} />
-          <span>Ask AI Concierge</span>
+          <span>Website Support</span>
         </button>
       )}
 
       {isOpen && (
-        <div className={styles.chatBox}>
+        <section className={styles.chatBox} aria-label="Jos Pulse website support" role="dialog">
           <div className={styles.chatHeader}>
             <div className={styles.headerTitle}>
               <FontAwesomeIcon icon={faRobot} />
-              <span>Jos Pulse AI Guide</span>
+              <span>Jos Pulse Support</span>
             </div>
-            <button className={styles.closeBtn} onClick={() => setIsOpen(false)}>
-              <FontAwesomeIcon icon={faTimes} />
+            <button className={styles.closeBtn} onClick={() => setIsOpen(false)} aria-label="Close support chat">
+              <FontAwesomeIcon icon={faXmark} />
             </button>
           </div>
 
-          <div className={styles.messagesArea}>
+          <div className={styles.messagesArea} role="log" aria-live="polite">
             {messages.map((msg, idx) => (
               <div
                 key={idx}
@@ -69,20 +80,25 @@ export const JosPulseAI = () => {
                 {msg.text}
               </div>
             ))}
+            {isSending && <div className={styles.aiMsg}>Checking Jos Pulse information...</div>}
+            <div ref={messagesEndRef} />
           </div>
 
+          <p className={styles.privacyNote}>Chat questions are saved with contact details removed to improve website support. Don’t share passwords or payment details.</p>
           <form onSubmit={handleSend} className={styles.inputArea}>
             <input
               type="text"
-              placeholder="e.g., Plan a 2-day outdoor adventure in Jos..."
+              placeholder="Ask about a place or website feature"
               value={input}
+              maxLength={500}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="Your support question"
             />
-            <button type="submit">
+            <button type="submit" disabled={isSending || !input.trim()} aria-label="Send question">
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>
           </form>
-        </div>
+        </section>
       )}
     </div>
   );

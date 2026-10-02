@@ -161,6 +161,9 @@
 
 .cardImageWrapper {
   height: 180px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
 }
 
 .cardImageWrapper img {
@@ -311,6 +314,475 @@
   100% {
     height: 12px;
   }
+}
+
+/* FESTIVAL CALENDAR & RSVP STYLES */
+.festivalActionsWrapper {
+  margin-bottom: 12px;
+}
+
+.actionButtonGroup {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.rsvpBtn {
+  flex: 1;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+}
+
+.rsvpBtn:hover {
+  background: #1e293b;
+}
+
+.calendarDropdownWrapper {
+  position: relative;
+}
+
+.calendarBtn {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.calendarBtn:hover {
+  background: #e2e8f0;
+}
+
+.calendarMenu {
+  position: absolute;
+  bottom: 115%;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  z-index: 30;
+  overflow: hidden;
+}
+
+.calendarMenu a,
+.calendarMenu button {
+  padding: 10px 12px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  color: #0f172a;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.calendarMenu a:hover,
+.calendarMenu button:hover {
+  background: #f8fafc;
+  color: #2563eb;
+}
+
+.rsvpSuccessBanner {
+  background: #dcfce7;
+  color: #166534;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Absolute positioned overlay on bottom of image */
+.countdownContainer {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 6px 10px;
+  border-radius: 8px;
+  color: #ffffff;
+  text-align: center;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.countdownLabel {
+  font-size: 9px;
+  letter-spacing: 0.8px;
+  color: #94a3b8;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.timerGrid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.timeBlock {
+  flex: 1;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.timeBlock strong {
+  font-size: 13px;
+  color: #facc15;
+  display: block;
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.timeBlock span {
+  font-size: 8px;
+  color: #cbd5e1;
+  display: block;
+  text-transform: uppercase;
+}
+
+.liveNowBadge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  z-index: 10;
+}
+
+/* 360° Tour Badge / Button */
+.virtualTourBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  z-index: 5;
+  transition: all 0.2s ease;
+}
+
+.virtualTourBtn:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+}
+
+/* Modal Overlay */
+.tourModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.tourModalContent {
+  background: #ffffff;
+  width: 100%;
+  max-width: 960px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.tourHeader {
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tourHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.tourHeader p {
+  margin: 4px 0 0 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.closeTourBtn {
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #0f172a;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeTourBtn:hover {
+  background: #e2e8f0;
+}
+
+.pannellumViewer {
+  width: 100%;
+  height: 520px;
+  background: #000000;
+}
+
+/* Filter Pills Styling */
+.pillsContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  scrollbar-width: thin;
+}
+
+.pillsContainer::-webkit-scrollbar {
+  height: 4px;
+}
+
+.pillsContainer::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 4px;
+}
+
+.pillBtn {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.pillBtn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.activePill {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+}
+
+.activePill:hover {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.pillBadge {
+  background: rgba(0, 0, 0, 0.08);
+  color: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+}
+
+.activePill .pillBadge {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Fallback view when zero results match filter */
+.noResultsContainer {
+  text-align: center;
+  padding: 48px 20px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 24px;
+}
+
+.noResultsContainer p {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.clearFilterBtn {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Bookmark Icon Styling */
+.bookmarkBtn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.bookmarkBtn:hover {
+  background: rgba(15, 23, 42, 0.9);
+  transform: scale(1.1);
+}
+
+.bookmarked {
+  background: #e11d48;
+  border-color: #e11d48;
+  color: #ffffff;
+}
+
+.bookmarked:hover {
+  background: #be123c;
+}
+
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hireGuideBtn {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  color: #34d399;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.hireGuideBtn:hover {
+  background: rgba(16, 185, 129, 0.4);
+  color: #ffffff;
+}
+
+/* Rating Badge for Sub-cards */
+.categoryRatingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.subCardRatingBadge {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Button Grouping in Footer */
+.cardButtonGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviewTipBtn {
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  border-radius: 18px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.reviewTipBtn:hover {
+  background: rgba(59, 130, 246, 0.3);
+  color: #ffffff;
 }
 
 /* RESPONSIVE BREAKPOINTS */

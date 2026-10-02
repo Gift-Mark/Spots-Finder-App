@@ -12,6 +12,11 @@ export const fetchPlaceBySlug = async (slug) => {
   return response.data;
 };
 
+export const askWebsiteSupport = async (prompt, sessionId, pagePath) => {
+  const response = await axios.post(`${API_BASE_URL}/ai/support`, { prompt, sessionId, pagePath });
+  return response.data;
+};
+
 export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   try {
     await axios.post(`${API_BASE_URL}/behavior/log`, { sessionId, eventType, payload });
