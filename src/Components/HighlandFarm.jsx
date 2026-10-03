@@ -1,6 +1,10 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSeedling, faCarrot, faAppleWhole } from '@fortawesome/free-solid-svg-icons';
+import { faSeedling, faCarrot, faAppleWhole, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { FarmFreshModal } from './FarmFreshModal';
 import styles from '../CSS/HighlandFarmAdvantage.module.css';
+
 const tevaImage = '/images/Teva.jpg';
 const farmChefImage = '/images/image_386a62b7.jpg';
 
@@ -8,7 +12,7 @@ const features = [
   {
     icon: faSeedling,
     title: "Volcanic & High Altitude Soils",
-    description: "Rich volcanic soil produces unique vegetables, apples, and herbs found nowhere else in Nigeria."
+    description: "Rich volcanic soil produces unique vegetables, strawberries, and herbs found nowhere else in Nigeria."
   },
   {
     icon: faCarrot,
@@ -23,10 +27,17 @@ const features = [
 ];
 
 export const HighlandFarmAdvantage = () => {
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSpotSelect = (spotId) => {
+    setIsModalOpen(false);
+    navigate(`/place/${spotId}`);
+  };
+
   return (
     <section className={styles.sectionWrapper}>
       <div className={styles.sectionContainer}>
-        {/* Left Side Content & Feature List */}
         <div className={styles.textContent}>
           <span className={styles.badge}>HIGHLAND FARM-TO-TABLE</span>
           
@@ -51,26 +62,46 @@ export const HighlandFarmAdvantage = () => {
               </div>
             ))}
           </div>
+
+          <div className={styles.actionRow}>
+            {/* Triggers Option 3 Modal */}
+            <button 
+              type="button" 
+              className={styles.ctaButton}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Explore Farm-Fresh Places <FontAwesomeIcon icon={faArrowRight} />
+            </button>
+            
+            <div className={styles.stats}>
+              <div>
+                <strong>1,200m+</strong>
+                <span>Plateau Altitude</span>
+              </div>
+              <div>
+                <strong>100%</strong>
+                <span>Fresh Local Produce</span>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* Right Side Dual Image Display */}
         <div className={styles.imageGrid}>
           <div className={styles.imageCardLarge}>
-            <img 
-              src={tevaImage}
-              alt="Jos-1 Greenhouse Farm Estate" 
-              className={styles.image}
-            />
+            <img src={tevaImage} alt="Jos Greenhouse Farm Estate" className={styles.image} />
           </div>
           <div className={styles.imageCardSmall}>
-            <img 
-              src={farmChefImage}
-              alt="Chef preparing fresh Jos farm salad" 
-              className={styles.image}
-            />
+            <img src={farmChefImage} alt="Chef preparing fresh Jos farm salad" className={styles.image} />
           </div>
         </div>
       </div>
+
+      {/* Render Option 3 Modal */}
+      <FarmFreshModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)}
+        onSelectSpot={handleSpotSelect}
+      />
     </section>
   );
 };

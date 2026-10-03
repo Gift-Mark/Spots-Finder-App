@@ -2,44 +2,54 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/DiningStylesGrid.module.css';
 const barcardiImage = '/images/Barcardi.jpg';
-const amoraImage = '/images/Amora.jpg';
+const gwoteImage = '/images/Gwote.jpg';
 const netCafeImage = '/images/The net cafe.jpg';
 const grillsImage = '/images/Grills.jpg';
 
 const defaultStyles = [
   {
-    id: 1,
-    title: 'Highland Fine Dining',
-    description: 'Elevated 3-course menus with scenic mountain views and wine pairings.',
-    placesCount: 14,
-    image: barcardiImage,
+  id: 1,
+  title: 'Restaurants & Lounges',
+  description: 'Gourmet dishes, signature cocktails, and vibrant evening atmospheres across Jos.',
+  placesCount: 14,
+  image: barcardiImage,
   },
   {
     id: 2,
     title: 'Authentic Plateau Bites',
     description: 'Traditional Gwete, Achicha, Masa, and local artisanal soups made daily.',
-    placesCount: 28,
-    image: amoraImage,
+    placesCount: 15,
+    image: gwoteImage,
   },
   {
     id: 3,
     title: 'Cozy Cafes & Breakfast',
     description: 'Freshly roasted coffee, Ice cream bar, and baked treats.',
-    placesCount: 19,
+    placesCount: 8,
     image: netCafeImage,
   },
   {
     id: 4,
     title: 'Suya Spots & Grills',
     description: 'Freshly spiced Suya, Kilishi, and cold drinks in outdoor open-air setups.',
-    placesCount: 32,
+    placesCount: 5,
     image: grillsImage,
   },
 ];
 
-export const DiningStylesGrid = ({ stylesList = defaultStyles, onSelectStyle }) => {
+export const DiningStylesGrid = ({ stylesList = defaultStyles, places = [], onSelectStyle }) => {
+  const stylesWithPlaceData = stylesList.map((item) => {
+    const matchingPlaces = places.filter((place) => place.category?.includes(item.title));
+
+    return {
+      ...item,
+      placesCount: matchingPlaces.length,
+      image: matchingPlaces[0]?.image || item.image,
+    };
+  });
+
   return (
-    <section className={styles.sectionContainer}>
+    <section id="dining-styles" className={styles.sectionContainer}>
       <div className={styles.headerRow}>
         <div>
           <span className={styles.sectionSubtitle}>CURATED COLLECTIONS</span>
@@ -51,7 +61,7 @@ export const DiningStylesGrid = ({ stylesList = defaultStyles, onSelectStyle }) 
       </div>
 
       <div className={styles.cardsGrid}>
-        {stylesList.map((item) => (
+          {stylesWithPlaceData.map((item) => (
           <div 
             key={item.id} 
             className={styles.styleCard}

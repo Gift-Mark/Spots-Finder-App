@@ -1,7 +1,7 @@
 .sectionWrapper {
-  background-color: #f1f5f9;
-  padding: 64px 24px;
-  margin-bottom: 56px;
+  background: #fdfbf7;
+  padding: 4.5rem 1.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
 .sectionContainer {
@@ -9,129 +9,169 @@
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  gap: 3.5rem;
   align-items: center;
-}
-
-/* LEFT COLUMN */
-.textContent {
-  display: flex;
-  flex-direction: column;
 }
 
 .badge {
   display: inline-block;
-  align-self: flex-start;
-  background: #166534;
-  color: #ffffff;
-  font-size: 10px;
+  background: #dcfce7;
+  color: #166534;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 4px;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
 }
 
 .title {
-  font-size: 26px;
+  font-size: 2.25rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.25;
-  margin: 0 0 12px 0;
-  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0 0 1rem;
 }
 
 .subtitle {
-  font-size: 13px;
-  color: #64748b;
+  color: #475569;
+  font-size: 1rem;
   line-height: 1.6;
-  margin: 0 0 28px 0;
+  margin-bottom: 2rem;
 }
 
-/* FEATURE PILLARS */
 .featureList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
 }
 
 .featureCard {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 10px;
-  padding: 14px 16px;
   display: flex;
+  gap: 1rem;
   align-items: flex-start;
-  gap: 14px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .iconBox {
-  background: #f0fdf4;
-  color: #16a34a;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  background: #15803d;
+  color: #ffffff;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
 .featureTitle {
-  font-size: 13px;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 2px 0;
+  margin: 0 0 0.25rem;
 }
 
 .featureDesc {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: #64748b;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-/* RIGHT COLUMN IMAGE DISPLAY */
+.actionRow {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.ctaButton {
+  background: #15803d;
+  color: #ffffff;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background 0.2s;
+}
+
+.ctaButton:hover {
+  background: #166534;
+}
+
+.stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stats strong {
+  display: block;
+  font-size: 1.1rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.stats span {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Image Grid Styling */
 .imageGrid {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  height: 380px;
+  gap: 1rem;
 }
 
-.imageCardLarge,
-.imageCardSmall {
-  border-radius: 14px;
+.imageCardLarge, .imageCardSmall {
+  position: relative;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
 .imageCardLarge {
-  height: 100%;
+  height: 380px;
 }
 
 .imageCardSmall {
-  height: 85%;
-  align-self: flex-end;
+  height: 280px;
+  margin-top: 3rem;
 }
 
 .image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* RESPONSIVE */
+.imgTag {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+/* Responsive breakpoint */
 @media (max-width: 900px) {
   .sectionContainer {
     grid-template-columns: 1fr;
-    gap: 32px;
   }
-
-  .imageGrid {
-    height: 280px;
+  .imageCardSmall {
+    margin-top: 0;
   }
 }

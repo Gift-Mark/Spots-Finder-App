@@ -1,5 +1,6 @@
 .sectionContainer {
   max-width: 1200px;
+  scroll-margin-top: 88px;
   margin: 0 auto 56px;
   padding: 0 24px;
 }
@@ -65,6 +66,16 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+}
+
+.emptyState {
+  margin: 20px 0 0;
+  padding: 16px;
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 .card {

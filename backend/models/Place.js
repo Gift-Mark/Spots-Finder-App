@@ -5,7 +5,7 @@ const placeSchema = new mongoose.Schema(
     title: { type: String, required: true, trim: true },
     section: {
       type: String,
-      enum: ['tourist_spots', 'trending', 'events', 'heritage', 'sports'],
+      enum: ['tourist_spots', 'trending', 'events', 'heritage', 'sports', 'dining'],
       required: true,
     },
     category: [{ type: String, required: true }], // e.g. ['Sports', 'Hiking'], ['Festivals', 'Culture']
@@ -17,6 +17,18 @@ const placeSchema = new mongoose.Schema(
     badge: { type: String },
     badgeVariant: { type: String, enum: ['green', 'orange', 'dark', 'blue'], default: 'green' },
     price: { type: String, default: 'Free' },
+    cuisine: { type: String, trim: true },
+    buttonText: { type: String, trim: true },
+    amenities: [{ type: String }],
+    dietaryOptions: [{ type: String }],
+    openingHours: { type: String, trim: true },
+    isOpenNow: { type: Boolean },
+    isOpen24Hours: { type: Boolean },
+    coordinates: {
+      latitude: { type: Number },
+      longitude: { type: Number },
+    },
+    isFeatured: { type: Boolean, default: false },
     tags: [{ type: String }],
     isPromoted: { type: Boolean, default: false }, // Monetization feature
   },

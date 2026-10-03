@@ -83,6 +83,7 @@
   align-items: center;
   gap: 10px;
   flex: 1;
+  min-width: 0;
 }
 
 .searchIcon {
@@ -92,6 +93,7 @@
 
 .inputGroup input {
   width: 100%;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -154,6 +156,137 @@
   background: #ea580c;
 }
 
+.filterBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(15, 23, 42, 0.55);
+}
+
+.filterDrawer {
+  display: flex;
+  flex-direction: column;
+  width: min(420px, 100%);
+  height: 100%;
+  color: #172033;
+  background: #fff;
+  box-shadow: -12px 0 32px rgba(15, 23, 42, 0.2);
+}
+
+.drawerHeader,
+.drawerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+}
+
+.drawerHeader {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.drawerHeader h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.closeDrawerBtn {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  color: #475569;
+  background: #f1f5f9;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.drawerBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 24px 20px;
+}
+
+.filterGroup {
+  display: grid;
+  gap: 13px;
+  min-width: 0;
+  margin: 0;
+  padding: 20px 0;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.filterGroup legend,
+.sortLabel {
+  display: block;
+  margin-bottom: 2px;
+  color: #172033;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.filterOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filterOption input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #f97316;
+}
+
+.sortSelect {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  color: #172033;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+}
+
+.drawerFooter {
+  gap: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.clearFiltersBtn,
+.applyFiltersBtn {
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.clearFiltersBtn {
+  color: #334155;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+}
+
+.applyFiltersBtn {
+  flex: 1;
+  color: #fff;
+  background: #f97316;
+  border: 1px solid #f97316;
+}
+
+.applyFiltersBtn:hover {
+  background: #ea580c;
+}
+
 /* POPULAR TAGS */
 .tagsContainer {
   display: flex;
@@ -178,6 +311,13 @@
   color: #ffffff;
 }
 
+.activeTag,
+.activeTag:hover {
+  color: #fff;
+  background: #f97316;
+  border-color: #f97316;
+}
+
 @media (max-width: 768px) {
   .title {
     font-size: 28px;
@@ -185,16 +325,54 @@
 
   .searchCard {
     flex-direction: column;
+    align-items: stretch;
     padding: 12px;
+  }
+
+  .inputGroup {
+    width: 100%;
+    min-height: 42px;
+  }
+
+  .inputGroup input {
+    font-size: 13px;
   }
 
   .controlsGroup {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .priceSelectWrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .priceSelectWrapper select {
+    min-width: 0;
+    max-width: 100%;
   }
 
   .filterBtn {
-    flex: 1;
+    flex: 0 0 auto;
     justify-content: center;
+  }
+}
+
+@media (max-width: 420px) {
+  .controlsGroup {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .priceSelectWrapper,
+  .filterBtn {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .priceSelectWrapper {
+    justify-content: space-between;
   }
 }

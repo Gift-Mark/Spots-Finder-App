@@ -1,5 +1,6 @@
 .sectionContainer {
   max-width: 1200px;
+  scroll-margin-top: 88px;
   margin: 48px auto 56px;
   padding: 0 24px;
 }
@@ -187,6 +188,172 @@
 
 .secondaryBtn:hover {
   background: #f1f5f9;
+}
+
+/* Modal Overlay & Card Structure */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.closeModalBtn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.modalKicker {
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ea580c;
+  display: block;
+}
+
+.modalHeading {
+  font-size: 1.5rem;
+  color: #0f172a;
+  margin: 0.25rem 0;
+}
+
+.modalLocation {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 1.25rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.formInput,
+.formSelect {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.counterControl {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  width: fit-content;
+}
+
+.counterControl button {
+  background: #f1f5f9;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.timeSlotsGrid {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.slotBtn,
+.activeSlotBtn {
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.activeSlotBtn {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+.confirmSubmitBtn {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: #f97316;
+  color: #ffffff;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.successContainer {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.successIcon {
+  font-size: 3rem;
+  color: #16a34a;
+  margin-bottom: 0.75rem;
+}
+
+.guestSummary {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.doneBtn {
+  margin-top: 1rem;
+  width: 100%;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 /* RESPONSIVE */

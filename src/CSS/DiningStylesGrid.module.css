@@ -1,5 +1,6 @@
 .sectionContainer {
   max-width: 1200px;
+  scroll-margin-top: 88px;
   margin: 0 auto 56px;
   padding: 0 24px;
 }

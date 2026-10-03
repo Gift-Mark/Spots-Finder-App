@@ -1,0 +1,278 @@
+.pageWrapper {
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Hero Section */
+.heroSection {
+  background: #0f172a;
+  color: #ffffff;
+  padding: 4rem 0 3.5rem;
+  text-align: center;
+}
+
+.kicker {
+  color: #f97316;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.heroTitle {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.25;
+  max-width: 800px;
+  margin: 0 auto 1rem;
+}
+
+.heroSubtitle {
+  font-size: 1.05rem;
+  color: #94a3b8;
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Content Section */
+.contentSection {
+  padding: 3.5rem 0;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr 440px;
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.sectionHeading {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 2rem;
+}
+
+/* Benefits Column */
+.benefitCards {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.benefitCard {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  background: #ffffff;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.iconBox {
+  background: #fff7ed;
+  color: #ea580c;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.benefitTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+}
+
+.benefitDesc {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.statsBanner {
+  background: #ea580c;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+}
+
+.statsBanner strong {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.statsBanner span {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+.divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Form Column */
+.formCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.formTitle {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 0.35rem;
+}
+
+.formDesc {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1rem;
+  background: #f1f5f9;
+  padding: 0.5rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.inputGroup label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.inputGroup input,
+.inputGroup select {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inputGroup input:focus,
+.inputGroup select:focus {
+  border-color: #ea580c;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.submitBtn {
+  background: #ea580c;
+  color: #ffffff;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.submitBtn:hover {
+  background: #c2410c;
+}
+
+/* Success State */
+.successState {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.successIcon {
+  font-size: 3rem;
+  color: #16a34a;
+  margin-bottom: 1rem;
+}
+
+.successState h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.successState p {
+  font-size: 0.875rem;
+  color: #475569;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+
+.resetBtn {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .gridContainer {
+    grid-template-columns: 1fr;
+  }
+}

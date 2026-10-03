@@ -1,29 +1,44 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faTimes, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/FeaturedCulinarySpotlight.module.css';
-const crispanImage = '/images/Crispan.jpg';
 
 export const FeaturedCulinarySpotlight = ({ spotlight }) => {
-  const defaultSpotlight = {
-    title: 'The Crispan Hotel & Event Centre',
-    rating: '4.5',
-    reviewsCount: '1,536',
-    badges: ['Fine Dining', 'Hot Tub'],
-    description: 'Nestled along the scenic Jonah Jang Expressway in the vibrant Yingi district, offering panoramic city views paired with an artisan culinary menu. Signature dishes include locally spiced beef tenderloin and Jos mountain berry tart.',
-    location: 'Before Gold and Base Round About, Jonah Jang Express Way, Shaka Rd, Yingi, Jos, Plateau State',
-    cuisine: 'Intercontinental Fusion / Continental Cuisine',
-    image: crispanImage,
+  const navigate = useNavigate();
+
+  // Modal State Management
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [partySize, setPartySize] = useState(2);
+  const [selectedTime, setSelectedTime] = useState("7:00 PM");
+  const [selectedSeating, setSelectedSeating] = useState("Main Dining Hall");
+  const [formData, setFormData] = useState({ name: "", phone: "", notes: "" });
+  const [isConfirmed, setIsConfirmed] = useState(false);
+
+  if (!spotlight) return null;
+  const data = spotlight;
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const data = spotlight || defaultSpotlight;
+  const handleBookingSubmit = (e) => {
+    e.preventDefault();
+    setIsConfirmed(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsConfirmed(false);
+  };
 
   return (
-    <section className={styles.sectionContainer}>
+    <section id="featured-culinary" className={styles.sectionContainer}>
       <div className={styles.headerRow}>
         <span className={styles.sectionSubtitle}>FEATURED CHOICE</span>
-        <a href="#view-all" className={styles.viewAllLink}>
+        <Link to="/dining-listings" className={styles.viewAllLink}>
           Explore All Fine Dining &rarr;
-        </a>
+        </Link>
       </div>
 
       <h2 className={styles.sectionTitle}>Featured Culinary Spotlight</h2>
@@ -67,15 +82,167 @@ export const FeaturedCulinarySpotlight = ({ spotlight }) => {
           </div>
 
           <div className={styles.buttonGroup}>
-            <button type="button" className={styles.primaryBtn}>
+            <button 
+              type="button" 
+              className={styles.primaryBtn}
+              onClick={() => setIsModalOpen(true)}
+            >
               Reserve a Table
             </button>
-            <button type="button" className={styles.secondaryBtn}>
+            <button 
+              type="button" 
+              className={styles.secondaryBtn}
+              onClick={() => navigate('/simmer')}
+            >
               View Menu & List
             </button>
           </div>
         </div>
       </div>
+
+      {/* Reservation Modal Overlay */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay} onClick={handleCloseModal}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <button 
+              type="button" 
+              className={styles.closeModalBtn} 
+              onClick={handleCloseModal}
+              aria-label="Close Modal"
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+
+            {!isConfirmed ? (
+              <form onSubmit={handleBookingSubmit} className={styles.modalForm}>
+                <span className={styles.modalKicker}>Direct Table Reservation</span>
+                <h3 className={styles.modalHeading}>Reserve at {data.title}</h3>
+                <p className={styles.modalLocation}>📍 {data.location}</p>
+
+                {/* Party Size Selector */}
+                <div className={styles.formGroup}>
+                  <label>Guests</label>
+                  <div className={styles.counterControl}>
+                    <button 
+                      type="button" 
+                      onClick={() => setPartySize(Math.max(1, partySize - 1))}
+                    >
+                      -
+                    </button>
+                    <span>{partySize} {partySize === 1 ? 'Guest' : 'Guests'}</span>
+                    <button 
+                      type="button" 
+                      onClick={() => setPartySize(partySize + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {/* Date Picker */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="res-date">Date</label>
+                  <input
+                    id="res-date"
+                    type="date"
+                    defaultValue={new Date().toISOString().split('T')[0]}
+                    required
+                    className={styles.formInput}
+                  />
+                </div>
+
+                {/* Time Slots */}
+                <div className={styles.formGroup}>
+                  <label>Preferred Time Slot</label>
+                  <div className={styles.timeSlotsGrid}>
+                    {['5:30 PM', '6:30 PM', '7:00 PM', '8:00 PM', '9:00 PM'].map((time) => (
+                      <button
+                        type="button"
+                        key={time}
+                        className={selectedTime === time ? styles.activeSlotBtn : styles.slotBtn}
+                        onClick={() => setSelectedTime(time)}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Seating Preference */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="seating-area">Seating Preference</label>
+                  <select
+                    id="seating-area"
+                    value={selectedSeating}
+                    onChange={(e) => setSelectedSeating(e.target.value)}
+                    className={styles.formSelect}
+                  >
+                    <option value="Main Dining Hall">Main Dining Hall</option>
+                    <option value="VIP Private Booth">VIP Private Booth</option>
+                    <option value="Ambient Lounge Area">Ambient Lounge Area</option>
+                  </select>
+                </div>
+
+                {/* Full Name */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="guest-name">Full Name</label>
+                  <input
+                    id="guest-name"
+                    type="text"
+                    name="name"
+                    placeholder="e.g. Samuel Pam"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    className={styles.formInput}
+                  />
+                </div>
+
+                {/* Phone Number */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="guest-phone">Phone Number (for Confirmation)</label>
+                  <input
+                    id="guest-phone"
+                    type="tel"
+                    name="phone"
+                    placeholder="e.g. +234 803 123 4567"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    className={styles.formInput}
+                  />
+                </div>
+
+                <button type="submit" className={styles.confirmSubmitBtn}>
+                  Confirm Table Reservation
+                </button>
+              </form>
+            ) : (
+              <div className={styles.successContainer}>
+                <FontAwesomeIcon icon={faCheckCircle} className={styles.successIcon} />
+                <h3>Table Reserved!</h3>
+                <p>
+                  Your reservation for <strong>{partySize} guests</strong> at{' '}
+                  <strong>{data.title}</strong> ({selectedSeating}) at{' '}
+                  <strong>{selectedTime}</strong> has been confirmed.
+                </p>
+                <div className={styles.guestSummary}>
+                  <p><strong>Reserved under:</strong> {formData.name}</p>
+                  <p><strong>Contact:</strong> {formData.phone}</p>
+                </div>
+                <small>A confirmation SMS has been sent to your mobile phone.</small>
+                <button 
+                  type="button" 
+                  onClick={handleCloseModal} 
+                  className={styles.doneBtn}
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </section>
   );
 };

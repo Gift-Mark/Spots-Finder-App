@@ -10,6 +10,13 @@ const EventsPage = lazy(() => import("./EventsPage"));
 const NightlifePage = lazy(() => import("./Nightlife")); 
 const LoungesPage = lazy(() => import("./LoungesPage"));
 const DiningPage = lazy(() => import("./DiningPage"));
+const DiningListing = lazy(() => import("./Components/DiningListing"));
+const RestaurantsDirectory = lazy(() => import("./Components/RestaurantsDirectory"));
+const PlateauBitesDirectory = lazy(() => import("./Components/PlateauBitesDirectory"));
+const CozyCafesDirectory = lazy(() => import("./Components/CozyCafesDirectory"));
+const FamousSuyaDirectory = lazy(() => import("./Components/FamousSuyaDirectory"));
+const PartnerLandingPage = lazy(() => import("./Components/PartnerLandingPage"));
+const SimmerDetailPage = lazy(() => import("./Components/SimmerDetailPage"));
 const FlightBookingPage = lazy(() => import("./pages/Flight_booking"));
 const VendorDashboard = lazy(() => import("./VendorDashboard"));
 const AdminDashboard = lazy(() => import("./AdminDashboard"));
@@ -36,6 +43,14 @@ function App() {
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/lounges" element={<LoungesPage />} />
           <Route path="/dining" element={<DiningPage />} />
+          <Route path="/dining-listings" element={<DiningListing />} />
+          <Route path="/restaurants-directory" element={<RestaurantsDirectory />} />
+          <Route path="/plateau-bites-directory" element={<PlateauBitesDirectory />} />
+          <Route path="/cozy-cafes-directory" element={<CozyCafesDirectory />} />
+          <Route path="/famous-suya-directory" element={<FamousSuyaDirectory />} />
+          <Route path="/partner-landing" element={<PartnerLandingPage />} />
+          <Route path="/claim" element={<PartnerLandingPage />} />
+          <Route path="/simmer" element={<SimmerDetailPage />} />
           <Route path="/vendor" element={<VendorDashboard />} />
           <Route path="/SuperAdmin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
