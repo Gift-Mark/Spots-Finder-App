@@ -16,7 +16,7 @@ const StaysPage = lazy(() => import("./Stays"));
 const Flights = lazy(() => import("./pages/Flight_booking"));
 const PrivacyPage = lazy(() => import("./Privacy"));
 const TermsPage = lazy(() => import("./Terms"));
-const SupportPage = lazy(() => import("./Contact"));
+const ContactPage = lazy(() => import("./Contact"));
 const VendorDashboard = lazy(() => import("./VendorDashboard"));
 const AdminDashboard = lazy(() => import("./AdminDashboard"));
 const Login = lazy(() => import("./Login").then(({ Login }) => ({ default: Login })));
@@ -49,7 +49,8 @@ function App() {
           <Route path="/claim" element={<ClaimVenuePage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
-          <Route path="/support" element={<SupportPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/support" element={<ContactPage />} />
           <Route path="/vendor" element={<VendorDashboard />} />
           <Route path="/SuperAdmin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />

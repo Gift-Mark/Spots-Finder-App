@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./PlaceDetail.module.css";
 
@@ -16,7 +16,7 @@ const mockPlaces = {
     tags: ["Family Friendly", "Boating & Water Sports", "Outdoor Dining"],
     status: "Open Now",
     openingHours: "8:00 AM - 6:30 PM",
-    entryPrice: "₦1,500 Adults / ₦500 Kids",
+    entryPrice: "₦500 Adults / ₦300 Kids",
     recommendedVisit: "4:00 PM - 6:30 PM (Golden Hour Sunset)",
     phone: "+234 703 123 4567",
     heroImage: "/images/Rayfield resort 3.webp",
@@ -38,9 +38,17 @@ const mockPlaces = {
       "Bring a Light Cardigan for cool evening winds.",
       "Lifejackets are mandatory for all boat rides."
     ],
+    highlights: [
+      { icon: "🚤", title: "30-Min Lake Cruise", desc: "Guided powerboat and pontoon rides around Rayfield Lake." },
+      { icon: "🏖️", title: "Waterfront Cabanas", desc: "Private shaded lakeside huts for family picnics & social groups." },
+      { icon: "🍽️", title: "Lakeside Grill & Bar", desc: "Fresh suya, grilled fish, chapman drinks, and local dining." },
+      { icon: "🅿️", title: "Secured Vehicle Parking", desc: "Monitored parking bay with on-site security." },
+      { icon: "🏄", title: "Jet Ski Rentals", desc: "High-speed water sport rentals for thrill seekers." },
+      { icon: "🎡", title: "Children's Play Zone", desc: "Dedicated slides, swings, and safe recreation lawns." }
+    ],
     pricing: {
-      adultRate: 1500,
-      kidRate: 500,
+      adultRate: 500,
+      kidRate: 300,
       addons: [{ id: "cruise", name: "30-Min Lake Cruise", price: 2000 }]
     }
   },
@@ -76,6 +84,12 @@ const mockPlaces = {
       "Sturdy Footwear Required: Rock surfaces near streams can be slippery.",
       "Group Excursions: Hire a local guide at the gate for waterfall canyon hikes."
     ],
+    highlights: [
+      { icon: "🌊", title: "Cascading Waterfalls", desc: "Multi-tiered natural rock waterfalls." },
+      { icon: "🥾", title: "Guided Canyon Trails", desc: "Marked routes across granite formations." },
+      { icon: "📸", title: "Scenic Photography Ledges", desc: "Unmatched vantage points for nature photography." },
+      { icon: "⚡", title: "Historic Hydro Dam View", desc: "Heritage hydro-electricity installations." }
+    ],
     pricing: {
       adultRate: 1000,
       kidRate: 500,
@@ -105,6 +119,11 @@ const mockPlaces = {
       "Established in 1952 by Bernard Fagg, the Jos Museum stands as one of the oldest and most historic museum institutions in West Africa. Famous for its priceless collection of ancient Nok terracotta heads and pottery artifacts dating back to 500 BC.",
       "The compound also houses the Museum of Traditional Nigerian Architecture (MOTNA), featuring life-sized replicas of historic palaces and mosques from Kano, Zaria, and Benin City."
     ],
+    highlights: [
+      { icon: "🏺", title: "Nok Terracotta Vaults", desc: "Centuries-old ancient pottery artifacts." },
+      { icon: "🏛️", title: "MOTNA Architecture Park", desc: "Full-sized replica structures of pre-colonial Nigeria." },
+      { icon: "🎧", title: "Audio Guided Tours", desc: "Curated historical narrative headsets." }
+    ],
     pricing: {
       adultRate: 500,
       kidRate: 200,
@@ -128,10 +147,15 @@ const mockPlaces = {
     entryPrice: "Free Admission / Pay per Order",
     recommendedVisit: "6:00 PM - 9:30 PM (Dinner & City Skyline View)",
     phone: "+234 812 345 6789",
-    heroImage: "/images/tasty-fingers.jpg",
+    heroImage: "/images/Tasty Fingers.webp",
     overviewHeading: "Fine Dining with Panoramic Views of Jos",
     description: [
       "Tasty Fingers Restaurant offers a modern culinary experience blending African flavors with international continental dishes. Situated at an elevated vantage point, guests enjoy sweeping panoramic night views of Jos while dining in a relaxed atmosphere."
+    ],
+    highlights: [
+      { icon: "🍷", title: "VIP Window Seating", desc: "Tables overlooking the Jos skyline." },
+      { icon: "🥩", title: "Continental & Local Grill", desc: "Premium steaks, suya platters, and seafood." },
+      { icon: "🍹", title: "Signature Cocktail Lounge", desc: "Handcrafted mocktails, chapman, and drinks." }
     ],
     pricing: {
       adultRate: 0,
@@ -160,7 +184,7 @@ const mockPlaces = {
     entryPrice: "Free Entry",
     recommendedVisit: "10:00 AM - 3:00 PM",
     phone: "+234 800 111 2222",
-    heroImage: "/images/nzem-berom.jpg",
+    heroImage: "/images/nzem berom.jpg",
     overviewHeading: "The Grand Celebration of Berom Cultural Heritage",
     description: [
       "The Nzem Berom is the premier annual cultural carnival of the Berom people of Plateau State. Celebrating the rich music, royal processions, traditional dances, and agricultural harvests of the highlanders.",
@@ -174,6 +198,11 @@ const mockPlaces = {
     visitorTips: [
       "Arrive before 9:30 AM to secure a clear view of the opening royal procession.",
       "Photography is welcomed, but respect designated traditional performance areas."
+    ],
+    highlights: [
+      { icon: "👑", title: "Royal Horse Procession", desc: "Traditional royal parade and cultural displays." },
+      { icon: "🥁", title: "Highland Drumming & Dance", desc: "Live Berom folk music and dance troupes." },
+      { icon: "🍲", title: "Heritage Food Court", desc: "Authentic highland dishes and local crafts." }
     ],
     pricing: {
       adultRate: 0,
@@ -225,6 +254,11 @@ const mockPlaces = {
       "Evening Chills: Bring a jacket as temperatures cool down significantly by the lake at night.",
       "VIP Seating: Book early for front-row tables with direct stage views."
     ],
+    highlights: [
+      { icon: "🎸", title: "Acoustic & Live Band", desc: "Soulful Afro-fusion and live guitar performances." },
+      { icon: "🍹", title: "Lakeside Cocktail Bar", desc: "Craft drinks, cold beverages, and finger foods." },
+      { icon: "🛋️", title: "VIP Lounge Area", desc: "Reserved plush seating close to the main stage." }
+    ],
     pricing: {
       adultRate: 5000,
       kidRate: 2500,
@@ -240,6 +274,7 @@ const mockPlaces = {
     isFree: false,
     organizer: "Plateau Entertainment Forum"
   },
+
   "nok-terracotta": {
     id: "nok-terracotta",
     slug: "nok-terracotta",
@@ -271,6 +306,10 @@ const mockPlaces = {
     visitorTips: [
       "Flash photography is prohibited inside the main terracotta gallery.",
       "Book an NCMM curator guide at the main lobby for a deep historical breakdown."
+    ],
+    highlights: [
+      { icon: "🏺", title: "Original Nok Statues", desc: "500 BC clay sculptures." },
+      { icon: "📜", title: "Archaeological Timeline", desc: "Detailed timeline of Plateau excavations." }
     ],
     pricing: {
       adultRate: 1000,
@@ -311,6 +350,10 @@ const mockPlaces = {
       "Stop by during morning hours for clear sunlight and optimal photography angles.",
       "Always engage a local community guide before climbing nearby ledges."
     ],
+    highlights: [
+      { icon: "🗿", title: "Balanced Granite Formations", desc: "Famous natural sculpture rock stack." },
+      { icon: "🥾", title: "Community Trail Guided Hike", desc: "Excursions with local village guides." }
+    ],
     pricing: {
       adultRate: 500,
       kidRate: 200,
@@ -350,12 +393,17 @@ const mockPlaces = {
       "Wear comfortable walking shoes; the open-air complex covers extensive ground.",
       "Combine your visit with the adjacent Jos Zoo and Main Museum Gallery."
     ],
+    highlights: [
+      { icon: "🏰", title: "Full-Scale Replicas", desc: "Ancient Kano Wall and Zaria Mosque." },
+      { icon: "🚶‍♂️", title: "Open-Air Heritage Trail", desc: "Walking paths through regional building styles." }
+    ],
     pricing: {
       adultRate: 500,
       kidRate: 200,
       addons: [{ id: "architectural-tour", name: "Architectural History Walk", price: 1000 }]
     }
   },
+
   "mazah-waterfall": {
     id: "mazah-waterfall",
     title: "Mazah Waterfall & Highland Trail",
@@ -386,6 +434,10 @@ const mockPlaces = {
     visitorTips: [
       "Wear sturdy hiking shoes as the trail down to the waterfall base can be steep.",
       "Engage a village youth guide at Mazah center for safe navigation along stream paths."
+    ],
+    highlights: [
+      { icon: "⛰️", title: "Mountain Trail Hike", desc: "Exhilarating trek through highland villages." },
+      { icon: "💦", title: "Freshwater Cascades", desc: "Cool, natural mountain stream pools." }
     ],
     pricing: {
       adultRate: 500,
@@ -425,6 +477,10 @@ const mockPlaces = {
       "Visit the pine forest section near the picnic hills for great outdoor photography.",
       "Concession stands and local snack vendors are available near the main gate entrance."
     ],
+    highlights: [
+      { icon: "🌲", title: "Pine Forest Picnic Grounds", desc: "Cool shaded forest paths for relaxation." },
+      { icon: "🦁", title: "Wildlife Enclosures", desc: "Lions, primates, hippos, and exotic birds." }
+    ],
     pricing: {
       adultRate: 500,
       kidRate: 200,
@@ -462,6 +518,10 @@ const mockPlaces = {
     visitorTips: [
       "Exercise caution near wet granite rocks near the waterfall stream.",
       "Ideal location for a scenic lunch break when traveling along the Jos-Abuja corridor."
+    ],
+    highlights: [
+      { icon: "🏞️", title: "Riverside Picnic Benches", desc: "Shaded seating right by the cascade." },
+      { icon: "🌊", title: "Natural Waterfall Spray", desc: "Refreshing mountain mist." }
     ],
     pricing: {
       adultRate: 1000,
@@ -501,6 +561,10 @@ const mockPlaces = {
       "Start hikes early in the morning to enjoy cool mountain temperatures.",
       "Bring extra drinking water and wind-resistant clothing for the summit."
     ],
+    highlights: [
+      { icon: "⛰️", title: "1,800m Highland Peak", desc: "Highest elevation viewpoints over Jos." },
+      { icon: "🧭", title: "Certified Trail Guides", desc: "Experienced guides for rock climbing & trekking." }
+    ],
     pricing: {
       adultRate: 1000,
       kidRate: 500,
@@ -539,6 +603,10 @@ const mockPlaces = {
       "Great choice for a peaceful afternoon reading session or outdoor family lunch.",
       "Bring a picnic mat to relax on the grass lawns."
     ],
+    highlights: [
+      { icon: "🌳", title: "Shaded Tree Lawns", desc: "Spacious green lawns for outdoor relaxation." },
+      { icon: "🏛️", title: "Private Gazebos", desc: "Reserved covered spots for family events." }
+    ],
     pricing: {
       adultRate: 500,
       kidRate: 200,
@@ -560,14 +628,66 @@ export function PlaceDetail() {
     'jos-museum': 'jos-museum'
   };
 
-  // Match URL parameter ID to place in database, fallback to a safe default if missing
-  const place = mockPlaces[normalizedId] || mockPlaces[aliasMap[normalizedId]] || mockPlaces["kurra-falls"];
+  const place = mockPlaces[normalizedId] || mockPlaces[aliasMap[normalizedId]] || mockPlaces["rayfield-resort"];
 
+  // Tab State: "about" vs "highlights"
   const [activeTab, setActiveTab] = useState("about");
+
+  // Reservation State
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [adults, setAdults] = useState(1);
   const [kids, setKids] = useState(0);
   const [selectedAddons, setSelectedAddons] = useState([]);
 
+  // Modal State
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+  const [guestPhone, setGuestPhone] = useState("");
+  const [generatedTicketRef, setGeneratedTicketRef] = useState("");
+
+  // Weather State
+  const [liveWeather, setLiveWeather] = useState(null);
+  const [weatherLoading, setWeatherLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const apiKey = "ddc295c8c24b246a862468fe4b6c9dbb";
+    const city = "Jos,NG";
+
+
+    const fetchWeather = async () => {
+      try {
+        const res = await
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}`, {
+      signal: controller.signal
+    });
+    const data = await res .json ();
+
+        if (data.main) {
+          setLiveWeather({
+            temp: Math.round(data.main.temp),
+            condition: data.weather[0].description,
+            icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`
+          });
+        }
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.error("Failed to fetch weather data:", err);
+        }
+        } finally {
+          if (!controller.signal.aborted)   {
+            setWeatherLoading(false);
+          }    
+         }
+      };
+      fetchWeather();
+
+    return () => controller.abort();
+  }, [place?.id]);
   if (!place) {
     return <div className={styles.loader}>Place not found</div>;
   }
@@ -586,6 +706,34 @@ export function PlaceDetail() {
     }
   };
 
+  const handleOpenCheckout = () => {
+    setIsCheckoutOpen(true);
+  };
+
+  const handleConfirmReservation = (e) => {
+    e.preventDefault();
+    if (!guestName || !guestEmail || !guestPhone) {
+      alert("Please fill in all contact fields to complete your reservation.");
+      return;
+    }
+
+    const randomTicketNum = `JP-PASS-${Math.floor(100000 + Math.random() * 900000)}`;
+    setGeneratedTicketRef(randomTicketNum);
+    setIsCheckoutOpen(false);
+    setIsSuccessModalOpen(true);
+  };
+
+  const defaultHighlights = [
+    { icon: "✨", title: "Scenic Views", desc: "Sweeping landscape views of the Plateau terrain." },
+    { icon: "🛡️️", title: "Verified Venue", desc: "Regularly inspected for safety and customer standards." },
+    { icon: "🅿️", title: "On-site Parking", desc: "Safe parking spaces available for visitors." },
+    { icon: "👨‍👩‍👧", title: "Family Friendly", desc: "Environment suitable for all age groups." }
+  ];
+
+  const displayHighlights = (place.highlights && place.highlights.length > 0) 
+    ? place.highlights 
+    : defaultHighlights;
+
   return (
     <div className={styles.container}>
       {/* Hero Header */}
@@ -597,8 +745,8 @@ export function PlaceDetail() {
               ← Back to Discovery
             </button>
             <div className={styles.heroActions}>
-              <button className={styles.circleBtn}>🔖</button>
-              <button className={styles.circleBtn}>🔗</button>
+              <button className={styles.circleBtn} title="Save to bookmarks">🔖</button>
+              <button className={styles.circleBtn} title="Share link">🔗</button>
             </div>
           </div>
 
@@ -619,14 +767,21 @@ export function PlaceDetail() {
               <p className={styles.address}>📍 {place.address}</p>
             </div>
 
-            {place.weather && (
-              <div className={styles.weatherCard}>
-                <small>Average Daily Temp</small>
+            <div className={styles.weatherCard}>
+              <small>Live Weather</small>
+              {weatherLoading ? (
+                <div>Loading weather...</div>
+              ) : liveWeather ? (
                 <div className={styles.tempVal}>
-                  ⛅ {place.weather.temp}°C <span>{place.weather.condition}</span>
+                  {liveWeather.icon && <img src={liveWeather.icon} alt="" width="24" height="24" />}
+                  {liveWeather.temp}°C <span style={{ textTransform: "capitalize" }}>{liveWeather.condition}</span>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className={styles.tempVal}>
+                  ⛅ {place.weather?.temp}°C <span>{place.weather?.condition}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -663,14 +818,17 @@ export function PlaceDetail() {
       {/* Main Grid Content */}
       <div className={styles.mainGrid}>
         <div className={styles.leftContent}>
+          {/* FUNCTIONAL TABS NAV */}
           <div className={styles.tabNav}>
             <button
+              type="button"
               className={activeTab === "about" ? styles.activeTab : ""}
               onClick={() => setActiveTab("about")}
             >
               About the Spot
             </button>
             <button
+              type="button"
               className={activeTab === "highlights" ? styles.activeTab : ""}
               onClick={() => setActiveTab("highlights")}
             >
@@ -678,6 +836,7 @@ export function PlaceDetail() {
             </button>
           </div>
 
+          {/* TAB 1: ABOUT THE SPOT */}
           {activeTab === "about" && (
             <div className={styles.tabBody}>
               <h2>{place.overviewHeading}</h2>
@@ -695,7 +854,7 @@ export function PlaceDetail() {
               {place.gallery && (
                 <div className={styles.galleryGrid}>
                   {place.gallery.map((img, idx) => (
-                    <img key={idx} src={img} alt="Spot view" />
+                    <img key={idx} src={img} alt={`${place.title} view ${idx + 1}`} />
                   ))}
                 </div>
               )}
@@ -712,54 +871,110 @@ export function PlaceDetail() {
               )}
             </div>
           )}
+
+          {/* TAB 2: FUNCTIONAL HIGHLIGHTS & AMENITIES */}
+          {activeTab === "highlights" && (
+            <div className={styles.tabBody}>
+              <h2>Highlights & Featured Amenities</h2>
+              <p>Key facilities, experience add-ons, and visitor comforts available at {place.title}:</p>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+                gap: '16px',
+                marginTop: '20px'
+              }}>
+                {displayHighlights.map((item, idx) => (
+                  <div key={idx} style={{
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid #E2E8F0',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                  }}>
+                    <span style={{ fontSize: '28px' }}>{item.icon}</span>
+                    <strong style={{ fontSize: '16px', color: '#0F172A' }}>{item.title}</strong>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#64748B', lineHeight: '1.5' }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{
+                marginTop: '32px',
+                padding: '20px',
+                backgroundColor: '#F8FAFC',
+                border: '1px dashed #CBD5E1',
+                borderRadius: '12px'
+              }}>
+                <h4 style={{ margin: '0 0 8px', color: '#0F172A' }}>🔒 Safety & Visitor Guidelines</h4>
+                <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.6' }}>
+                  All featured experiences and amenity access strictly adhere to Plateau Tourism Board safety standards. On-site staff are available to assist with special equipment, group reservations, and emergency assistance.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Dynamic Booking Card */}
+        {/* FUNCTIONAL RESERVE PASS & TABLE SIDEBAR */}
         <div className={styles.rightSidebar}>
           <div className={styles.bookingCard}>
-            <small>STANDARD ENTRY</small>
+            <small>STANDARD ENTRY / PASS</small>
             <div className={styles.priceHeading}>
-              <h2>₦{place.pricing?.adultRate.toLocaleString()}</h2>
+              <h2>
+                {place.pricing?.adultRate === 0 
+                  ? "Free Entry" 
+                  : `₦${(place.pricing?.adultRate || 0).toLocaleString()}`}
+              </h2>
               <span className={styles.instantBadge}>Instant Ticket</span>
             </div>
 
             <div className={styles.fieldGroup}>
-              <label>Date</label>
-              <input type="date" defaultValue={new Date().toISOString().split("T")[0]} />
+              <label>Reservation Date</label>
+              <input 
+                type="date" 
+                value={selectedDate} 
+                onChange={(e) => setSelectedDate(e.target.value)} 
+              />
             </div>
 
             <div className={styles.counterRow}>
               <div>
                 <strong>Adults</strong>
-                <small>₦{place.pricing?.adultRate}</small>
+                <small>₦{place.pricing?.adultRate || 0}</small>
               </div>
               <div className={styles.counterBtns}>
-                <button onClick={() => setAdults(Math.max(1, adults - 1))}>-</button>
+                <button type="button" onClick={() => setAdults(Math.max(1, adults - 1))}>-</button>
                 <span>{adults}</span>
-                <button onClick={() => setAdults(adults + 1)}>+</button>
+                <button type="button" onClick={() => setAdults(adults + 1)}>+</button>
               </div>
             </div>
 
             <div className={styles.counterRow}>
               <div>
                 <strong>Kids</strong>
-                <small>₦{place.pricing?.kidRate}</small>
+                <small>₦{place.pricing?.kidRate || 0}</small>
               </div>
               <div className={styles.counterBtns}>
-                <button onClick={() => setKids(Math.max(0, kids - 1))}>-</button>
+                <button type="button" onClick={() => setKids(Math.max(0, kids - 1))}>-</button>
                 <span>{kids}</span>
-                <button onClick={() => setKids(kids + 1)}>+</button>
+                <button type="button" onClick={() => setKids(kids + 1)}>+</button>
               </div>
             </div>
 
-            {place.pricing?.addons && (
+            {place.pricing?.addons && place.pricing.addons.length > 0 && (
               <div className={styles.addonsSection}>
-                <label>Optional Experiences</label>
+                <label>Optional Experiences & Table Upgrades</label>
                 {place.pricing.addons.map((addon) => (
                   <div key={addon.id} className={styles.addonRow}>
                     <input
                       type="checkbox"
                       id={addon.id}
+                      checked={selectedAddons.some((a) => a.id === addon.id)}
                       onChange={() => handleAddonToggle(addon)}
                     />
                     <label htmlFor={addon.id}>{addon.name}</label>
@@ -774,14 +989,211 @@ export function PlaceDetail() {
               <strong>₦{totalEstimate.toLocaleString()}</strong>
             </div>
 
-            <button className={styles.reserveBtn}>
+            <button 
+              type="button" 
+              className={styles.reserveBtn} 
+              onClick={handleOpenCheckout}
+            >
               Reserve Pass & Get Tickets
             </button>
           </div>
         </div>
       </div>
+
+      {/* CHECKOUT MODAL */}
+      {isCheckoutOpen && (
+        <div style={modalStyles.overlay}>
+          <div style={modalStyles.modalContainer}>
+            <div style={modalStyles.header}>
+              <h3 style={{ margin: 0, color: '#0F172A' }}>Complete Your Reservation</h3>
+              <button 
+                onClick={() => setIsCheckoutOpen(false)}
+                style={modalStyles.closeBtn}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={modalStyles.summaryBox}>
+              <strong>{place.title}</strong>
+              <p style={{ margin: '4px 0 0', fontSize: '13px', color: '#64748B' }}>
+                Date: {selectedDate} | Guests: {adults} Adult(s), {kids} Kid(s)
+              </p>
+              {selectedAddons.length > 0 && (
+                <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#F97316' }}>
+                  Add-ons: {selectedAddons.map(a => a.name).join(', ')}
+                </p>
+              )}
+              <div style={{ marginTop: '8px', fontWeight: 'bold', color: '#0F172A' }}>
+                Total payable: ₦{totalEstimate.toLocaleString()}
+              </div>
+            </div>
+
+            <form onSubmit={handleConfirmReservation} style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '16px' }}>
+              <div>
+                <label style={modalStyles.label}>Full Name</label>
+                <input 
+                  type="text" 
+                  required 
+                  placeholder="e.g. Pam Chollom"
+                  value={guestName}
+                  onChange={(e) => setGuestName(e.target.value)}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Email Address (To receive E-Ticket)</label>
+                <input 
+                  type="email" 
+                  required 
+                  placeholder="pam@example.com"
+                  value={guestEmail}
+                  onChange={(e) => setGuestEmail(e.target.value)}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Phone Number</label>
+                <input 
+                  type="tel" 
+                  required 
+                  placeholder="+234 800 000 0000"
+                  value={guestPhone}
+                  onChange={(e) => setGuestPhone(e.target.value)}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <button type="submit" style={modalStyles.confirmBtn}>
+                Confirm Reservation & Issue Pass
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* E-TICKET CONFIRMATION MODAL */}
+      {isSuccessModalOpen && (
+        <div style={modalStyles.overlay}>
+          <div style={{ ...modalStyles.modalContainer, textAlign: 'center' }}>
+            <div style={{ fontSize: '48px', marginBottom: '12px' }}>🎟️</div>
+            <h3 style={{ margin: '0 0 8px', color: '#0F172A' }}>Reservation Confirmed!</h3>
+            <p style={{ margin: '0 0 16px', fontSize: '14px', color: '#64748B' }}>
+              Your digital entry pass has been issued and sent to <strong>{guestEmail}</strong>.
+            </p>
+
+            <div style={{
+              backgroundColor: '#FFF7ED',
+              border: '2px dashed #F97316',
+              borderRadius: '12px',
+              padding: '20px',
+              margin: '16px 0'
+            }}>
+              <small style={{ color: '#C2410C', fontWeight: 'bold' }}>OFFICIAL E-TICKET VOUCHER</small>
+              <h4 style={{ margin: '6px 0', fontSize: '18px', color: '#0F172A' }}>{generatedTicketRef}</h4>
+              
+              {/* QR Code Graphic */}
+              <div style={{ margin: '12px 0' }}>
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${generatedTicketRef}`} 
+                  alt="QR Ticket Code" 
+                  style={{ borderRadius: '8px', border: '1px solid #CBD5E1' }}
+                />
+              </div>
+
+              <div style={{ fontSize: '12px', color: '#475569', lineHeight: '1.5' }}>
+                <strong>{place.title}</strong><br />
+                Date: {selectedDate} | Pass for {adults + kids} Person(s)<br />
+                Presenter: {guestName}
+              </div>
+            </div>
+
+            <button 
+              type="button" 
+              onClick={() => setIsSuccessModalOpen(false)}
+              style={modalStyles.confirmBtn}
+            >
+              Done & Save Ticket
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+// INLINE STYLES FOR POPUP MODALS
+const modalStyles = {
+  overlay: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+    padding: '20px'
+  },
+  modalContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: '16px',
+    padding: '28px',
+    maxWidth: '480px',
+    width: '100%',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+    fontFamily: '"Inter", sans-serif'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '16px'
+  },
+  closeBtn: {
+    background: 'none',
+    border: 'none',
+    fontSize: '18px',
+    cursor: 'pointer',
+    color: '#64748B'
+  },
+  summaryBox: {
+    backgroundColor: '#F8FAFC',
+    border: '1px solid #E2E8F0',
+    borderRadius: '10px',
+    padding: '14px'
+  },
+  label: {
+    display: 'block',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    color: '#0F172A',
+    marginBottom: '6px'
+  },
+  input: {
+    width: '100%',
+    padding: '10px 12px',
+    borderRadius: '8px',
+    border: '1px solid #CBD5E1',
+    fontSize: '14px',
+    boxSizing: 'border-box'
+  },
+  confirmBtn: {
+    width: '100%',
+    padding: '12px',
+    backgroundColor: '#F97316',
+    color: '#FFFFFF',
+    border: 'none',
+    borderRadius: '8px',
+    fontSize: '15px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    marginTop: '8px'
+  }
+};
 
 export default PlaceDetail;

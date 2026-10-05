@@ -43,7 +43,7 @@ export const Footer = () => {
         <div className={styles.navCol}>
           <h4 className={styles.colTitle}>Support</h4>
           <ul className={styles.linkList}>
-            <li><Link to="/support">Contact Support</Link></li>
+            <li><Link to="/contact">Contact Support</Link></li>
           </ul>
         </div>
       </div>
