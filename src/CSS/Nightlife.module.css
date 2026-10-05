@@ -1,35 +1,358 @@
-.pageWrapper {
-  background-color: #f8fafc;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 1rem 4rem;
+  font-family: inherit;
   color: #0f172a;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-.mainContent {
-  flex: 1;
-  width: 100%;
-}
-
-.noResults {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 48px 24px;
+/* Dark Hero Section */
+.heroSection {
+  background: #0b1329;
+  margin: 0 -1rem 1.5rem;
+  padding: 2.5rem 1.25rem 2rem;
+  color: #ffffff;
   text-align: center;
+}
+
+.heroTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 0.5rem;
+}
+
+.heroSubtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 0 0 1.5rem;
+}
+
+/* Search Box Floating in Hero */
+.searchCard {
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  text-align: left;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.85rem;
+}
+
+.searchIcon {
+  font-size: 0.9rem;
+  margin-right: 0.5rem;
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  width: 100%;
+  outline: none;
+  font-size: 0.85rem;
+  color: #0f172a;
+}
+
+.pillsRow {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pill, .activePill {
+  white-space: nowrap;
+  padding: 0.5rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.pill {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.activePill {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+/* Section Headers */
+.sectionHeader {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 1.5rem 0 1rem;
+  color: #0f172a;
+}
+
+/* Featured Card */
+.featuredCard {
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
 }
 
-.noResults h3 {
-  font-size: 18px;
-  color: #0f172a;
-  margin: 0 0 8px 0;
+.imageWrapper, .spotImageWrapper {
+  position: relative;
+  height: 200px;
+  width: 100%;
 }
 
-.noResults p {
-  font-size: 14px;
-  color: #64748b;
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.promotedBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: #ff6600;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+}
+
+.featuredContent, .spotContent {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.venueTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
   margin: 0;
+}
+
+.ratingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+}
+
+.stars {
+  color: #f59e0b;
+  font-weight: 800;
+}
+
+.reviews {
+  color: #64748b;
+}
+
+.price {
+  color: #0f172a;
+  font-weight: 700;
+  margin-left: auto;
+}
+
+.venueDesc {
+  font-size: 0.85rem;
+  color: #475569;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.tagsRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.tagBadge, .categoryBadge {
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+}
+
+.categoryBadge {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #ffffff;
+}
+
+.locationBadge, .locationRow {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Spots Grid */
+.spotsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.spotCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.titlePriceRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.spotTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+/* Buttons */
+.primaryBtn, .secondaryBtn {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+  border: none;
+  margin-top: 0.5rem;
+}
+
+.primaryBtn {
+  background: #ff6600;
+  color: #ffffff;
+}
+
+.secondaryBtn {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Claim Banner */
+.claimBanner {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.claimBanner h3 {
+  font-size: 1.2rem;
+  margin: 0 0 0.4rem;
+}
+
+.claimBanner p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 1rem;
+}
+
+.claimBtn {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  border: none; background: none;
+  font-size: 1.2rem; cursor: pointer;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.locationSub {
+  font-size: 0.8rem;
+  color: #ff6600;
+  margin: -0.5rem 0 0.5rem;
+  font-weight: 700;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formGroup label {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.formGroup input, .formGroup select {
+  padding: 0.7rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+}
+
+.formRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.formRow .formGroup {
+  flex: 1;
+}
+
+.successState {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.subNote {
+  font-size: 0.85rem;
+  color: #64748b;
 }

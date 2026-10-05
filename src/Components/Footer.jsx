@@ -1,18 +1,8 @@
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import NewsletterForm from './NewsletterForm';
 import styles from '../CSS/Footer.module.css';
 
 export const Footer = () => {
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (email) {
-      setSubscribed(true);
-      setEmail('');
-    }
-  };
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContainer}>
@@ -23,23 +13,7 @@ export const Footer = () => {
             Subscribe to get the latest updates on events, festivals, and spots in Jos.
           </p>
 
-          {subscribed ? (
-            <p className={styles.successMessage}>✓ Thanks for subscribing!</p>
-          ) : (
-            <form className={styles.newsletterForm} onSubmit={handleSubscribe}>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className={styles.newsletterInput}
-              />
-              <button type="submit" className={styles.subscribeBtn}>
-                Subscribe
-              </button>
-            </form>
-          )}
+          <NewsletterForm />
 
           <p className={styles.copyright}>
             © 2026 Jos Pulse. Celebrating the spirit of the Plateau.

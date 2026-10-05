@@ -96,13 +96,15 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
         </div>
 
         <div className={styles.eventsGrid}>
-          {displayEvents.map((event) => (
-            <div 
-              key={event.id} 
-              className={styles.eventCard}
-              onClick={() => navigate(`/place/${event.id}`)}
-              style={{ cursor: 'pointer' }}
-            >
+          {displayEvents.map((event) => {
+            const placeId = event.slug || event._id || event.id;
+            return (
+              <div 
+                key={placeId || event.title}
+                className={styles.eventCard}
+                onClick={() => placeId && navigate(`/place/${placeId}`)}
+                style={{ cursor: placeId ? 'pointer' : 'default' }}
+              >
               <div className={styles.eventImageWrapper}>
                 <img
                   src={event.image}
@@ -125,7 +127,7 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
                 <div className={styles.eventFooter}>
                   <span className={styles.eventPrice}>{event.price}</span>
                   <Link 
-                    to={`/place/${event.id}`} 
+                    to={placeId ? `/place/${placeId}` : '/events'}
                     className={styles.actionBtn}
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -134,7 +136,8 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

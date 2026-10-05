@@ -13,6 +13,7 @@ import HeroSection from "./Components/HeroSection.jsx";
 import TopTouristSpots from "./Components/TopTouristSpots.jsx";
 import PromotedEventsSection from "./Components/PromotedEventsSection.jsx";
 import HeritageSpotlight from "./Components/HeritageSpotlight.jsx";
+import TeeTimeBookingModal from "./Components/TeeTime.jsx";
 import Footer from "./Components/Footer.jsx";
 import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
@@ -26,6 +27,7 @@ export const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [isTeeTimeOpen, setIsTeeTimeOpen] = useState(false);
 
   // Maintain persistent user session for behavioral logs
   const [sessionId] = useState(() => {
@@ -207,7 +209,7 @@ export const Discover = () => {
         )}
 
         {/* TOP TOURIST SPOTS COMPONENT */}
-        <TopTouristSpots onSeeAll={() => navigate("/spots")} />
+        <TopTouristSpots onSeeAll={() => navigate("/attractions")} />
 
         {/* PROMOTED & FEATURED EVENTS */}
         <PromotedEventsSection
@@ -220,10 +222,13 @@ export const Discover = () => {
         <HeritageSpotlight
           onBookTeeTime={() => {
             logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "Rayfield Golf Club" });
-            alert("Opening Tee Time Booking...");
+            setIsTeeTimeOpen(true);
           }}
           onLearnMore={() => navigate("/golf")}
         />
+        {isTeeTimeOpen && (
+          <TeeTimeBookingModal isOpen onClose={() => setIsTeeTimeOpen(false)} />
+        )}
 
       </main>
 

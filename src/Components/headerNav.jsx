@@ -7,6 +7,7 @@ const Header = () => {
   // Updated navigation categories matching the UI
   const navLinks = [
     { name: 'Explore', path: '/explore' },
+    {name: 'Stays', path: '/stays'},
     { name: 'Culture & Heritage', path: '/culture' },
     { name: 'Flights', path: '/flights' },
     { name: 'Restaurants', path: '/dining' },

@@ -1,5 +1,4 @@
 const Place = require('../models/Place');
-const { placeDetails } = require('../data/placeDetails');
 
 // @desc    Get all places with optional filtering by section/category
 // @route   GET /api/places
@@ -23,20 +22,6 @@ exports.getPlaces = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
-};
-
-// @desc    Get one full place detail record by slug
-// @route   GET /api/places/:slug
-exports.getPlaceBySlug = async (req, res) => {
-  const requestedSlug = String(req.params.slug || '').toLowerCase();
-  const slug = requestedSlug === 'nok-terracottas' ? 'nok-terracotta' : requestedSlug;
-  const place = placeDetails[slug];
-
-  if (!place) {
-    return res.status(404).json({ success: false, message: 'Place not found' });
-  }
-
-  return res.status(200).json({ success: true, data: place });
 };
 
 // @desc    Create a new spot, venue, or event

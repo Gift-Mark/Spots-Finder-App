@@ -32,9 +32,15 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "business", "admin"],
       default: "user",
     },
+    accountStatus: {
+      type: String,
+      enum: ["confirmed", "pending_verification"],
+      default: "confirmed",
+    },
+    businessName: { type: String, trim: true, default: "" },
   },
   {
     timestamps: true,

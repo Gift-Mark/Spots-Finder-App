@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import VendorSidebar from './Components/VendorSidebar';
@@ -11,6 +12,16 @@ import styles from './CSS/VendorDashboard.module.css';
 
 export const VendorDashboard = () => {
   const [activeTab, setActiveTab] = useState('Overview');
+  const location = useLocation();
+  const vendorUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+      return null;
+    }
+  })();
+  const claimBusinessName = location.state?.businessName || vendorUser?.businessName;
+  const claimConfirmed = location.state?.claimConfirmed || vendorUser?.accountStatus === 'confirmed';
 
   const handleCreateEvent = () => {
     alert('Opening Create New Event Modal...');
@@ -41,7 +52,9 @@ export const VendorDashboard = () => {
             <div>
               <h1 className={styles.pageTitle}>Overview</h1>
               <p className={styles.pageSubtitle}>
-                Here's what's happening at Rayfield Golf Club today.
+                {claimConfirmed && claimBusinessName
+                  ? `Your business account is confirmed for ${claimBusinessName}. Venue ownership review is pending.`
+                  : "Here's what's happening at Rayfield Golf Club today."}
               </p>
             </div>
 

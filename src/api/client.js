@@ -17,6 +17,16 @@ export const askWebsiteSupport = async (prompt, sessionId, pagePath) => {
   return response.data;
 };
 
+export const subscribeNewsletter = async (name, email) => {
+  const response = await axios.post(`${API_BASE_URL}/subscribe`, { name, email });
+  return response.data;
+};
+
+export const registerVenueClaim = async (formData) => {
+  const response = await axios.post(`${API_BASE_URL}/claims/register`, formData);
+  return response.data;
+};
+
 export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   try {
     await axios.post(`${API_BASE_URL}/behavior/log`, { sessionId, eventType, payload });

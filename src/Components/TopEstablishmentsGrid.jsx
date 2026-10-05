@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/TopEstablishedGrid.module.css';
@@ -159,31 +160,36 @@ export const TopEstablishmentsGrid = ({
 
       {!isLoading && !error && currentItems.length > 0 && (
         <div className={styles.cardsGrid}>
-          {currentItems.map((item) => (
-            <article key={item._id || item.id || item.title} className={styles.card}>
-              <div className={styles.imageWrapper}>
-                <img src={item.image} alt={item.title} className={styles.cardImage} />
-                <span className={styles.categoryBadge}>{item.badge || item.category?.[0]}</span>
-                <div className={styles.ratingBadge}>
-                  <FontAwesomeIcon icon={faStar} className={styles.starIcon} />
-                  <span>{Number(item.rating || 0).toFixed(1)}</span>
-                  <small className={styles.reviewCount}>({item.reviewsCount || 0})</small>
-                </div>
-              </div>
+          {currentItems.map((item) => {
+            const placeId = item.slug || item._id || item.id;
+            return (
+              <Link key={item._id || item.id || item.title} to={`/place/${placeId}`} className={styles.cardLink}>
+                <article className={styles.card}>
+                  <div className={styles.imageWrapper}>
+                    <img src={item.image} alt={item.title} className={styles.cardImage} />
+                    <span className={styles.categoryBadge}>{item.badge || item.category?.[0]}</span>
+                    <div className={styles.ratingBadge}>
+                      <FontAwesomeIcon icon={faStar} className={styles.starIcon} />
+                      <span>{Number(item.rating || 0).toFixed(1)}</span>
+                      <small className={styles.reviewCount}>({item.reviewsCount || 0})</small>
+                    </div>
+                  </div>
 
-              <div className={styles.cardContent}>
-                <div className={styles.titlePriceRow}>
-                  <h3 className={styles.venueName}>{item.title}</h3>
-                  <span className={styles.priceTier}>{item.price}</span>
-                </div>
-                <span className={styles.cuisineTag}>{item.cuisine || item.category?.[0]}</span>
-                <p className={styles.description}>{item.description}</p>
-                <button type="button" className={`${styles.actionBtn} ${styles.primary}`}>
-                  {item.buttonText || 'View details'}
-                </button>
-              </div>
-            </article>
-          ))}
+                  <div className={styles.cardContent}>
+                    <div className={styles.titlePriceRow}>
+                      <h3 className={styles.venueName}>{item.title}</h3>
+                      <span className={styles.priceTier}>{item.price}</span>
+                    </div>
+                    <span className={styles.cuisineTag}>{item.cuisine || item.category?.[0]}</span>
+                    <p className={styles.description}>{item.description}</p>
+                    <div className={styles.actionRow}>
+                      <span className={`${styles.actionBtn} ${styles.primary}`} aria-hidden> {item.buttonText || 'View details'}</span>
+                    </div>
+                  </div>
+                </article>
+              </Link>
+            );
+          })}
         </div>
       )}
 

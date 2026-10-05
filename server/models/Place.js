@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 const schema = new mongoose.Schema({
   name: { type: String, required: true, trim: true, maxlength: 140 },
   slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
@@ -29,4 +29,6 @@ const schema = new mongoose.Schema({
 }, { timestamps: true });
 schema.index({ name: 'text', summary: 'text', description: 'text', tags: 'text' });
 schema.index({ category: 1, status: 1, featured: -1, rating: -1 });
-module.exports = mongoose.model('Place', schema);
+const Place = mongoose.model('Place', schema);
+
+export default Place;

@@ -1,0 +1,222 @@
+export const JOS_LOUNGES = [
+  {
+    id: "lounge-01",
+    name: "Treasure Lounge & Grills",
+    neighborhood: "Rayfield",
+    address: "Plot 9259 Yingi Road, Behind Adipet Gas Station, Rayfield, Jos",
+    openingHours: "3:00 PM – 2:00 AM",
+    priceRange: "$$$",
+    vibe: "High-end VIP, Outdoor Deck, Grills",
+    phone: "+234 803 000 1101",
+    popularFor: ["VIP Bottle Service", "Grilled Fish", "Weekend DJ Sets"]
+  },
+  {
+    id: "lounge-02",
+    name: "Astoria Lounge",
+    neighborhood: "Rayfield",
+    address: "Opposite Steffan Hotel, Rayfield Road, Jos",
+    openingHours: "4:00 PM – 3:00 AM",
+    priceRange: "$$$",
+    vibe: "Trendy, Rooftop Views, Shisha",
+    phone: "+234 803 000 1102",
+    popularFor: ["Cocktail Menu", "Rooftop Seating", "Shisha"]
+  },
+  {
+    id: "lounge-03",
+    name: "Barcardi Restaurant & Lounge",
+    neighborhood: "GRA",
+    address: "11 Dandaura Road, Off Wase Road, GRA, Jos",
+    openingHours: "2:00 PM – 12:00 AM",
+    priceRange: "$$",
+    vibe: "Classy, Relaxed Ambient Music, Fine Dining",
+    phone: "+234 709 311 9036",
+    popularFor: ["Signature Cocktails", "Intercontinental Dishes", "Private Cabanas"]
+  },
+  {
+    id: "lounge-04",
+    name: "Imperial Lux Lounge",
+    neighborhood: "Little Rayfield",
+    address: "1 Chan Road, Opp. New Government House, Little Rayfield, Jos",
+    openingHours: "4:00 PM – 3:00 AM",
+    priceRange: "$$$",
+    vibe: "Luxury, Afrobeat Nights, VIP Booths",
+    phone: "+234 803 000 1104",
+    popularFor: ["VIP Booths", "Premium Wines", "Afrobeat Nights"]
+  },
+  {
+    id: "lounge-05",
+    name: "18th Street Lounge",
+    neighborhood: "Central Jos",
+    address: "Akila Machunga Street, By National Library, Jos",
+    openingHours: "3:00 PM – 1:00 AM",
+    priceRange: "$$",
+    vibe: "Urban, Chill Outing, Sports Screening",
+    phone: "+234 803 000 1105",
+    popularFor: ["Live Sports Matches", "Cocktails", "Finger Foods"]
+  },
+  {
+    id: "lounge-06",
+    name: "KruiseYards",
+    neighborhood: "Rayfield",
+    address: "New Government House Road, Rayfield, Jos",
+    openingHours: "4:00 PM – 2:30 AM",
+    priceRange: "$$",
+    vibe: "Open-Air Yard, Party Vibe, Suya Bar",
+    phone: "+234 803 000 1106",
+    popularFor: ["Peppered Snail", "Cold Draft Beer", "Yard Parties"]
+  },
+  {
+    id: "lounge-07",
+    name: "Varlaine Park Lounge",
+    neighborhood: "Rayfield",
+    address: "Fwavwei, Rayfield Road, Jos",
+    openingHours: "12:00 PM – 11:30 PM",
+    priceRange: "$$",
+    vibe: "Garden Lounge, Family Friendly, Outdoor Seating",
+    phone: "+234 803 000 1107",
+    popularFor: ["Catfish Pepper Soup", "Outdoor Seats", "Cocktails"]
+  },
+  {
+    id: "lounge-08",
+    name: "Ignite Lounge",
+    neighborhood: "Shaka / Gold & Base",
+    address: "6738 Shaka Road, Near Gold and Base, Jos",
+    openingHours: "4:00 PM – 3:00 AM",
+    priceRange: "$$",
+    vibe: "Energetic Nightlife, Lighting FX, DJ Battles",
+    phone: "+234 803 000 1108",
+    popularFor: ["Late Night Parties", "Shisha Lounge", "Spicy Wings"]
+  },
+  {
+    id: "lounge-09",
+    name: "Versecorp Lounge & Cafe",
+    neighborhood: "Rayfield",
+    address: "Shincho Road, Off Rayfield Resort Road, Jos",
+    openingHours: "11:00 AM – 11:00 PM",
+    priceRange: "$$",
+    vibe: "Cozy, Modern Aesthetics, Coffee & Bar",
+    phone: "+234 803 000 1109",
+    popularFor: ["Mocktails & Cocktails", "Aesthetic Photos", "Brunch & Drinks"]
+  },
+  {
+    id: "lounge-10",
+    name: "Tuscany Lounge & Restaurant",
+    neighborhood: "GRA",
+    address: "Justice Akanbi Close, Along St. Piran's Church Road, GRA, Jos",
+    openingHours: "1:00 PM – 11:00 PM",
+    priceRange: "$$$",
+    vibe: "Italian Theme, Intimate Lounge, Wine Bar",
+    phone: "+234 803 000 1110",
+    popularFor: ["Wine Selection", "Steak & Pasta", "Romantic Dinners"]
+  },
+  {
+    id: "lounge-11",
+    name: "The Net Club & Lounge",
+    neighborhood: "Commercial Area",
+    address: "Ahmadu Bello Way, Jos North, Jos",
+    openingHours: "5:00 PM – 4:00 AM",
+    priceRange: "$$",
+    vibe: "High Energy, Club Mix, Night Owl Central",
+    phone: "+234 803 000 1111",
+    popularFor: ["Midnight DJ Sets", "Assorted Drinks", "VIP Lounge Bar"]
+  },
+  {
+    id: "lounge-12",
+    name: "Swanky Haus Lounge",
+    neighborhood: "Rayfield",
+    address: "By PRTVC Junction, Rayfield Road, Jos",
+    openingHours: "3:00 PM – 2:00 AM",
+    priceRange: "$$",
+    vibe: "Stylish, Youthful, Indoor & Terrace Lounge",
+    phone: "+234 803 000 1112",
+    popularFor: ["Shisha", "Finger Foods", "Amapiano Nights"]
+  },
+  {
+    id: "lounge-13",
+    name: "Steerers Lounge & Garden",
+    neighborhood: "Old Airport Road",
+    address: "Off Old Airport Road, Jos",
+    openingHours: "2:00 PM – 12:00 AM",
+    priceRange: "$$",
+    vibe: "Garden Bar, Acoustic Evenings, BBQ Grill",
+    phone: "+234 803 000 1113",
+    popularFor: ["Grilled Catfish", "Cold Beers", "Garden Vibes"]
+  },
+  {
+    id: "lounge-14",
+    name: "Point Lounge",
+    neighborhood: "Old Airport Road",
+    address: "Old Airport Road, Near Crest Hotel Axis, Jos",
+    openingHours: "4:00 PM – 1:00 AM",
+    priceRange: "$$",
+    vibe: "Open Terrace, Sports Bar, Relaxed",
+    phone: "+234 803 000 1114",
+    popularFor: ["Match Viewing", "Sharwama & Grills", "Cocktails"]
+  },
+  {
+    id: "lounge-15",
+    name: "Kaatman Lounge",
+    neighborhood: "Rayfield",
+    address: "Rayfield Expressway, Jos",
+    openingHours: "3:00 PM – 2:00 AM",
+    priceRange: "$$",
+    vibe: "Spacious Outdoor Area, Nightstand Bar",
+    phone: "+234 803 000 1115",
+    popularFor: ["Barbecue Chicken", "Group Hangouts", "Late Night Drinks"]
+  },
+  {
+    id: "lounge-16",
+    name: "Tin City Hub Lounge",
+    neighborhood: "Secretariat Junction",
+    address: "Secretariat Road, Near Plateau Secretariat, Jos",
+    openingHours: "12:00 PM – 11:00 PM",
+    priceRange: "$$",
+    vibe: "Central Location, Modern Lounge & Eats",
+    phone: "+234 803 000 1116",
+    popularFor: ["Central Meeting Spot", "Cocktails", "Local Grills"]
+  },
+  {
+    id: "lounge-17",
+    name: "Pak Relax Garden Lounge",
+    neighborhood: "Zaramaganda",
+    address: "Diye Dashik Street, Rayfield Road, Zaramaganda, Jos",
+    openingHours: "2:00 PM – 11:30 PM",
+    priceRange: "$",
+    vibe: "Casual Outdoor Joint, Friendly Staff",
+    phone: "+234 803 954 9034",
+    popularFor: ["Affordable Drinks", "Roasted Goat Meat (Asun)", "Outdoor Breeze"]
+  },
+  {
+    id: "lounge-18",
+    name: "Clay City Lounge",
+    neighborhood: "Museum Area",
+    address: "2 Museum Street, Central Jos",
+    openingHours: "2:00 PM – 11:00 PM",
+    priceRange: "$$",
+    vibe: "Cultural, Rustic Clay Decor, Cozy Bar",
+    phone: "+234 803 000 1118",
+    popularFor: ["Palm Wine Cocktails", "Pepper Soup", "Serene Atmosphere"]
+  },
+  {
+    id: "lounge-19",
+    name: "Zero Cafe & Lounge",
+    neighborhood: "Rayfield",
+    address: "By Jos Business School, Rayfield, Jos",
+    openingHours: "12:00 PM – 12:00 AM",
+    priceRange: "$$",
+    vibe: "Minimalist Lounge, Young Professional Crowd",
+    phone: "+234 803 000 1119",
+    popularFor: ["Craft Mocktails", "Burgers & Fries", "Work-to-Evening Drinks"]
+  },
+  {
+    id: "lounge-20",
+    name: "Karisa Ristorante & Lounge",
+    neighborhood: "British America",
+    address: "Korinjoh House, #5 Yakubu Gowon Way, British America Junction, Jos",
+    openingHours: "1:00 PM – 11:30 PM",
+    priceRange: "$$$",
+    vibe: "Sophisticated Lounge Bar, Fine Dining, Premium Drinks",
+    phone: "+234 803 000 1120",
+    popularFor: ["Fine Wines", "Executive Lounge Seating", "Gourmet Bites"]
+  }
+];

@@ -4,12 +4,36 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import multer from "multer";
+import path from "node:path";
+import { mkdir, unlink, writeFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
+import { fileURLToPath } from "node:url";
 import User from "./models/User.js";
-
 import Place from "./models/Place.js";
+import Claim from "./models/Claim.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const proofDirectory = path.join(path.dirname(fileURLToPath(import.meta.url)), "uploads", "venue-proofs");
+const allowedProofTypes = new Set(["application/pdf", "image/jpeg", "image/png"]);
+const claimProofUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => {
+    if (!allowedProofTypes.has(file.mimetype)) {
+      return callback(new Error("Proof must be a PDF, JPG, or PNG file."));
+    }
+    callback(null, true);
+  },
+});
+
+const parseClaimProof = (req, res, next) => {
+  claimProofUpload.single("ownershipProof")(req, res, (error) => {
+    if (error) return res.status(400).json({ message: error.message || "Could not process proof upload." });
+    next();
+  });
+};
 
 // Parse JSON requests and allow the Vite frontend to call this API locally.
 app.use(cors());
@@ -128,6 +152,96 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
+app.post("/api/claims/register", parseClaimProof, async (req, res) => {
+  let createdUser;
+  let savedProofPath;
+
+  try {
+    const businessName = String(req.body.businessName || "").trim();
+    const category = String(req.body.category || "").trim();
+    const address = String(req.body.address || "").trim();
+    const ownerName = String(req.body.ownerName || "").trim();
+    const email = String(req.body.email || "").trim().toLowerCase();
+    const phone = String(req.body.phone || "").trim();
+    const password = String(req.body.password || "");
+    const proof = req.file;
+
+    if (!businessName || !category || !address || !ownerName || !email || !phone || !password || !proof) {
+      return res.status(400).json({ message: "Complete all business, owner, account, and proof fields." });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ message: "Enter a valid business email address." });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters." });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "An account already exists for this email. Sign in before claiming a venue." });
+    }
+
+    const ownerNameParts = ownerName.split(/\s+/);
+    const firstName = ownerNameParts.shift();
+    const lastName = ownerNameParts.join(" ") || firstName;
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    await mkdir(proofDirectory, { recursive: true });
+    const proofExtension = { "application/pdf": ".pdf", "image/jpeg": ".jpg", "image/png": ".png" }[proof.mimetype];
+    const proofStorageName = `${randomUUID()}${proofExtension}`;
+    savedProofPath = path.join(proofDirectory, proofStorageName);
+    await writeFile(savedProofPath, proof.buffer, { flag: "wx" });
+
+    createdUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      password: passwordHash,
+      role: "business",
+      accountStatus: "confirmed",
+      businessName,
+    });
+
+    const claim = await Claim.create({
+      userId: createdUser._id,
+      businessName,
+      category,
+      address,
+      ownerName,
+      email,
+      phone,
+      proofFileName: path.basename(proof.originalname),
+      proofStorageName,
+      proofMimeType: proof.mimetype,
+      proofSize: proof.size,
+      status: "pending_review",
+    });
+
+    const token = process.env.JWT_SECRET
+      ? jwt.sign({ userId: createdUser._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
+      : null;
+    return res.status(201).json({
+      message: "Business account confirmed. Your venue claim was submitted for ownership review.",
+      token,
+      claimStatus: claim.status,
+      user: {
+        id: createdUser._id,
+        firstName: createdUser.firstName,
+        lastName: createdUser.lastName,
+        email: createdUser.email,
+        role: createdUser.role,
+        accountStatus: createdUser.accountStatus,
+        businessName: createdUser.businessName,
+      },
+    });
+  } catch (error) {
+    if (createdUser) await User.deleteOne({ _id: createdUser._id }).catch(() => {});
+    if (savedProofPath) await unlink(savedProofPath).catch(() => {});
+    console.error("Venue claim registration failed:", error.message);
+    return res.status(500).json({ message: "Could not submit the venue claim. Please try again." });
+  }
+});
+
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -189,7 +303,8 @@ app.post("/api/auth/login", async (req, res) => {
 async function startServer() {
   try {
     // Start accepting requests only after the database connection is ready.
-    await mongoose.connect(process.env.MONGODB_URI);
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || "mongodb://127.0.0.1:27017/jospulse";
+    await mongoose.connect(mongoUri);
 
     console.log("Connected to MongoDB");
 
