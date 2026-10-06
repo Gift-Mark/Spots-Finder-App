@@ -18,6 +18,7 @@ const PrivacyPage = lazy(() => import("./Privacy"));
 const TermsPage = lazy(() => import("./Terms"));
 const ContactPage = lazy(() => import("./Contact"));
 const VendorDashboard = lazy(() => import("./VendorDashboard"));
+const UserDashboard = lazy(() => import("./UserDashboard"));
 const AdminDashboard = lazy(() => import("./AdminDashboard"));
 const Login = lazy(() => import("./Login").then(({ Login }) => ({ default: Login })));
 const Register = lazy(() => import("./Register").then(({ Register }) => ({ default: Register })));
@@ -51,6 +52,7 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/support" element={<ContactPage />} />
+          <Route path="/userDashboard" element={<UserDashboard />} />
           <Route path="/vendor" element={<VendorDashboard />} />
           <Route path="/SuperAdmin" element={<AdminDashboard />} />
           <Route path="/login" element={<Login />} />
@@ -59,8 +61,6 @@ function App() {
           {/* Dynamic route for all spot/place detail views */}
           <Route path="/place/:id" element={<PlaceDetail />} />
 
-          {/* Flight Booking Page */}
-          <Route path="/flights" element={<jos_pulse_flight_booking />} />
         </Routes>
       </Suspense>
     </>

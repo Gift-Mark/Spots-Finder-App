@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "./api/client";
 import styles from "./Login.module.css";
 
 export const Login = () => {
@@ -14,26 +15,13 @@ export const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
+      const data = await loginUser({ email, password });
 
       // Persist the session before navigating so protected pages can read it immediately.
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      navigate("/discover", {
+      navigate("/explore", {
         state: {
           greeting: `Welcome back, ${data.user.firstName}`,
           message: "What's the vibe right now!",
@@ -41,7 +29,7 @@ export const Login = () => {
       });
     } catch (err) {
       console.error(err);
-      setError("Could not connect to the server.");
+      setError(err.response?.data?.message || "Could not connect to the server.");
     }
   };
 

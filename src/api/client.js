@@ -22,6 +22,16 @@ export const subscribeNewsletter = async (name, email) => {
   return response.data;
 };
 
+export const registerUser = async (user) => {
+  const response = await axios.post(`${API_BASE_URL}/auth/register`, user);
+  return response.data;
+};
+
+export const loginUser = async (credentials) => {
+  const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
+  return response.data;
+};
+
 export const registerVenueClaim = async (formData) => {
   const response = await axios.post(`${API_BASE_URL}/claims/register`, formData);
   return response.data;

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { registerUser } from "./api/client";
 import styles from "./Register.module.css";
 
 export const Register = () => {
@@ -27,38 +28,33 @@ const [middleName, setMiddleName] = useState("");
 
     // Registration and login use the same API contract, including the returned session token.
     try{
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ firstName, lastName, middleName, email, password }),
-      });
-
-      const data = await response.json();
-
-      if(!response.ok) {
-        setError(data.message);
-        return;
-    }
+      const data = await registerUser({ firstName, lastName, middleName, email, password });
 
     localStorage.setItem("token", data.token);
     localStorage.setItem("user", JSON.stringify(data.user));
 
-    // The first greeting is selected at account creation time and passed to Discover.
     const hour = new Date().getHours();
-    const timeGreeting =
-      hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+    const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
-    navigate("/discover", {
+    navigate("/userDashboard", {
       state: {
         greeting: `${timeGreeting}, ${firstName}`,
-        message: "J-Town is alive.",
       },
     });
-  }catch{
-    setError("Could not connect to the server.");
+  }catch(err){
+    console.error("Registration Error Details:", err);
+  
+  if (err.response) {
+    // Server responded with a status code (e.g., 400, 500)
+    setError(err.response.data?.message || "Server error occurred.");
+  } else if (err.request) {
+    // Request was made but no response was received (Network / Server Down)
+    setError("Backend server is offline or unreachable. Check your API server.");
+  } else {
+    setError("An unexpected error occurred.");
   }
+};
+
   };
 
   return (

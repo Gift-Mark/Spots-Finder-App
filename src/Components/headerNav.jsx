@@ -46,10 +46,20 @@ const Header = () => {
 
         {/* Direct Action Buttons matching UI (Register & Login) */}
         <div className="jp-header-actions">
-          <Link to="/register" className="jp-action-link">
+          <Link
+            to="/register"
+            className={`jp-action-link ${
+              location.pathname === '/register' ? 'active' : ''
+            }`}
+          >
             Register
           </Link>
-          <Link to="/login" className="jp-btn-login">
+          <Link
+            to="/login"
+            className={`jp-btn-login ${
+              location.pathname === '/login' ? 'active' : ''
+            }`}
+          >
             Login
           </Link>
         </div>

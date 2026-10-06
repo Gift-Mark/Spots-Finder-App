@@ -1,0 +1,594 @@
+.container {
+  min-height: 100vh;
+  background-color: #f1f5f9;
+  color: #0f172a;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 2rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.brandLogo {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.topNav {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.topNav a {
+  text-decoration: none;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.proBadge {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.userAvatar {
+  font-size: 1.2rem;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: darkslateblue;
+}
+
+.mainLayout {
+  display: flex;
+}
+
+.sidebar {
+  width: 220px;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+  padding: 1.25rem 1rem;
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebarLabel {
+  color: #94a3b8;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.sideBtn {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: 0.55rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 0.25rem;
+}
+
+.sideBtnActive {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.sidebarWidget {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 0.75rem;
+  margin-top: 1rem;
+}
+
+.miniLogCard {
+  background: #ffffff;
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  margin-top: 0.35rem;
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #e2e8f0;
+}
+
+.logTag {
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #0284c7;
+}
+
+.conciergeBox {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  padding: 0.85rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+}
+
+.settingsBtn {
+  margin-top: 0.5rem;
+  width: 100%;
+  background: #f1f5f9;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+}
+
+.heroCard {
+  background: linear-gradient(135deg, #09132e 0%, #172854 100%);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pillBadge {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.heroLeft h1 {
+  font-size: 2.2rem;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.heroLeft p {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  max-width: 500px;
+}
+
+.heroStats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.heroWeatherWidget {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 1rem;
+  min-width: 160px;
+  text-align: right;
+}
+
+.weatherTemp {
+  font-size: 2rem;
+  font-weight: 800;
+  margin: 0.25rem 0;
+}
+
+.optimaTag {
+  font-size: 0.65rem;
+  background: #16a34a;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.weatherGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+}
+
+.twoColumnGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.actionCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #94a3b8;
+  font-weight: 800;
+  font-size: 0.65rem;
+}
+
+.actionCard h3 {
+  margin: 0.5rem 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.actionCard p {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.tagGroup {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0.75rem 0 1rem 0;
+}
+
+.subTag {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.primaryDarkBtn {
+  width: 100%;
+  background: #09132e;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.secondaryLightBtn {
+  width: 100%;
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.passSection {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.passHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1rem;
+}
+
+.tabToggle {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tabBtn {
+  background: #f1f5f9;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.activeTabBtn {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ticketGrid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr;
+  gap: 1.25rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.badgeRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.goldBadge {
+  background: #78350f;
+  color: #fef3c7;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.activePill {
+  color: #16a34a;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.refCode {
+  color: #94a3b8;
+  margin-left: auto;
+}
+
+.locSub {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.ticketDetailsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin: 1rem 0;
+  background: #ffffff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 0.78rem;
+}
+
+.priceHighlight {
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.amenitiesBox {
+  background: #fff7ed;
+  border: 1px solid #ffedd5;
+  padding: 0.65rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #9a3412;
+}
+
+.ticketFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.downloadBtn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 0.4rem 0.85rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.qrCard {
+  background: #09132e;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.qrHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.qrFrame {
+  background: #ffffff;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin: 0.5rem auto;
+  width: fit-content;
+}
+
+.scanText {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.presentBtn {
+  background: #ea580c;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.trendingSection {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.trendingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.viewCatalogLink {
+  color: #0284c7;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cards3Grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.curationCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.85rem;
+  cursor: pointer;
+}
+
+.imageBox, .imageBox2, .imageBox3 {
+  height: 100px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.imageBox { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=80'); }
+.imageBox2 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1511497584788-8767611136f6?auto=format&fit=crop&w=400&q=80'); }
+.imageBox3 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=80'); }
+
+.curTag {
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
+
+.ratingBadge {
+  background: rgba(0, 0, 0, 0.6);
+  color: #fde047;
+  font-size: 0.6rem;
+  font-weight: 800;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+}
+
+.curationCard h4 {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.curationCard p {
+  color: #64748b;
+  font-size: 0.75rem;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+}
+
+.panelSection {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.mapContainerBox {
+  height: 450px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.postComposer textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.publishBtn {
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+.feedCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 0.75rem;
+}
