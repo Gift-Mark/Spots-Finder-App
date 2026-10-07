@@ -1,38 +1,126 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const placeSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    section: {
-      type: String,
-      enum: ['tourist_spots', 'trending', 'events', 'heritage', 'sports', 'dining'],
+    businessId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Business",
       required: true,
     },
-    category: [{ type: String, required: true }], // e.g. ['Sports', 'Hiking'], ['Festivals', 'Culture']
-    rating: { type: Number, default: 0.0 },
-    reviewsCount: { type: Number, default: 0 },
-    location: { type: String, required: true },
-    description: { type: String, required: true },
-    image: { type: String, required: true },
-    badge: { type: String },
-    badgeVariant: { type: String, enum: ['green', 'orange', 'dark', 'blue'], default: 'green' },
-    price: { type: String, default: 'Free' },
-    cuisine: { type: String, trim: true },
-    buttonText: { type: String, trim: true },
-    amenities: [{ type: String }],
-    dietaryOptions: [{ type: String }],
-    openingHours: { type: String, trim: true },
-    isOpenNow: { type: Boolean },
-    isOpen24Hours: { type: Boolean },
-    coordinates: {
-      latitude: { type: Number },
-      longitude: { type: Number },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 140,
     },
-    isFeatured: { type: Boolean, default: false },
-    tags: [{ type: String }],
-    isPromoted: { type: Boolean, default: false }, // Monetization feature
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "",
+      maxLength: 6000,
+    },
+    category: {
+      type: String,
+      enum: [
+        "restaurant",
+        "nightlife",
+        "nature",
+        "culture",
+        "festival",
+        "sports",
+        "golf",
+        "landmark",
+        "hotel",
+        "cafe",
+      ],
+      index: true,
+      required: true,
+      trim: true,
+    },
+    location: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    latitude: {
+      type: Number,
+      required: true,
+    },
+    longitude: {
+      type: Number,
+      required: true,
+    },
+    images: [
+      {
+        type: String,
+      },
+    ],
+    rating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+    reviewsCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    openingTime: {
+      type: String,
+      trim: true,
+    },
+    closingTime: {
+      type: String,
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "maintenance"], // Tracks availability status
+      default: "active",
+    },
+    summary: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 500,
+    },
+    subcategory: {
+      type: String,
+      trim: true,
+      maxlength: 80,
+      default: "",
+    },
+    address: { type: String, trim: true, maxlength: 300, default: "" },
+    bookingUrl: {
+      type: String,
+      trim: true,
+      maxlength: 1000,
+      default: "",
+    },
+    tags: [{ type: String, trim: true, maxlength: 40 }],
+    /* featured: { type: Boolean, default: false },
+  promoted: { type: Boolean, default: false },
+  sourceName: { type: String, trim: true, maxlength: 140, default: '' },
+  sourceUrl: { type: String, trim: true, maxlength: 1000, default: '' },
+  verifiedAt: { type: Date, default: null },
+  status: { type: String, enum: ['draft','published','archived'], default: 'draft', index: true }, */
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-module.exports = mongoose.model('Place', placeSchema);
+const Place = mongoose.model("Place", placeSchema);
+
+export default Place;

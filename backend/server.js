@@ -28,6 +28,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 // Attach Socket.io instance to `req` so API routes can emit real-time events
 app.use((req, res, next) => {
   req.io = io;
@@ -39,6 +40,7 @@ app.use('/api/places', require('./routes/placeRouter'));
 app.use('/api/behavior', require('./routes/behaviorRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 app.use('/api/subscribe', require('./routes/subscriberRoutes'));
+app.use('api/saves', require('./routes/saveRoutes'));
 
 // Root Endpoint
 app.get('/', (req, res) => {
