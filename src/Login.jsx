@@ -49,7 +49,7 @@ export const Login = () => {
       navigate(destination, {
         replace: true,
         state: {
-          greeting: `${timeGreeting}, ${data.user?.firstName || "Explorer"}`,
+          greeting: `Welcome back, ${data.user?.firstName || "Explorer"}`,
           message: "What's the vibe right now!",
         },
       });

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./PlaceDetail.module.css";
-import { fetchPlaceBySlug, createBooking } from "../api/client.js";
+import { fetchPlaceBySlug, createBooking, toggleSaveSpot, checkIsSaved } from "../api/client.js";
 
 const mockPlaces = {
   "rayfield-resort": {
@@ -197,6 +197,11 @@ export function PlaceDetail() {
   const [liveWeather, setLiveWeather] = useState(null);
   const [weatherLoading, setWeatherLoading] = useState(true);
 
+  // Heart / Save state
+  const isAuthenticated = !!(localStorage.getItem('token') || localStorage.getItem('jos_pulse_token'));
+  const [isSaved, setIsSaved] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
+
   // Fetch Place Details from Express Backend with Fallback to Mock Data
   useEffect(() => {
     const loadPlace = async () => {
@@ -287,6 +292,38 @@ export function PlaceDetail() {
     return () => controller.abort();
   }, [place?.id]);
 
+  // Check if this place is already saved by the logged-in user
+  useEffect(() => {
+    if (!place || !isAuthenticated) return;
+    const placeId = place._id || place.id;
+    if (!placeId) return;
+    checkIsSaved(placeId)
+      .then(res => setIsSaved(res?.isSaved ?? false))
+      .catch(() => {});
+  }, [place, isAuthenticated]);
+
+  const handleToggleSave = async () => {
+    if (!isAuthenticated) {
+      alert('Please log in to save spots.');
+      return;
+    }
+    const placeId = place._id || place.id;
+    if (!placeId) return;
+    setSaveLoading(true);
+    // Optimistic toggle
+    setIsSaved(prev => !prev);
+    try {
+      const res = await toggleSaveSpot(placeId);
+      // Reconcile with server response
+      setIsSaved(res?.isSaved ?? !isSaved);
+    } catch {
+      // Revert on error
+      setIsSaved(prev => !prev);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   if (loading) {
     return <div className={styles.loader}>Loading venue details...</div>;
   }
@@ -368,7 +405,25 @@ export function PlaceDetail() {
               ← Back to Discovery
             </button>
             <div className={styles.heroActions}>
-              <button className={styles.circleBtn} title="Save to bookmarks">🔖</button>
+              <button
+                className={`${styles.circleBtn} ${isSaved ? styles.circleBtnSaved : ''}`}
+                title={isSaved ? 'Remove from saved' : 'Save to bookmarks'}
+                onClick={handleToggleSave}
+                disabled={saveLoading}
+                aria-label={isSaved ? 'Unsave spot' : 'Save spot'}
+              >
+                {isSaved ? (
+                  /* Filled heart */
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#f97316" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                  </svg>
+                ) : (
+                  /* Outline heart */
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#334155" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                )}
+              </button>
               <button className={styles.circleBtn} title="Share link">🔗</button>
             </div>
           </div>

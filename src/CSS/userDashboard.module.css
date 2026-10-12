@@ -582,6 +582,14 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 1.5rem;
+  color: #0f172a;
+}
+
+.panelSection h2 {
+  color: #0f172a;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
 }
 
 .mapContainerBox {
@@ -596,6 +604,17 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   padding: 0.75rem;
+  font-size: 0.85rem;
+  color: #0f172a;
+  background: #ffffff;
+  outline: none;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.postComposer textarea:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
 }
 
 .publishBtn {
@@ -614,6 +633,23 @@
   border-radius: 6px;
   padding: 0.75rem;
   margin-top: 0.75rem;
+  color: #0f172a;
+}
+
+.feedCard strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.feedCard small {
+  color: #64748b;
+}
+
+.feedCard p {
+  color: #334155;
+  margin: 0.35rem 0 0.25rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 /* ── Missing sidebar widget classes ───────────────────────────── */
@@ -652,8 +688,8 @@
 /* ── Saved spots grid ─────────────────────────────────────────── */
 .savedGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
   margin-top: 1rem;
 }
 
@@ -767,4 +803,183 @@
   font-size: 0.82rem;
   color: #dc2626;
   font-weight: 600;
+}
+
+/* ── Bookings list ────────────────────────────────────────────── */
+.bookingsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.bookingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+}
+
+.bookingItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.bookingIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.bookingVenue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookingMeta {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0.15rem 0 0 0;
+}
+
+.bookingItemRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+  flex-shrink: 0;
+}
+
+.bookingStatus {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+}
+
+.bookingStatusPaid {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.bookingStatusPending {
+  background: #fef9c3;
+  color: #92400e;
+}
+
+.bookingAmount {
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.bookingRef {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+/* ── Saved spot card ──────────────────────────────────────────── */
+.savedCard {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 220px;
+  background: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.savedCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+
+.savedCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.savedCardImgPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}
+
+.savedCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(9, 19, 46, 0.82) 0%,
+    rgba(9, 19, 46, 0.25) 55%,
+    transparent 100%
+  );
+}
+
+.savedCardBody {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 0.85rem 0.9rem;
+}
+
+.savedCardTitle {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.savedCardCategory {
+  display: block;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.savedCardRemoveBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  z-index: 2;
+}
+
+.savedCardRemoveBtn:hover {
+  background: rgba(239, 68, 68, 0.75);
 }

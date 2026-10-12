@@ -4,8 +4,7 @@ import { io } from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './CSS/userDashboard.module.css';
-import { getMySavedSpots, getUserProfile, updateUserProfile, toggleSaveSpot } from './api/client';
-import { SaveCard } from './Components/SaveCard';
+import { getMySavedSpots, getUserProfile, updateUserProfile, toggleSaveSpot, fetchMyBookings } from './api/client';
 
 const socket = io('http://localhost:5000');
 
@@ -26,6 +25,18 @@ export default function Dashboard() {
     } catch {
       return null;
     }
+  })();
+
+  // Greeting logic:
+  // - Login passes state.greeting = "Welcome back, Jane"
+  // - Register passes state.greeting = "Good morning, Jane"
+  // - Direct navigation (no state): compute time-based greeting from current hour
+  const heroGreeting = (() => {
+    if (location.state?.greeting) return location.state.greeting;
+    const firstName = currentUser?.firstName || 'Explorer';
+    const hour = new Date().getHours();
+    const timeWord = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+    return `${timeWord}, ${firstName}`;
   })();
 
   const handleLogout = () => {
@@ -49,6 +60,10 @@ export default function Dashboard() {
   // Saved spots state (shared by 'Saved' and 'MySpots' panels)
   const [savedSpots, setSavedSpots] = useState([]);
   const [savedLoading, setSavedLoading] = useState(false);
+
+  // Bookings state
+  const [myBookings, setMyBookings] = useState([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
 
   // Profile state
   const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '', profileImage: '' });
@@ -85,6 +100,20 @@ export default function Dashboard() {
         })
         .catch(() => setSavedSpots([]))
         .finally(() => setSavedLoading(false));
+    }
+  }, [activeNav]);
+
+  // Fetch bookings when navigating to Bookings panel
+  useEffect(() => {
+    if (activeNav === 'Bookings') {
+      setBookingsLoading(true);
+      fetchMyBookings()
+        .then(res => {
+          const bookings = res?.data ?? (Array.isArray(res) ? res : []);
+          setMyBookings(bookings);
+        })
+        .catch(() => setMyBookings([]))
+        .finally(() => setBookingsLoading(false));
     }
   }, [activeNav]);
 
@@ -160,6 +189,7 @@ export default function Dashboard() {
       await updateUserProfile({
         firstName: profileData.firstName,
         lastName: profileData.lastName,
+        email: profileData.email,
         profileImage: profileData.profileImage,
       });
       setProfileMsg('Profile updated successfully!');
@@ -279,7 +309,7 @@ export default function Dashboard() {
               <section className={styles.heroCard}>
                 <div className={styles.heroLeft}>
                   <span className={styles.pillBadge}>📍 PLATEAU TRAVEL & VIBE PORTAL</span>
-                  <h1>Good morning, Jane</h1>
+                  <h1>{heroGreeting}</h1>
                   <p>Your Plateau adventure desk — track local access passes, Rayfield lakeside bookings, and flights into Jos Yakubu Gowon Airport.</p>
                   <div className={styles.heroStats}>
                     <span>🌐 1,280m Elevation</span>
@@ -494,6 +524,46 @@ export default function Dashboard() {
             </>
           )}
 
+          {/* MY BOOKINGS PANEL */}
+          {activeNav === 'Bookings' && (
+            <section className={styles.panelSection}>
+              <h2 className={styles.panelTitle}>🎟️ My Bookings</h2>
+              {bookingsLoading ? (
+                <p className={styles.loadingText}>Loading your bookings...</p>
+              ) : myBookings.length === 0 ? (
+                <p className={styles.emptyText}>No bookings yet. Reserve a pass from any spot's detail page.</p>
+              ) : (
+                <div className={styles.bookingsList}>
+                  {myBookings.map((booking) => (
+                    <div key={booking._id} className={styles.bookingItem}>
+                      <div className={styles.bookingItemLeft}>
+                        <span className={styles.bookingIcon}>🎫</span>
+                        <div>
+                          <strong className={styles.bookingVenue}>{booking.provider || booking.destination || 'Venue'}</strong>
+                          <p className={styles.bookingMeta}>
+                            📅 {booking.startDate ? new Date(booking.startDate).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                            {booking.bookingType ? ` · ${booking.bookingType}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={styles.bookingItemRight}>
+                        <span className={`${styles.bookingStatus} ${booking.paymentStatus === 'paid' ? styles.bookingStatusPaid : styles.bookingStatusPending}`}>
+                          {booking.paymentStatus === 'paid' ? '✓ Paid' : '⏳ Pending'}
+                        </span>
+                        <strong className={styles.bookingAmount}>
+                          {booking.amount === 0 ? 'Free' : `₦${(booking.amount || 0).toLocaleString()}`}
+                        </strong>
+                        {booking.bookingReference && (
+                          <small className={styles.bookingRef}>#{booking.bookingReference}</small>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
           {/* REALTIME LIVE FEED PANEL */}
           {activeNav === 'Feed' && (
             <section className={styles.panelSection}>
@@ -551,17 +621,57 @@ export default function Dashboard() {
                 <p className={styles.emptyText}>No saved spots yet. Tap the 🤍 on any place to save it here.</p>
               ) : (
                 <div className={styles.savedGrid}>
-                  {savedSpots.map((spot) => (
-                    <SaveCard
-                      key={spot._id || spot.id}
-                      image={spot.image}
-                      title={spot.title}
-                      placeId={spot._id || spot.id}
-                      onToggleSave={(id) => toggleSaveSpot(id).then(() => {
-                        setSavedSpots((prev) => prev.filter((s) => (s._id || s.id) !== id));
-                      }).catch(() => {})}
-                    />
-                  ))}
+                  {savedSpots.map((spot) => {
+                    const spotId = spot._id || spot.id;
+                    // Place model uses heroImage / coverImage / images[] — no plain "image" field
+                    const imgSrc =
+                      spot.heroImage ||
+                      spot.coverImage ||
+                      (Array.isArray(spot.images) && spot.images[0]) ||
+                      (Array.isArray(spot.gallery) && spot.gallery[0]) ||
+                      spot.image ||
+                      null;
+                    const displayTitle = spot.title || spot.name || 'Untitled Spot';
+                    const displaySub = Array.isArray(spot.category)
+                      ? spot.category[0]
+                      : (spot.category || spot.location || '');
+                    return (
+                      <div key={spotId} className={styles.savedCard}>
+                        {imgSrc ? (
+                          <img
+                            src={imgSrc}
+                            alt={displayTitle}
+                            className={styles.savedCardImg}
+                          />
+                        ) : (
+                          <div className={styles.savedCardImgPlaceholder}>📍</div>
+                        )}
+                        <div className={styles.savedCardOverlay} />
+                        <div className={styles.savedCardBody}>
+                          <span className={styles.savedCardTitle}>{displayTitle}</span>
+                          {displaySub && (
+                            <span className={styles.savedCardCategory}>{displaySub}</span>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.savedCardRemoveBtn}
+                          aria-label="Remove from saved"
+                          title="Remove from saved"
+                          onClick={() =>
+                            toggleSaveSpot(spotId)
+                              .then(() => setSavedSpots((prev) => prev.filter((s) => (s._id || s.id) !== spotId)))
+                              .catch(() => {})
+                          }
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </section>
@@ -629,10 +739,11 @@ export default function Dashboard() {
                   <div className={styles.profileField}>
                     <label className={styles.profileLabel}>Email</label>
                     <input
-                      type="text"
-                      className={`${styles.profileInput} ${styles.profileInputReadonly}`}
+                      type="email"
+                      className={styles.profileInput}
                       value={profileData.email}
-                      readOnly
+                      onChange={(e) => setProfileData((prev) => ({ ...prev, email: e.target.value }))}
+                      placeholder="Email address"
                     />
                   </div>
 
