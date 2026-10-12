@@ -106,8 +106,9 @@ export const updatePlace = async (id, payload) => {
 };
 
 // --- REVIEWS API ---
+// Backend route: POST /api/reviews  (placeId goes in the request body)
 export const postReview = async (placeId, data) => {
-  const response = await api.post(`/spots/${placeId}/reviews`, data);
+  const response = await api.post('/reviews', { placeId, ...data });
   return response.data;
 };
 

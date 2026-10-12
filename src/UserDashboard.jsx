@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -55,6 +55,8 @@ export default function Dashboard() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMsg, setProfileMsg] = useState('');
+  const [profileImagePreview, setProfileImagePreview] = useState('');
+  const profileImageInputRef = useRef(null);
 
   useEffect(() => {
     socket.on('realtime_behavior_logged', (log) => {
@@ -76,7 +78,11 @@ export default function Dashboard() {
     if (activeNav === 'Saved') {
       setSavedLoading(true);
       getMySavedSpots()
-        .then(res => { setSavedSpots(Array.isArray(res) ? res : (res?.data || [])); })
+        .then(res => {
+          // Backend returns { success, count, data: [...] }
+          const spots = res?.data ?? (Array.isArray(res) ? res : []);
+          setSavedSpots(spots);
+        })
         .catch(() => setSavedSpots([]))
         .finally(() => setSavedLoading(false));
     }
@@ -95,11 +101,26 @@ export default function Dashboard() {
             email: d.email || '',
             profileImage: d.profileImage || '',
           });
+          setProfileImagePreview(d.profileImage || '');
         })
         .catch(() => {})
         .finally(() => setProfileLoading(false));
     }
   }, [activeNav]);
+
+  // Handle local image file selection — creates a preview URL
+  const handleProfileImageFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const objectUrl = URL.createObjectURL(file);
+    setProfileImagePreview(objectUrl);
+    // Store base64 so it can be sent to the backend
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setProfileData((prev) => ({ ...prev, profileImage: ev.target.result }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   const logBehavior = async (eventType, payload) => {
     try {
@@ -167,10 +188,16 @@ export default function Dashboard() {
         <div className={styles.headerRight}>
           <span className={styles.proBadge}>● PRO MEMBER</span>
           <div className={styles.userInfo}>
-            <span className={styles.userAvatar}>👤</span>
-            <div>
-              <strong>{currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : 'Explorer'}</strong>
-              <small>Plateau Explorer</small>
+            <span className={styles.userAvatar}>
+              {profileImagePreview ? (
+                <img src={profileImagePreview} alt="avatar" style={{ width: 32, height: 32, borderRadius: '50%', objectFit: 'cover' }} />
+              ) : '👤'}
+            </span>
+            <div className={styles.userNameBlock}>
+              <strong className={styles.userName}>
+                {currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : 'Explorer'}
+              </strong>
+              <span className={styles.userRole}>Plateau Explorer</span>
             </div>
           </div>
           <button className={styles.logoutBtn} onClick={handleLogout} type="button">↪ Log Out</button>
@@ -517,13 +544,13 @@ export default function Dashboard() {
           {/* SAVED SPOTS PANEL */}
           {activeNav === 'Saved' && (
             <section className={styles.panelSection}>
-              <h2>🔖 Saved Spots</h2>
+              <h2 className={styles.panelTitle}>🔖 Saved Spots</h2>
               {savedLoading ? (
-                <p>Loading...</p>
+                <p className={styles.loadingText}>Loading your saved spots...</p>
               ) : savedSpots.length === 0 ? (
-                <p>No saved spots yet.</p>
+                <p className={styles.emptyText}>No saved spots yet. Tap the 🤍 on any place to save it here.</p>
               ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                <div className={styles.savedGrid}>
                   {savedSpots.map((spot) => (
                     <SaveCard
                       key={spot._id || spot.id}
@@ -543,56 +570,79 @@ export default function Dashboard() {
           {/* PROFILE SETTINGS PANEL */}
           {activeNav === 'Profile' && (
             <section className={styles.panelSection}>
-              <h2>⚙️ Profile Settings</h2>
+              <h2 className={styles.panelTitle}>⚙️ Profile Settings</h2>
               {profileLoading ? (
-                <p>Loading...</p>
+                <p className={styles.loadingText}>Loading...</p>
               ) : (
-                <form onSubmit={handleProfileSave} style={{ maxWidth: 480, marginTop: '1rem' }}>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>First Name</label>
+                <form onSubmit={handleProfileSave} className={styles.profileForm}>
+
+                  {/* Avatar upload */}
+                  <div className={styles.profileAvatarRow}>
+                    <div className={styles.profileAvatarWrap}>
+                      {profileImagePreview ? (
+                        <img src={profileImagePreview} alt="Profile" className={styles.profileAvatarImg} />
+                      ) : (
+                        <div className={styles.profileAvatarPlaceholder}>👤</div>
+                      )}
+                    </div>
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={profileImageInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleProfileImageFile}
+                      />
+                      <button
+                        type="button"
+                        className={styles.uploadAvatarBtn}
+                        onClick={() => profileImageInputRef.current?.click()}
+                      >
+                        📷 Upload Photo
+                      </button>
+                      <p className={styles.avatarHint}>JPG, PNG or WEBP · Max 5MB</p>
+                    </div>
+                  </div>
+
+                  <div className={styles.profileField}>
+                    <label className={styles.profileLabel}>First Name</label>
                     <input
                       type="text"
+                      className={styles.profileInput}
                       value={profileData.firstName}
                       onChange={(e) => setProfileData((prev) => ({ ...prev, firstName: e.target.value }))}
-                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                      placeholder="First name"
                     />
                   </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Last Name</label>
+
+                  <div className={styles.profileField}>
+                    <label className={styles.profileLabel}>Last Name</label>
                     <input
                       type="text"
+                      className={styles.profileInput}
                       value={profileData.lastName}
                       onChange={(e) => setProfileData((prev) => ({ ...prev, lastName: e.target.value }))}
-                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                      placeholder="Last name"
                     />
                   </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Email</label>
+
+                  <div className={styles.profileField}>
+                    <label className={styles.profileLabel}>Email</label>
                     <input
                       type="text"
+                      className={`${styles.profileInput} ${styles.profileInputReadonly}`}
                       value={profileData.email}
                       readOnly
-                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', background: '#f1f5f9', color: '#64748b' }}
                     />
                   </div>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Profile Image URL</label>
-                    <input
-                      type="text"
-                      value={profileData.profileImage}
-                      onChange={(e) => setProfileData((prev) => ({ ...prev, profileImage: e.target.value }))}
-                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
-                      placeholder="https://..."
-                    />
-                  </div>
+
                   {profileMsg && (
-                    <p style={{ color: profileMsg.includes('success') ? 'green' : 'red', marginBottom: '0.75rem', fontSize: '0.85rem' }}>{profileMsg}</p>
+                    <p className={profileMsg.toLowerCase().includes('success') ? styles.profileMsgSuccess : styles.profileMsgError}>
+                      {profileMsg}
+                    </p>
                   )}
-                  <button
-                    type="submit"
-                    disabled={profileSaving}
-                    className={styles.primaryDarkBtn}
-                  >
+
+                  <button type="submit" disabled={profileSaving} className={styles.primaryDarkBtn}>
                     {profileSaving ? 'Saving...' : 'Save Profile'}
                   </button>
                 </form>
