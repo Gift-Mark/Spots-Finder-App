@@ -2,45 +2,96 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+// Create an Axios instance with automatic Auth Header insertion
+const api = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// --- PLACES API ---
 export const fetchPlaces = async (params = {}) => {
-  const response = await axios.get(`${API_BASE_URL}/places`, { params });
+  const response = await api.get('/places', { params });
   return response.data;
 };
 
 export const fetchPlaceBySlug = async (slug) => {
-  const response = await axios.get(`${API_BASE_URL}/places/${slug}`);
+  const response = await api.get(`/places/${slug}`);
   return response.data;
 };
 
-export const askWebsiteSupport = async (prompt, sessionId, pagePath) => {
-  const response = await axios.post(`${API_BASE_URL}/ai/support`, { prompt, sessionId, pagePath });
+// --- BOOKINGS API ---
+export const createBooking = async (bookingData) => {
+  const response = await api.post('/bookings', bookingData);
   return response.data;
 };
 
+export const fetchMyBookings = async () => {
+  const response = await api.get('/bookings/my-bookings');
+  return response.data;
+};
+
+// --- EVENTS API ---
+export const fetchEvents = async (params = {}) => {
+  const response = await api.get('/events', { params });
+  return response.data;
+};
+
+export const fetchEventByIdentifier = async (identifier) => {
+  const response = await api.get(`/events/${identifier}`);
+  return response.data;
+};
+
+// --- CHECK-INS API ---
+export const createCheckIn = async (checkInData) => {
+  const response = await api.post('/checkins', checkInData);
+  return response.data;
+};
+
+// --- NEWSLETTER API ---
 export const subscribeNewsletter = async (name, email) => {
-  const response = await axios.post(`${API_BASE_URL}/subscribe`, { name, email });
+  const response = await api.post('/newsletter/subscribe', { name, email });
   return response.data;
 };
 
+// --- AUTH API ---
 export const registerUser = async (user) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/register`, user);
+  const response = await api.post('/auth/register', user);
   return response.data;
 };
 
 export const loginUser = async (credentials) => {
-  const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
+  const response = await api.post('/auth/login', credentials);
   return response.data;
 };
 
-export const registerVenueClaim = async (formData) => {
-  const response = await axios.post(`${API_BASE_URL}/claims/register`, formData);
+export const registerVenueClaim = async (claimFormData) => {
+  const response = await api.post('/claims/register', claimFormData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+// --- AI & BEHAVIOR LOGS ---
+export const askWebsiteSupport = async (prompt, sessionId, pagePath) => {
+  const response = await api.post('/ai/support', { prompt, sessionId, pagePath });
   return response.data;
 };
 
 export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   try {
-    await axios.post(`${API_BASE_URL}/behavior/log`, { sessionId, eventType, payload });
+    await api.post('/behavior/log', { sessionId, eventType, payload });
   } catch (err) {
     console.error('Failed to log behavior:', err);
   }
 };
+
+export default api;

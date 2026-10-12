@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -14,6 +15,23 @@ const SPOTS_GEO = [
 ];
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const currentUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || 'null');
+    } catch {
+      return null;
+    }
+  })();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('jos_pulse_token');
+    localStorage.removeItem('user');
+    navigate('/login', { replace: true });
+  };
   const [activeNav, setActiveNav] = useState('Overview');
   const [activeTab, setActiveTab] = useState('Passes');
   const [behaviorStream, setBehaviorStream] = useState([]);
@@ -90,11 +108,11 @@ export default function Dashboard() {
           <div className={styles.userInfo}>
             <span className={styles.userAvatar}>👤</span>
             <div>
-              <strong>Jane D.</strong>
+              <strong>{currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() : 'Explorer'}</strong>
               <small>Plateau Explorer</small>
             </div>
           </div>
-          <button className={styles.logoutBtn}>↪ Log Out</button>
+          <button className={styles.logoutBtn} onClick={handleLogout} type="button">↪ Log Out</button>
         </div>
       </header>
 

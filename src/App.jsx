@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 // Load route screens on demand so the initial bundle does not include every page.
 const Discover = lazy(() => import("./discover"));
@@ -52,9 +53,30 @@ function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/support" element={<ContactPage />} />
-          <Route path="/userDashboard" element={<UserDashboard />} />
-          <Route path="/vendor" element={<VendorDashboard />} />
-          <Route path="/SuperAdmin" element={<AdminDashboard />} />
+          <Route
+            path="/userDashboard"
+            element={
+              <ProtectedRoute>
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vendor"
+            element={
+              <ProtectedRoute allowedRoles={["vendor", "business", "admin"]}>
+                <VendorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/SuperAdmin"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           

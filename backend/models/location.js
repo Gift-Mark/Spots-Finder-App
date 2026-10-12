@@ -1,4 +1,4 @@
-import moongoose from 'mongoose';
+import mongoose from 'mongoose';
 
 const LocationActivitySchema = new mongoose.Schema({
   userId: {
@@ -34,3 +34,5 @@ const LocationActivitySchema = new mongoose.Schema({
 LocationActivitySchema.index({ userId: 1, timestamp: -1 });
 
 const LocationActivity = mongoose.model('LocationActivity', LocationActivitySchema);
+
+export default LocationActivity;

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const businessSchema = new mongoose.schema(
+const businessSchema = new mongoose.Schema(
   {
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,

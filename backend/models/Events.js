@@ -102,13 +102,13 @@ const EventSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-schema.index({
+EventSchema.index({
   name: "text",
   summary: "text",
   description: "text",
   venueName: "text",
 });
-schema.index({ status: 1, startsAt: 1, category: 1 });
+EventSchema.index({ status: 1, startsAt: 1, category: 1 });
 
 
 const Event = mongoose.model("Event", EventSchema);

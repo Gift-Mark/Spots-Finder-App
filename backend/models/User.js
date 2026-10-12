@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema(
 );
 
 // Create a geospatial index so you can search users by distance later
-userSchema.index({ location: '2dsphere' });
+userSchema.index({ location: '2dsphere' }, { sparse: true });
 
 const User = mongoose.model("User", userSchema);
 

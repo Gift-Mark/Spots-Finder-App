@@ -60,14 +60,17 @@ export const Discover = () => {
         }
 
         const response = await fetchPlaces(queryParams);
-        setPlaces(response.data || []);
+        
+        // Supports both { data: [...] } and direct array responses
+        const fetchedPlaces = Array.isArray(response) ? response : (response.data || []);
+        setPlaces(fetchedPlaces);
 
-        // Log search event if user typed a query
+        // Log search event to BehaviorLog if user typed a query
         if (searchQuery.trim()) {
           logUserBehavior(sessionId, "SEARCH", { query: searchQuery });
         }
       } catch (err) {
-        console.error("Failed to load discover places:", err);
+        console.error("Failed to load discover places from backend API:", err);
       } finally {
         setLoading(false);
       }
@@ -121,23 +124,29 @@ export const Discover = () => {
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    if (!query && activeCategory === "all") {
+    if (!query && (activeCategory === "all" || activeCategory === "All")) {
       return places;
     }
 
     return places.filter((place) => {
-      const matchesQuery =
-        !query ||
-        place.title?.toLowerCase().includes(query) ||
-        place.location?.toLowerCase().includes(query) ||
-        place.description?.toLowerCase().includes(query) ||
-        place.category?.some((item) => item.toLowerCase().includes(query));
+      const titleMatches = (place.title || place.name || "").toLowerCase().includes(query);
+      const locationMatches = (place.location || place.address || "").toLowerCase().includes(query);
+      const descMatches = (place.description || "").toLowerCase().includes(query);
+      
+      const categoryArray = Array.isArray(place.category) 
+        ? place.category 
+        : [place.category || ""];
+      
+      const categoryMatches = categoryArray.some((item) => 
+        (item || "").toLowerCase().includes(query)
+      );
+
+      const matchesQuery = !query || titleMatches || locationMatches || descMatches || categoryMatches;
 
       const matchesCategory =
         activeCategory === "all" ||
         activeCategory === "All" ||
-        !place.category ||
-        place.category.some((item) => item.toLowerCase() === activeCategory.toLowerCase());
+        categoryArray.some((item) => (item || "").toLowerCase() === activeCategory.toLowerCase());
 
       return matchesQuery && matchesCategory;
     });
@@ -180,24 +189,32 @@ export const Discover = () => {
               <p className={styles.loadingText}>Loading results...</p>
             ) : searchResults.length > 0 ? (
               <div className={styles.resultsGrid}>
-                {searchResults.slice(0, 6).map((place) => (
-                  <Link
-                    key={place._id || place.id || place.slug}
-                    to={`/place/${place.slug || place._id || place.id}`}
-                    className={styles.resultCard}
-                  >
-                    <img src={place.image} alt={place.title} className={styles.resultImage} />
-                    <div className={styles.resultContent}>
-                      <span className={styles.resultBadge}>{place.badge || place.section}</span>
-                      <h3>{place.title}</h3>
-                      <p>{place.location}</p>
-                      <div className={styles.resultMeta}>
-                        <span>⭐ {place.rating || 4.5}</span>
-                        <span>{place.price || "Free"}</span>
+                {searchResults.slice(0, 6).map((place) => {
+                  const itemSlug = place.slug || place._id || place.id;
+                  const itemTitle = place.title || place.name;
+                  const itemImage = place.heroImage || place.coverImage || place.image || "/images/Rayfield Resort.jpg";
+                  const itemLocation = place.location || place.address || "Jos, Plateau State";
+                  const itemPrice = place.price || (place.entryFee ? `₦${place.entryFee}` : "Free Admission");
+
+                  return (
+                    <Link
+                      key={place._id || place.id || itemSlug}
+                      to={`/place/${itemSlug}`}
+                      className={styles.resultCard}
+                    >
+                      <img src={itemImage} alt={itemTitle} className={styles.resultImage} />
+                      <div className={styles.resultContent}>
+                        <span className={styles.resultBadge}>{place.badge || place.category || "Spot"}</span>
+                        <h3>{itemTitle}</h3>
+                        <p>{itemLocation}</p>
+                        <div className={styles.resultMeta}>
+                          <span>⭐ {place.rating || 4.5}</span>
+                          <span>{itemPrice}</span>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  );
+                })}
               </div>
             ) : (
               <div className={styles.noResultsBox}>
@@ -229,7 +246,6 @@ export const Discover = () => {
         {isTeeTimeOpen && (
           <TeeTimeBookingModal isOpen onClose={() => setIsTeeTimeOpen(false)} />
         )}
-
       </main>
 
       {/* 4. Footer */}

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { loginUser } from "./api/client";
 import styles from "./Login.module.css";
 
@@ -10,6 +10,17 @@ export const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const location = useLocation();
+  // Read message passed when redirected from Footer
+  const redirectNotice = location.state?.message;
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || localStorage.getItem("jos_pulse_token");
+    if (token) {
+      navigate("/userDashboard", { replace: true });
+    }
+  }, [navigate]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -17,13 +28,28 @@ export const Login = () => {
     try {
       const data = await loginUser({ email, password });
 
-      // Persist the session before navigating so protected pages can read it immediately.
+      // Persist the session across current and legacy keys so all components sync immediately
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("jos_pulse_token", data.token);
+      localStorage.setItem("jos_pulse_user", JSON.stringify(data.user));
 
-      navigate("/explore", {
+      const hour = new Date().getHours();
+      const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
+      let defaultDashboard = "/userDashboard";
+      if (data.user?.role === "admin") {
+        defaultDashboard = "/SuperAdmin";
+      } else if (data.user?.role === "vendor" || data.user?.role === "business") {
+        defaultDashboard = "/vendor";
+      }
+
+      const destination = location.state?.from || location.state?.redirectTo || defaultDashboard;
+
+      navigate(destination, {
+        replace: true,
         state: {
-          greeting: `Welcome back, ${data.user.firstName}`,
+          greeting: `${timeGreeting}, ${data.user?.firstName || "Explorer"}`,
           message: "What's the vibe right now!",
         },
       });
@@ -35,6 +61,7 @@ export const Login = () => {
 
   return (
     <main className={styles.page}>
+      {redirectNotice && <p className={styles.error}>{redirectNotice}</p>}
       <section className={styles.loginContainer}>
         <header className={styles.header}>
           <h1 className={styles.loginTitle}>Jos Pulse</h1>

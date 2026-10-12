@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "./api/client";
 import styles from "./Register.module.css";
 
 export const Register = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || localStorage.getItem("jos_pulse_token");
+    if (token) {
+      navigate("/userDashboard", { replace: true });
+    }
+  }, [navigate]);
 
   const [firstName, setFirstName] = useState("");
 const [lastName, setLastName] = useState("");
@@ -30,17 +37,28 @@ const [middleName, setMiddleName] = useState("");
     try{
       const data = await registerUser({ firstName, lastName, middleName, email, password });
 
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("jos_pulse_token", data.token);
+      localStorage.setItem("jos_pulse_user", JSON.stringify(data.user));
 
-    const hour = new Date().getHours();
-    const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+      const hour = new Date().getHours();
+      const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
-    navigate("/userDashboard", {
-      state: {
-        greeting: `${timeGreeting}, ${firstName}`,
-      },
-    });
+      let defaultDashboard = "/userDashboard";
+      if (data.user?.role === "admin") {
+        defaultDashboard = "/SuperAdmin";
+      } else if (data.user?.role === "vendor" || data.user?.role === "business") {
+        defaultDashboard = "/vendor";
+      }
+
+      navigate(defaultDashboard, {
+        replace: true,
+        state: {
+          greeting: `${timeGreeting}, ${data.user?.firstName || firstName}`,
+          message: "Welcome to Jos Pulse!",
+        },
+      });
   }catch(err){
     console.error("Registration Error Details:", err);
   

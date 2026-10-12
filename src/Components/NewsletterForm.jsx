@@ -1,71 +1,70 @@
 import { useState } from 'react';
-import { subscribeNewsletter } from '../api/client';
+import { useNavigate } from 'react-router-dom';
 import styles from '../CSS/Footer.module.css';
 
-export function NewsletterForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+export const NewsletterForm = () => {
+  const [message, setMessage] = useState({ text: '', isError: false });
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState(null);
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setStatus(null);
+    setMessage({ text: '', isError: false });
 
-    try {
-      const data = await subscribeNewsletter(name.trim(), email.trim());
-      setStatus({ type: 'success', message: data.message || 'Subscribed successfully.' });
-      setName('');
-      setEmail('');
-    } catch (err) {
-      setStatus({
-        type: 'error',
-        message: err.response?.data?.message || 'Could not subscribe right now. Please try again.'
+    // 1. Check if token exists in localStorage
+    const token = localStorage.getItem('token');
+
+    // 2. Guest Guard: Redirect to Login if no active session
+    if (!token) {
+      navigate('/login', {
+        state: {
+          message: 'Please sign in or create an account to subscribe to the newsletter.',
+          redirectTo: window.location.pathname,
+        },
       });
+      return;
+    }
+
+    // 3. Logged-in user: Execute protected subscription call
+    try {
+      setLoading(true);
+      const res = await fetch('http://localhost:5000/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to subscribe.');
+      }
+
+      setMessage({ text: data.message, isError: false });
+    } catch (err) {
+      setMessage({ text: err.message, isError: true });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className={styles.newsletterForm}>
-        <input
-          type="text"
-          required
-          maxLength={120}
-          placeholder="Your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className={`${styles.newsletterInput} ${styles.newsletterNameInput}`}
-          disabled={loading}
-          aria-label="Your name"
-        />
-        <input
-          type="email"
-          required
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className={styles.newsletterInput}
-          disabled={loading}
-          aria-label="Email address for newsletter"
-        />
+    <div>
+      <form className={styles.newsletterForm} onSubmit={handleSubscribe}>
         <button type="submit" className={styles.subscribeBtn} disabled={loading}>
-          {loading ? 'Subscribing...' : 'Subscribe'}
+          {loading ? 'Subscribing...' : 'Subscribe to Newsletter'}
         </button>
       </form>
-      {status && (
-        <p
-          className={status.type === 'success' ? styles.successMessage : styles.errorMessage}
-          role="status"
-        >
-          {status.message}
+
+      {message.text && (
+        <p className={message.isError ? styles.errorMessage : styles.successMessage}>
+          {message.text}
         </p>
       )}
-    </>
+    </div>
   );
-}
+};
 
 export default NewsletterForm;
