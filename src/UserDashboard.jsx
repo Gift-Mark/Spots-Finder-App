@@ -71,12 +71,12 @@ export default function Dashboard() {
     };
   }, []);
 
-  // Fetch saved spots when navigating to Saved or MySpots panel
+  // Fetch saved spots when navigating to Saved panel
   useEffect(() => {
-    if (activeNav === 'Saved' || activeNav === 'MySpots') {
+    if (activeNav === 'Saved') {
       setSavedLoading(true);
       getMySavedSpots()
-        .then(res => { setSavedSpots(res.data || []); })
+        .then(res => { setSavedSpots(Array.isArray(res) ? res : (res?.data || [])); })
         .catch(() => setSavedSpots([]))
         .finally(() => setSavedLoading(false));
     }
@@ -199,12 +199,6 @@ export default function Dashboard() {
               onClick={() => { setActiveNav('Saved'); logBehavior('FILTER_SELECT', { nav: 'Saved' }); }}
             >
               🔖 Saved Spots
-            </button>
-            <button
-              className={`${styles.sideBtn} ${activeNav === 'MySpots' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('MySpots'); logBehavior('FILTER_SELECT', { nav: 'MySpots' }); }}
-            >
-              📍 My Spots
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Profile' ? styles.sideBtnActive : ''}`}
@@ -524,35 +518,6 @@ export default function Dashboard() {
           {activeNav === 'Saved' && (
             <section className={styles.panelSection}>
               <h2>🔖 Saved Spots</h2>
-              {savedLoading ? (
-                <p>Loading...</p>
-              ) : savedSpots.length === 0 ? (
-                <p>No saved spots yet.</p>
-              ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
-                  {savedSpots.map((spot) => (
-                    <SaveCard
-                      key={spot._id || spot.id}
-                      image={spot.image}
-                      title={spot.title}
-                      placeId={spot._id || spot.id}
-                      onToggleSave={(id) => toggleSaveSpot(id).then(() => {
-                        setSavedSpots((prev) => prev.filter((s) => (s._id || s.id) !== id));
-                      }).catch(() => {})}
-                    />
-                  ))}
-                </div>
-              )}
-            </section>
-          )}
-
-          {/* MY SPOTS PANEL */}
-          {activeNav === 'MySpots' && (
-            <section className={styles.panelSection}>
-              <h2>📍 Saved &amp; Bookmarked Spots</h2>
-              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
-                Submitted spots will appear here once that feature is live.
-              </p>
               {savedLoading ? (
                 <p>Loading...</p>
               ) : savedSpots.length === 0 ? (

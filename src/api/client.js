@@ -107,7 +107,7 @@ export const updatePlace = async (id, payload) => {
 
 // --- REVIEWS API ---
 export const postReview = async (placeId, data) => {
-  const response = await api.post('/reviews', { placeId, ...data });
+  const response = await api.post(`/spots/${placeId}/reviews`, data);
   return response.data;
 };
 
