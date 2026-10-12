@@ -18,6 +18,7 @@ import {
   faFloppyDisk,
 } from "@fortawesome/free-solid-svg-icons";
 import { Sidebar } from "./Components/sidebar";
+import { createPlace, updatePlace } from "./api/client";
 
 const CreateHotSpot = () => {
   const { id } = useParams();
@@ -97,19 +98,14 @@ const CreateHotSpot = () => {
   };
 
   // The URL and method switch between creating a record and updating an existing one.
+  // Uses the shared api axios instance (with auth interceptor) instead of raw fetch.
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
-    if (!token) {
+    if (!localStorage.getItem('token') && !localStorage.getItem('jos_pulse_token')) {
       setSubmitError('Please log in to add a spot.');
       return;
     }
-
-    const url = isEditMode
-      ? `http://localhost:5000/api/places/${id}`
-      : "http://localhost:5000/api/places";
-    const method = isEditMode ? "PUT" : "POST";
 
     const payload = {
       ...formData,
@@ -121,25 +117,16 @@ const CreateHotSpot = () => {
     setSubmitError('');
 
     try {
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        setSubmitSuccess(true);
-        setTimeout(() => navigate('/userDashboard'), 1500);
+      if (isEditMode) {
+        await updatePlace(id, payload);
       } else {
-        const err = await response.json();
-        setSubmitError(err.message || "Failed to save hot spot.");
+        await createPlace(payload);
       }
+      setSubmitSuccess(true);
+      setTimeout(() => navigate('/userDashboard'), 1500);
     } catch (error) {
       console.error("Error saving spot:", error);
-      setSubmitError(error.message || "Failed to save hot spot.");
+      setSubmitError(error.response?.data?.message || error.message || "Failed to save hot spot.");
     } finally {
       setIsLoading(false);
     }

@@ -545,7 +545,11 @@ export default function Dashboard() {
           {/* MY SPOTS PANEL */}
           {activeNav === 'MySpots' && (
             <section className={styles.panelSection}>
-              <h2>📍 Your Saved &amp; Bookmarked Spots</h2>
+              <h2>📍 My Submitted Spots</h2>
+              <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
+                {/* TODO: replace with GET /api/places?createdBy=userId when backend adds createdBy filtering */}
+                Showing your saved spots. Submitted spots tracking coming soon.
+              </p>
               {savedLoading ? (
                 <p>Loading...</p>
               ) : savedSpots.length === 0 ? (

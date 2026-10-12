@@ -94,6 +94,17 @@ export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   }
 };
 
+// --- PLACES MUTATION API ---
+export const createPlace = async (payload) => {
+  const response = await api.post('/places', payload);
+  return response.data;
+};
+
+export const updatePlace = async (id, payload) => {
+  const response = await api.put(`/places/${id}`, payload);
+  return response.data;
+};
+
 // --- REVIEWS API ---
 export const postReview = async (placeId, data) => {
   const response = await api.post('/reviews', { placeId, ...data });
