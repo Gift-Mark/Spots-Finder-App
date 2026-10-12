@@ -20,6 +20,7 @@ import businessRoutes from "./routes/businessRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import newsletterRoutes from "./routes/newsletterRoutes.js";
 import saveRoutes from "./routes/saveRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
@@ -66,6 +67,7 @@ app.use("/api/businesses", businessRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/saves", saveRoutes);
+app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/users", userRoutes);
 

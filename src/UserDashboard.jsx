@@ -4,7 +4,7 @@ import { io } from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './CSS/userDashboard.module.css';
-import { getMySavedSpots, getUserProfile, updateUserProfile } from './api/client';
+import { getMySavedSpots, getUserProfile, updateUserProfile, toggleSaveSpot } from './api/client';
 import { SaveCard } from './Components/SaveCard';
 
 const socket = io('http://localhost:5000');
@@ -535,6 +535,10 @@ export default function Dashboard() {
                       key={spot._id || spot.id}
                       image={spot.image}
                       title={spot.title}
+                      placeId={spot._id || spot.id}
+                      onToggleSave={(id) => toggleSaveSpot(id).then(() => {
+                        setSavedSpots((prev) => prev.filter((s) => (s._id || s.id) !== id));
+                      }).catch(() => {})}
                     />
                   ))}
                 </div>
@@ -545,10 +549,9 @@ export default function Dashboard() {
           {/* MY SPOTS PANEL */}
           {activeNav === 'MySpots' && (
             <section className={styles.panelSection}>
-              <h2>📍 My Submitted Spots</h2>
+              <h2>📍 Saved &amp; Bookmarked Spots</h2>
               <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '1rem' }}>
-                {/* TODO: replace with GET /api/places?createdBy=userId when backend adds createdBy filtering */}
-                Showing your saved spots. Submitted spots tracking coming soon.
+                Submitted spots will appear here once that feature is live.
               </p>
               {savedLoading ? (
                 <p>Loading...</p>
@@ -561,6 +564,10 @@ export default function Dashboard() {
                       key={spot._id || spot.id}
                       image={spot.image}
                       title={spot.title}
+                      placeId={spot._id || spot.id}
+                      onToggleSave={(id) => toggleSaveSpot(id).then(() => {
+                        setSavedSpots((prev) => prev.filter((s) => (s._id || s.id) !== id));
+                      }).catch(() => {})}
                     />
                   ))}
                 </div>
