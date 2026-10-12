@@ -26,6 +26,9 @@ const CreateHotSpot = () => {
 
   const [selectedVibe, setSelectedVibe] = useState("Chill");
   const [selectedTags, setSelectedTags] = useState(["Neon"]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -96,7 +99,13 @@ const CreateHotSpot = () => {
   // The URL and method switch between creating a record and updating an existing one.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
+
+    const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
+    if (!token) {
+      setSubmitError('Please log in to add a spot.');
+      return;
+    }
+
     const url = isEditMode
       ? `http://localhost:5000/api/places/${id}`
       : "http://localhost:5000/api/places";
@@ -107,6 +116,9 @@ const CreateHotSpot = () => {
       slug: formData.title.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, ""),
       category: [selectedVibe, ...selectedTags],
     };
+
+    setIsLoading(true);
+    setSubmitError('');
 
     try {
       const response = await fetch(url, {
@@ -119,13 +131,17 @@ const CreateHotSpot = () => {
       });
 
       if (response.ok) {
-        navigate("/management");
+        setSubmitSuccess(true);
+        setTimeout(() => navigate('/userDashboard'), 1500);
       } else {
         const err = await response.json();
-        alert(err.message || "Failed to save hot spot.");
+        setSubmitError(err.message || "Failed to save hot spot.");
       }
     } catch (error) {
       console.error("Error saving spot:", error);
+      setSubmitError(error.message || "Failed to save hot spot.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -369,11 +385,17 @@ const CreateHotSpot = () => {
             >
               Cancel
             </button>
-            <button type="submit" className={styles.saveBtn}>
+            <button type="submit" className={styles.saveBtn} disabled={isLoading}>
               <FontAwesomeIcon icon={faFloppyDisk} />{" "}
-              {isEditMode ? "Update Hot Spot" : "Save Hot Spot"}
+              {isLoading ? 'Saving...' : (isEditMode ? "Update Hot Spot" : "Save Hot Spot")}
             </button>
           </div>
+          {submitError && (
+            <p style={{ color: 'red', marginTop: '0.5rem', textAlign: 'center' }}>{submitError}</p>
+          )}
+          {submitSuccess && (
+            <p style={{ color: 'green', marginTop: '0.5rem', textAlign: 'center' }}>Spot saved! Redirecting to dashboard...</p>
+          )}
         </form>
       </main>
     </div>

@@ -94,4 +94,42 @@ export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   }
 };
 
+// --- REVIEWS API ---
+export const postReview = async (placeId, data) => {
+  const response = await api.post('/reviews', { placeId, ...data });
+  return response.data;
+};
+
+export const fetchReviews = async (placeId) => {
+  const response = await api.get('/reviews', { params: { placeId } });
+  return response.data;
+};
+
+// --- SAVES API ---
+export const toggleSaveSpot = async (placeId) => {
+  const response = await api.post('/saves/toggle', { placeId });
+  return response.data;
+};
+
+export const getMySavedSpots = async () => {
+  const response = await api.get('/saves/my-saves');
+  return response.data;
+};
+
+export const checkIsSaved = async (placeId) => {
+  const response = await api.get(`/saves/check/${placeId}`);
+  return response.data;
+};
+
+// --- USER PROFILE API ---
+export const getUserProfile = async () => {
+  const response = await api.get('/users/profile');
+  return response.data;
+};
+
+export const updateUserProfile = async (data) => {
+  const response = await api.put('/users/profile', data);
+  return response.data;
+};
+
 export default api;

@@ -9,6 +9,7 @@ import {
   faTrash 
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "../CSS/UserReviewModal.module.css";
+import { postReview } from "../api/client";
 
 export function UserReviewModal({ spot, onClose }) {
   const [rating, setRating] = useState(5);
@@ -17,6 +18,10 @@ export function UserReviewModal({ spot, onClose }) {
   const [reviewerName, setReviewerName] = useState("");
   const [photos, setPhotos] = useState([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const isAuthenticated = !!(localStorage.getItem('token') || localStorage.getItem('jos_pulse_token'));
 
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -31,13 +36,27 @@ export function UserReviewModal({ spot, onClose }) {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!visitorTip.trim()) {
       alert("Please enter a short visitor tip or review.");
       return;
     }
-    setIsSubmitted(true);
+    setIsLoading(true);
+    setSubmitError('');
+    try {
+      await postReview(spot._id || spot.id, {
+        rating,
+        comment: visitorTip,
+        guestName: reviewerName,
+        guestHandle: reviewerName,
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      setSubmitError(err.response?.data?.message || err.message || 'Failed to submit review.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,6 +78,13 @@ export function UserReviewModal({ spot, onClose }) {
             <FontAwesomeIcon icon={faCheckCircle} className={styles.successIcon} />
             <h3>Thank You for Your Contribution!</h3>
             <p>Your tip and photo submission for <strong>{spot.title}</strong> has been received and will appear after moderation.</p>
+            <button type="button" className={styles.primaryBtn} onClick={onClose}>
+              Close
+            </button>
+          </div>
+        ) : !isAuthenticated ? (
+          <div className={styles.successState}>
+            <p>Please log in to post a review.</p>
             <button type="button" className={styles.primaryBtn} onClick={onClose}>
               Close
             </button>
@@ -148,8 +174,11 @@ export function UserReviewModal({ spot, onClose }) {
 
             {/* Submit Footer */}
             <div className={styles.formFooter}>
-              <button type="submit" className={styles.primaryBtn}>
-                Submit Contribution
+              {submitError && (
+                <p style={{ color: 'red', marginBottom: '0.5rem' }}>{submitError}</p>
+              )}
+              <button type="submit" className={styles.primaryBtn} disabled={isLoading}>
+                {isLoading ? 'Submitting...' : 'Submit Contribution'}
               </button>
             </div>
           </form>

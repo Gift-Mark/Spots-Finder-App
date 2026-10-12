@@ -4,6 +4,8 @@ import { io } from 'socket.io-client';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import styles from './CSS/userDashboard.module.css';
+import { getMySavedSpots, getUserProfile, updateUserProfile } from './api/client';
+import { SaveCard } from './Components/SaveCard';
 
 const socket = io('http://localhost:5000');
 
@@ -44,6 +46,16 @@ export default function Dashboard() {
   // Reserved for future live weather updates.
   void setWeather;
 
+  // Saved spots state (shared by 'Saved' and 'MySpots' panels)
+  const [savedSpots, setSavedSpots] = useState([]);
+  const [savedLoading, setSavedLoading] = useState(false);
+
+  // Profile state
+  const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '', profileImage: '' });
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState('');
+
   useEffect(() => {
     socket.on('realtime_behavior_logged', (log) => {
       setBehaviorStream((prev) => [log, ...prev.slice(0, 5)]);
@@ -58,6 +70,36 @@ export default function Dashboard() {
       socket.off('post_published');
     };
   }, []);
+
+  // Fetch saved spots when navigating to Saved or MySpots panel
+  useEffect(() => {
+    if (activeNav === 'Saved' || activeNav === 'MySpots') {
+      setSavedLoading(true);
+      getMySavedSpots()
+        .then(res => { setSavedSpots(res.data || []); })
+        .catch(() => setSavedSpots([]))
+        .finally(() => setSavedLoading(false));
+    }
+  }, [activeNav]);
+
+  // Fetch profile when navigating to Profile panel
+  useEffect(() => {
+    if (activeNav === 'Profile') {
+      setProfileLoading(true);
+      getUserProfile()
+        .then(res => {
+          const d = res.data || res;
+          setProfileData({
+            firstName: d.firstName || '',
+            lastName: d.lastName || '',
+            email: d.email || '',
+            profileImage: d.profileImage || '',
+          });
+        })
+        .catch(() => {})
+        .finally(() => setProfileLoading(false));
+    }
+  }, [activeNav]);
 
   const logBehavior = async (eventType, payload) => {
     try {
@@ -89,6 +131,24 @@ export default function Dashboard() {
     setPostInput('');
   };
 
+  const handleProfileSave = async (e) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    setProfileMsg('');
+    try {
+      await updateUserProfile({
+        firstName: profileData.firstName,
+        lastName: profileData.lastName,
+        profileImage: profileData.profileImage,
+      });
+      setProfileMsg('Profile updated successfully!');
+    } catch (err) {
+      setProfileMsg(err.response?.data?.message || err.message || 'Failed to update profile.');
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
   return (
     <div className={styles.container}>
       {/* HEADER */}
@@ -96,11 +156,12 @@ export default function Dashboard() {
         <div className={styles.brandGroup}>
           <span className={styles.brandLogo}>🔥 Jos Pulse</span>
           <nav className={styles.topNav}>
-            <a href="#explore">Explore</a>
-            <a href="#culture">Culture</a>
-            <a href="#dining">Dining</a>
-            <a href="#nightlife">Nightlife</a>
-            <a href="#bookings">Bookings</a>
+            <Link className={styles.active} to="/explore">Explore</Link>
+            <Link to="/culture">Culture</Link>
+            <Link to="/DiningPage">Restaurants</Link>
+            <Link to="/flights">Flights</Link>
+            <Link to="/stays">Stays</Link>
+            <Link to="/events">Events</Link>
           </nav>
         </div>
         <div className={styles.headerRight}>
@@ -138,6 +199,18 @@ export default function Dashboard() {
               onClick={() => { setActiveNav('Saved'); logBehavior('FILTER_SELECT', { nav: 'Saved' }); }}
             >
               🔖 Saved Spots
+            </button>
+            <button
+              className={`${styles.sideBtn} ${activeNav === 'MySpots' ? styles.sideBtnActive : ''}`}
+              onClick={() => { setActiveNav('MySpots'); logBehavior('FILTER_SELECT', { nav: 'MySpots' }); }}
+            >
+              📍 My Spots
+            </button>
+            <button
+              className={`${styles.sideBtn} ${activeNav === 'Profile' ? styles.sideBtnActive : ''}`}
+              onClick={() => { setActiveNav('Profile'); logBehavior('FILTER_SELECT', { nav: 'Profile' }); }}
+            >
+              ⚙️ Profile Settings
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Feed' ? styles.sideBtnActive : ''}`}
@@ -444,6 +517,110 @@ export default function Dashboard() {
                   ))}
                 </MapContainer>
               </div>
+            </section>
+          )}
+
+          {/* SAVED SPOTS PANEL */}
+          {activeNav === 'Saved' && (
+            <section className={styles.panelSection}>
+              <h2>🔖 Saved Spots</h2>
+              {savedLoading ? (
+                <p>Loading...</p>
+              ) : savedSpots.length === 0 ? (
+                <p>No saved spots yet.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                  {savedSpots.map((spot) => (
+                    <SaveCard
+                      key={spot._id || spot.id}
+                      image={spot.image}
+                      title={spot.title}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* MY SPOTS PANEL */}
+          {activeNav === 'MySpots' && (
+            <section className={styles.panelSection}>
+              <h2>📍 Your Saved &amp; Bookmarked Spots</h2>
+              {savedLoading ? (
+                <p>Loading...</p>
+              ) : savedSpots.length === 0 ? (
+                <p>No saved spots yet.</p>
+              ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
+                  {savedSpots.map((spot) => (
+                    <SaveCard
+                      key={spot._id || spot.id}
+                      image={spot.image}
+                      title={spot.title}
+                    />
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* PROFILE SETTINGS PANEL */}
+          {activeNav === 'Profile' && (
+            <section className={styles.panelSection}>
+              <h2>⚙️ Profile Settings</h2>
+              {profileLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <form onSubmit={handleProfileSave} style={{ maxWidth: 480, marginTop: '1rem' }}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>First Name</label>
+                    <input
+                      type="text"
+                      value={profileData.firstName}
+                      onChange={(e) => setProfileData((prev) => ({ ...prev, firstName: e.target.value }))}
+                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Last Name</label>
+                    <input
+                      type="text"
+                      value={profileData.lastName}
+                      onChange={(e) => setProfileData((prev) => ({ ...prev, lastName: e.target.value }))}
+                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Email</label>
+                    <input
+                      type="text"
+                      value={profileData.email}
+                      readOnly
+                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem', background: '#f1f5f9', color: '#64748b' }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.3rem', fontSize: '0.85rem' }}>Profile Image URL</label>
+                    <input
+                      type="text"
+                      value={profileData.profileImage}
+                      onChange={(e) => setProfileData((prev) => ({ ...prev, profileImage: e.target.value }))}
+                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: 6, fontSize: '0.85rem' }}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  {profileMsg && (
+                    <p style={{ color: profileMsg.includes('success') ? 'green' : 'red', marginBottom: '0.75rem', fontSize: '0.85rem' }}>{profileMsg}</p>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={profileSaving}
+                    className={styles.primaryDarkBtn}
+                  >
+                    {profileSaving ? 'Saving...' : 'Save Profile'}
+                  </button>
+                </form>
+              )}
             </section>
           )}
         </main>
