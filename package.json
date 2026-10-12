@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "node --watch backend/server.js",
+    "seed:places": "node backend/seed/seedPlaces.js",
     "seed": "node server/seed.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },

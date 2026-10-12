@@ -27,6 +27,7 @@ export const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [isTeeTimeOpen, setIsTeeTimeOpen] = useState(false);
 
   // Maintain persistent user session for behavioral logs
@@ -40,50 +41,61 @@ export const Discover = () => {
   });
 
   // Reusable Hero Pills Configuration
+  // The `id` values must match the `category` enum in the Place model
   const discoverPills = [
-    { id: "Golf", label: "Golf", icon: faGolfBallTee },
-    { id: "Festivals", label: "Festivals", icon: faMasksTheater },
-    { id: "Restaurants", label: "Restaurants", icon: faUtensils },
-    { id: "Nightlife", label: "Nightlife", icon: faGlassMartiniAlt },
-    { id: "Cultural Landmarks", label: "Cultural Landmarks", icon: faLandmark },
+    { id: "golf", label: "Golf", icon: faGolfBallTee },
+    { id: "festival", label: "Festivals", icon: faMasksTheater },
+    { id: "restaurant", label: "Restaurants", icon: faUtensils },
+    { id: "nightlife", label: "Nightlife", icon: faGlassMartiniAlt },
+    { id: "culture", label: "Cultural Landmarks", icon: faLandmark },
   ];
 
-  // Fetch Places from Express API with Debounce
+  // ─── Fetch places from MongoDB via Express API ──────────────────────────────
   useEffect(() => {
-    const loadPlacesData = async () => {
+    const controller = new AbortController();
+
+    const loadPlaces = async () => {
       setLoading(true);
+      setError(null);
       try {
+        // Build query params — search and category are passed to the backend
         const queryParams = {};
-        if (searchQuery.trim()) queryParams.search = searchQuery;
-        if (activeCategory !== "all" && activeCategory !== "All") {
-          queryParams.category = activeCategory;
-        }
+        if (searchQuery.trim()) queryParams.search = searchQuery.trim();
+        if (activeCategory !== "all") queryParams.category = activeCategory;
 
         const response = await fetchPlaces(queryParams);
-        
-        // Supports both { data: [...] } and direct array responses
-        const fetchedPlaces = Array.isArray(response) ? response : (response.data || []);
-        setPlaces(fetchedPlaces);
 
-        // Log search event to BehaviorLog if user typed a query
+        // Backend returns { success, count, total, data: [...] }
+        const fetched = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+          ? response.data
+          : [];
+
+        setPlaces(fetched);
+
         if (searchQuery.trim()) {
           logUserBehavior(sessionId, "SEARCH", { query: searchQuery });
         }
       } catch (err) {
-        console.error("Failed to load discover places from backend API:", err);
+        if (err.name !== "CanceledError" && err.name !== "AbortError") {
+          console.error("Failed to load places from API:", err);
+          setError("Could not load spots. Please check your connection.");
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    const timer = setTimeout(() => {
-      loadPlacesData();
-    }, 400);
-
-    return () => clearTimeout(timer);
+    // Debounce so we don't hammer the API on every keystroke
+    const timer = setTimeout(loadPlaces, 400);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
   }, [searchQuery, activeCategory, sessionId]);
 
-  // Hero Search and Pill Event Handlers
+  // ─── Hero Search and Pill Event Handlers ────────────────────────────────────
   const handleSearch = (query, category) => {
     setSearchQuery(query);
     if (category) setActiveCategory(category);
@@ -92,11 +104,12 @@ export const Discover = () => {
   const handleCategorySelect = (category) => {
     logUserBehavior(sessionId, "CATEGORY_CLICK", { category });
 
+    // Scroll anchors for specific sections
     const categoryTargets = {
-      Golf: "golf-spotlight",
-      Festivals: "festival-events",
-      Restaurants: "tasty-fingers-promo",
-      "Cultural Landmarks": "cultural-landmark",
+      golf: "golf-spotlight",
+      festival: "festival-events",
+      restaurant: "tasty-fingers-promo",
+      culture: "cultural-landmark",
     };
     const targetId = categoryTargets[category];
 
@@ -108,7 +121,7 @@ export const Discover = () => {
       return;
     }
 
-    if (category === "Nightlife") {
+    if (category === "nightlife") {
       navigate("/nightlife");
       return;
     }
@@ -116,37 +129,36 @@ export const Discover = () => {
     setActiveCategory(category);
   };
 
-  // Derive featured events from API data
+  // ─── Derived data ────────────────────────────────────────────────────────────
   const featuredEvents = places.filter(
     (place) => place.section === "events" || place.section === "recommended"
   );
 
+  // Client-side filter mirrors the API filter for instant UX while results load
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-
-    if (!query && (activeCategory === "all" || activeCategory === "All")) {
-      return places;
-    }
+    if (!query && (activeCategory === "all")) return places;
 
     return places.filter((place) => {
-      const titleMatches = (place.title || place.name || "").toLowerCase().includes(query);
-      const locationMatches = (place.location || place.address || "").toLowerCase().includes(query);
-      const descMatches = (place.description || "").toLowerCase().includes(query);
-      
-      const categoryArray = Array.isArray(place.category) 
-        ? place.category 
-        : [place.category || ""];
-      
-      const categoryMatches = categoryArray.some((item) => 
-        (item || "").toLowerCase().includes(query)
-      );
+      const title = (place.title || place.name || "").toLowerCase();
+      const loc = (place.location || place.address || "").toLowerCase();
+      const desc = Array.isArray(place.description)
+        ? place.description.join(" ").toLowerCase()
+        : (place.description || "").toLowerCase();
+      const cat = (place.category || "").toLowerCase();
+      const tags = (place.tags || []).join(" ").toLowerCase();
 
-      const matchesQuery = !query || titleMatches || locationMatches || descMatches || categoryMatches;
+      const matchesQuery =
+        !query ||
+        title.includes(query) ||
+        loc.includes(query) ||
+        desc.includes(query) ||
+        cat.includes(query) ||
+        tags.includes(query);
 
       const matchesCategory =
         activeCategory === "all" ||
-        activeCategory === "All" ||
-        categoryArray.some((item) => (item || "").toLowerCase() === activeCategory.toLowerCase());
+        cat === activeCategory.toLowerCase();
 
       return matchesQuery && matchesCategory;
     });
@@ -175,36 +187,77 @@ export const Discover = () => {
 
       {/* 3. Main Page Content */}
       <main className={styles.mainContent}>
+
+        {/* ── Search / Filter Results Panel ─────────────────────────────── */}
         {(searchQuery.trim() || activeCategory !== "all") && (
           <section className={styles.searchResultsSection}>
             <div className={styles.searchResultsHeader}>
               <h2>
                 {searchQuery.trim()
-                  ? `Results for “${searchQuery.trim()}”`
-                  : `Showing ${activeCategory}`}
+                  ? `Results for "${searchQuery.trim()}"`
+                  : `Showing: ${discoverPills.find(p => p.id === activeCategory)?.label || activeCategory}`}
               </h2>
+              {/* Clear filter button */}
+              <button
+                type="button"
+                className={styles.clearBtn}
+                onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
+              >
+                ✕ Clear
+              </button>
             </div>
 
             {loading ? (
-              <p className={styles.loadingText}>Loading results...</p>
+              <div className={styles.skeletonGrid}>
+                {[1, 2, 3].map((n) => (
+                  <div key={n} className={styles.skeletonCard} />
+                ))}
+              </div>
+            ) : error ? (
+              <div className={styles.noResultsBox}>
+                <h3>😕 {error}</h3>
+                <button
+                  type="button"
+                  onClick={() => setActiveCategory(activeCategory)} // re-trigger effect
+                  className={styles.retryBtn}
+                >
+                  Retry
+                </button>
+              </div>
             ) : searchResults.length > 0 ? (
               <div className={styles.resultsGrid}>
-                {searchResults.slice(0, 6).map((place) => {
-                  const itemSlug = place.slug || place._id || place.id;
+                {searchResults.map((place) => {
+                  const itemSlug = place.slug || place._id;
                   const itemTitle = place.title || place.name;
-                  const itemImage = place.heroImage || place.coverImage || place.image || "/images/Rayfield Resort.jpg";
-                  const itemLocation = place.location || place.address || "Jos, Plateau State";
-                  const itemPrice = place.price || (place.entryFee ? `₦${place.entryFee}` : "Free Admission");
+                  const itemImage =
+                    place.heroImage ||
+                    place.coverImage ||
+                    (place.images && place.images[0]) ||
+                    "/images/Rayfield Resort.jpg";
+                  const itemLocation =
+                    place.location || place.address || "Jos, Plateau State";
+                  const itemPrice =
+                    place.entryPrice ||
+                    (place.entryFee ? `₦${place.entryFee.toLocaleString()}` : "Free Admission");
 
                   return (
                     <Link
-                      key={place._id || place.id || itemSlug}
+                      key={place._id || itemSlug}
                       to={`/place/${itemSlug}`}
                       className={styles.resultCard}
                     >
-                      <img src={itemImage} alt={itemTitle} className={styles.resultImage} />
+                      <img
+                        src={itemImage}
+                        alt={itemTitle}
+                        className={styles.resultImage}
+                        onError={(e) => {
+                          e.target.src = "/images/Rayfield Resort.jpg";
+                        }}
+                      />
                       <div className={styles.resultContent}>
-                        <span className={styles.resultBadge}>{place.badge || place.category || "Spot"}</span>
+                        <span className={styles.resultBadge}>
+                          {place.badge || place.category || "Spot"}
+                        </span>
                         <h3>{itemTitle}</h3>
                         <p>{itemLocation}</p>
                         <div className={styles.resultMeta}>
@@ -225,17 +278,17 @@ export const Discover = () => {
           </section>
         )}
 
-        {/* TOP TOURIST SPOTS COMPONENT */}
+        {/* ── TOP TOURIST SPOTS (always visible) ─────────────────────────── */}
         <TopTouristSpots onSeeAll={() => navigate("/attractions")} />
 
-        {/* PROMOTED & FEATURED EVENTS */}
+        {/* ── PROMOTED & FEATURED EVENTS ─────────────────────────────────── */}
         <PromotedEventsSection
           events={featuredEvents.length > 0 ? featuredEvents : undefined}
           onBookTable={handleBookTable}
           loading={loading}
         />
 
-        {/* HERITAGE SPOTLIGHT */}
+        {/* ── HERITAGE SPOTLIGHT ──────────────────────────────────────────── */}
         <HeritageSpotlight
           onBookTeeTime={() => {
             logUserBehavior(sessionId, "BOOKING_ATTEMPT", { target: "Rayfield Golf Club" });
@@ -243,6 +296,7 @@ export const Discover = () => {
           }}
           onLearnMore={() => navigate("/golf")}
         />
+
         {isTeeTimeOpen && (
           <TeeTimeBookingModal isOpen onClose={() => setIsTeeTimeOpen(false)} />
         )}

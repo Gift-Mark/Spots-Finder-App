@@ -201,42 +201,55 @@ export function PlaceDetail() {
   useEffect(() => {
     const loadPlace = async () => {
       setLoading(true);
-      const normalizedId = String(id || '').toLowerCase();
-      
+      const normalizedId = String(id || "").toLowerCase();
+
       try {
         const response = await fetchPlaceBySlug(normalizedId);
+
         if (response && response.data) {
-          const apiPlace = response.data;
+          const p = response.data;
           setPlace({
-            ...apiPlace,
-            title: apiPlace.name || apiPlace.title,
-            heroImage: apiPlace.coverImage || apiPlace.heroImage || "/images/Rayfield resort 3.webp",
-            description: Array.isArray(apiPlace.description) ? apiPlace.description : [apiPlace.description],
-            pricing: {
-              adultRate: apiPlace.entryFee || 500,
-              kidRate: 200,
-              addons: []
-            }
+            ...p,
+            // Normalise field names so the UI always has what it expects
+            title: p.title || p.name,
+            heroImage: p.heroImage || p.coverImage || (p.images && p.images[0]) || "/images/Rayfield resort 3.webp",
+            description: Array.isArray(p.description)
+              ? p.description
+              : p.description
+              ? [p.description]
+              : ["No description available."],
+            status: p.displayStatus || p.status || "Open Now",
+            address: p.address || p.location || "Jos, Plateau State",
+            pricing: p.pricing || {
+              adultRate: p.entryFee || 0,
+              kidRate: 0,
+              addons: [],
+            },
+            highlights: p.highlights && p.highlights.length > 0 ? p.highlights : null,
+            gallery: p.gallery && p.gallery.length > 0 ? p.gallery : p.images || [],
           });
+          setLoading(false);
+          return;
         }
       } catch (err) {
         console.warn("API load unfulfilled. Resolving to mock dataset:", err.message);
-        const aliasMap = {
-          'nok-terracottas': 'nok-terracotta',
-          'nok-terracotta': 'nok-terracotta',
-          'motna': 'motna',
-          'riyom-rock': 'riyom-rock',
-          'jos-museum': 'jos-museum'
-        };
-        const fallback = mockPlaces[normalizedId] || mockPlaces[aliasMap[normalizedId]] || mockPlaces["rayfield-resort"];
-        setPlace(fallback);
-      } finally {
-        setLoading(false);
       }
+
+      // ── Fallback to mock data while DB is being seeded ──────────────────
+      const aliasMap = {
+        "nok-terracottas": "jos-museum",
+        "nok-terracotta": "jos-museum",
+        "motna": "jos-museum",
+        "riyom-rock": "rayfield-resort",
+      };
+      const fallback = mockPlaces[normalizedId] || mockPlaces[aliasMap[normalizedId]];
+      setPlace(fallback || null);
+      setLoading(false);
     };
 
     if (id) loadPlace();
   }, [id]);
+
 
   // Live Weather Integration
   useEffect(() => {

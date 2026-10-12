@@ -82,6 +82,7 @@ function App() {
           
           {/* Dynamic route for all spot/place detail views */}
           <Route path="/place/:id" element={<PlaceDetail />} />
+          <Route path="/spots/:id" element={<PlaceDetail />} />
 
         </Routes>
       </Suspense>

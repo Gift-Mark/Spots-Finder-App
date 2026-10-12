@@ -1,126 +1,116 @@
 import mongoose from "mongoose";
 
+const highlightSchema = new mongoose.Schema(
+  {
+    icon: { type: String, default: "✨" },
+    title: { type: String, trim: true },
+    desc: { type: String, trim: true },
+  },
+  { _id: false }
+);
+
+const addonSchema = new mongoose.Schema(
+  {
+    id: { type: String },
+    name: { type: String },
+    price: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
+const pricingSchema = new mongoose.Schema(
+  {
+    adultRate: { type: Number, default: 0 },
+    kidRate: { type: Number, default: 0 },
+    addons: [addonSchema],
+  },
+  { _id: false }
+);
+
 const placeSchema = new mongoose.Schema(
   {
-    businessId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Business",
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 140,
-    },
-    slug: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-      default: "",
-      maxLength: 6000,
-    },
+    // --- Core identity ---
+    name: { type: String, required: true, trim: true, maxlength: 140 },
+    title: { type: String, trim: true }, // alias for name used by UI
+    slug: { type: String, required: true, unique: true, lowercase: true, trim: true },
+
+    // --- Description & content ---
+    summary: { type: String, trim: true, maxlength: 500, default: "" },
+    description: { type: mongoose.Schema.Types.Mixed, default: [] }, // Array<string> or string
+    overviewHeading: { type: String, trim: true, default: "" },
+
+    // --- Taxonomy ---
     category: {
       type: String,
       enum: [
-        "restaurant",
-        "nightlife",
-        "nature",
-        "culture",
-        "festival",
-        "sports",
-        "golf",
-        "landmark",
-        "hotel",
-        "cafe",
+        "restaurant", "nightlife", "nature", "culture", "festival",
+        "sports", "golf", "landmark", "hotel", "cafe", "resort", "other"
       ],
       index: true,
       required: true,
-      trim: true,
     },
-    location: {
-      type: String,
-      trim: true,
-    },
-    address: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    latitude: {
-      type: Number,
-      required: true,
-    },
-    longitude: {
-      type: Number,
-      required: true,
-    },
-    images: [
-      {
-        type: String,
-      },
-    ],
-    rating: {
-      type: Number,
-      default: 0,
-      min: 0,
-      max: 5,
-    },
-    reviewsCount: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    openingTime: {
-      type: String,
-      trim: true,
-    },
-    closingTime: {
-      type: String,
-      trim: true,
-    },
-    status: {
-      type: String,
-      enum: ["active", "inactive", "maintenance"], // Tracks availability status
-      default: "active",
-    },
-    summary: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 500,
-    },
-    subcategory: {
-      type: String,
-      trim: true,
-      maxlength: 80,
-      default: "",
-    },
-    address: { type: String, trim: true, maxlength: 300, default: "" },
-    bookingUrl: {
-      type: String,
-      trim: true,
-      maxlength: 1000,
-      default: "",
-    },
+    subcategory: { type: String, trim: true, maxlength: 80, default: "" },
     tags: [{ type: String, trim: true, maxlength: 40 }],
-    /* featured: { type: Boolean, default: false },
-  promoted: { type: Boolean, default: false },
-  sourceName: { type: String, trim: true, maxlength: 140, default: '' },
-  sourceUrl: { type: String, trim: true, maxlength: 1000, default: '' },
-  verifiedAt: { type: Date, default: null },
-  status: { type: String, enum: ['draft','published','archived'], default: 'draft', index: true }, */
+    badge: { type: String, trim: true, default: "" }, // display badge on card
+
+    // --- Media ---
+    heroImage: { type: String, trim: true, default: "" },
+    coverImage: { type: String, trim: true, default: "" }, // alias
+    gallery: [{ type: String }],
+    images: [{ type: String }],
+
+    // --- Location ---
+    location: { type: String, trim: true, default: "" },
+    address: { type: String, trim: true, maxlength: 300, default: "" },
+    latitude: { type: Number, default: 9.9085 },
+    longitude: { type: Number, default: 8.8921 },
+
+    // --- Ratings & reviews ---
+    rating: { type: Number, default: 0, min: 0, max: 5 },
+    reviewsCount: { type: Number, default: 0, min: 0 },
+
+    // --- Operations ---
+    openingHours: { type: String, trim: true, default: "" },
+    openingTime: { type: String, trim: true, default: "" },
+    closingTime: { type: String, trim: true, default: "" },
+    status: { type: String, enum: ["active", "inactive", "maintenance"], default: "active" },
+    displayStatus: { type: String, trim: true, default: "Open Now" }, // "Open Now" / "Closed"
+    recommendedVisit: { type: String, trim: true, default: "" },
+
+    // --- Pricing ---
+    entryPrice: { type: String, trim: true, default: "Free Admission" }, // display string
+    entryFee: { type: Number, default: 0 }, // numeric
+    pricing: { type: pricingSchema, default: () => ({}) },
+
+    // --- Contact ---
+    phone: { type: String, trim: true, default: "" },
+    bookingUrl: { type: String, trim: true, maxlength: 1000, default: "" },
+
+    // --- Extras ---
+    verified: { type: Boolean, default: false },
+    managedBy: { type: String, trim: true, default: "" },
+    quote: {
+      text: { type: String, trim: true, default: "" },
+      author: { type: String, trim: true, default: "" },
+    },
+    highlights: [highlightSchema],
+    visitorTips: [{ type: String }],
+    weather: {
+      temp: { type: Number, default: 21 },
+      condition: { type: String, default: "Pleasant" },
+    },
+
+    // --- Relationships ---
+    businessId: { type: mongoose.Schema.Types.ObjectId, ref: "Business" },
+
+    // --- Section tag (for promoted/events sections) ---
+    section: { type: String, trim: true, default: "" },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-const Place = mongoose.model("Place", placeSchema);
+// Allow querying by title as well as name
+placeSchema.index({ name: "text", summary: "text", description: "text" });
 
+const Place = mongoose.model("Place", placeSchema);
 export default Place;

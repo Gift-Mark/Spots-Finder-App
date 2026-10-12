@@ -5,7 +5,7 @@ import {
   createPlace,
   updatePlace,
   deletePlace,
-} from "../controllers/place..js";
+} from "../controllers/place.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
