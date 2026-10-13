@@ -1,8 +1,27 @@
 import { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRobot, faPaperPlane, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faRobot, faPaperPlane, faXmark, faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
 import { askWebsiteSupport } from '../api/client';
 import styles from '../CSS/JosPulseAI.module.css';
+
+const STORAGE_KEY = 'jos_ai_messages';
+const MAX_MESSAGES = 30;
+
+const WELCOME_MESSAGE =
+  "Hi, I'm Jos Pulse AI. Ask me anything about the website — places, opening hours, entry prices, events, flights, tee times, accounts, or any page or feature.";
+
+// Restore the previous conversation so the chat keeps context across reloads.
+const loadStoredMessages = () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    if (Array.isArray(stored) && stored.length) {
+      return stored.slice(-MAX_MESSAGES);
+    }
+  } catch {
+    // Corrupted storage — fall through to a fresh welcome message.
+  }
+  return [{ sender: 'ai', text: WELCOME_MESSAGE }];
+};
 
 export const JosPulseAI = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,34 +36,48 @@ export const JosPulseAI = () => {
     return newId;
   });
   const messagesEndRef = useRef(null);
-  const [messages, setMessages] = useState([
-    {
-      sender: 'ai',
-      text: "Hi, I'm Jos Pulse support. Ask me about places, opening hours, entry prices, events, flights, or using the website.",
-    },
-  ]);
+  const [messages, setMessages] = useState(loadStoredMessages);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isSending]);
+
+  // Persist the visible conversation (capped) so it survives reloads.
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_MESSAGES)));
+    } catch {
+      // Storage full/unavailable — the chat still works for this session.
+    }
+  }, [messages]);
+
+  const handleReset = () => {
+    if (isSending) return;
+    const fresh = [{ sender: 'ai', text: WELCOME_MESSAGE }];
+    setMessages(fresh);
+  };
 
   const handleSend = async (e) => {
     e.preventDefault();
     const prompt = input.trim();
     if (!prompt || isSending) return;
 
-    setMessages((previous) => [...previous, { sender: 'user', text: prompt }].slice(-30));
+    setMessages((previous) => [...previous, { sender: 'user', text: prompt }].slice(-MAX_MESSAGES));
     setInput('');
     setIsSending(true);
 
     try {
       const response = await askWebsiteSupport(prompt, sessionId, window.location.pathname);
-      setMessages((previous) => [...previous, { sender: 'ai', text: response.reply }].slice(-30));
+      const reply =
+        response?.reply ||
+        response?.message ||
+        "I couldn't find an answer just now — please try rephrasing your question.";
+      setMessages((previous) => [...previous, { sender: 'ai', text: reply }].slice(-MAX_MESSAGES));
     } catch {
       setMessages((previous) => [
         ...previous,
         { sender: 'ai', text: 'Support chat is temporarily unavailable. Please try again shortly.' },
-      ].slice(-30));
+      ].slice(-MAX_MESSAGES));
     } finally {
       setIsSending(false);
     }
@@ -53,22 +86,32 @@ export const JosPulseAI = () => {
   return (
     <div className={styles.chatWrapper}>
       {!isOpen && (
-        <button className={styles.floatingBtn} onClick={() => setIsOpen(true)} aria-label="Open Jos Pulse support chat">
+        <button className={styles.floatingBtn} onClick={() => setIsOpen(true)} aria-label="Open Jos Pulse AI chat">
           <FontAwesomeIcon icon={faRobot} />
-          <span>Website Support</span>
+          <span>Jos Pulse AI</span>
         </button>
       )}
 
       {isOpen && (
-        <section className={styles.chatBox} aria-label="Jos Pulse website support" role="dialog">
+        <section className={styles.chatBox} aria-label="Jos Pulse AI assistant" role="dialog">
           <div className={styles.chatHeader}>
             <div className={styles.headerTitle}>
               <FontAwesomeIcon icon={faRobot} />
-              <span>Jos Pulse Support</span>
+              <span>Jos Pulse AI</span>
             </div>
-            <button className={styles.closeBtn} onClick={() => setIsOpen(false)} aria-label="Close support chat">
-              <FontAwesomeIcon icon={faXmark} />
-            </button>
+            <div className={styles.headerButtons}>
+              <button
+                className={styles.closeBtn}
+                onClick={handleReset}
+                aria-label="Start a new chat"
+                title="Start a new chat"
+              >
+                <FontAwesomeIcon icon={faArrowsRotate} />
+              </button>
+              <button className={styles.closeBtn} onClick={() => setIsOpen(false)} aria-label="Close chat">
+                <FontAwesomeIcon icon={faXmark} />
+              </button>
+            </div>
           </div>
 
           <div className={styles.messagesArea} role="log" aria-live="polite">
@@ -88,11 +131,11 @@ export const JosPulseAI = () => {
           <form onSubmit={handleSend} className={styles.inputArea}>
             <input
               type="text"
-              placeholder="Ask about a place or website feature"
+              placeholder="Ask about a place, price, event or feature"
               value={input}
               maxLength={500}
               onChange={(e) => setInput(e.target.value)}
-              aria-label="Your support question"
+              aria-label="Your question"
             />
             <button type="submit" disabled={isSending || !input.trim()} aria-label="Send question">
               <FontAwesomeIcon icon={faPaperPlane} />

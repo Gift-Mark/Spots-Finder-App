@@ -49,7 +49,7 @@ export const Login = () => {
       navigate(destination, {
         replace: true,
         state: {
-          greeting: `Welcome back, ${data.user?.firstName || "Explorer"}`,
+          greeting: `${timeGreeting}, ${data.user?.firstName || "Explorer"}`,
           message: "What's the vibe right now!",
         },
       });
@@ -136,6 +136,18 @@ export const Login = () => {
             Continue with Apple
           </button>
         </div>
+
+        {/* Guest browsing — the site is fully explorable without an account */}
+        <button
+          type="button"
+          className={styles.guestButton}
+          onClick={() => navigate("/explore", { replace: true })}
+        >
+          Continue as Guest
+        </button>
+        <p className={styles.guestHint}>
+          Browse places, events, dining and stays — no account needed.
+        </p>
       </section>
     </main>
   );

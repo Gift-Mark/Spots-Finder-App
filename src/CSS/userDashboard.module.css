@@ -172,11 +172,19 @@
 .settingsBtn {
   margin-top: 0.5rem;
   width: 100%;
-  background: #f1f5f9;
+  background: #0f172a;
+  color: #ffffff;
   border: none;
-  padding: 0.4rem;
+  padding: 0.45rem;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.settingsBtn:hover {
+  background: #1e293b;
 }
 
 .content {
@@ -330,6 +338,22 @@
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+  color: #0f172a;
+}
+
+.passSection h2,
+.passSection h3,
+.passSection h4,
+.passSection strong {
+  color: #0f172a;
+}
+
+.passSection small {
+  color: #64748b;
+}
+
+.passSection p {
+  color: #334155;
 }
 
 .passHeader {
@@ -346,6 +370,7 @@
 
 .tabBtn {
   background: #f1f5f9;
+  color: #475569;
   border: none;
   padding: 0.4rem 0.85rem;
   border-radius: 6px;
@@ -371,6 +396,18 @@
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   padding: 1.25rem;
+  color: #0f172a;
+}
+
+.ticketGrid h2,
+.ticketGrid h3,
+.ticketGrid h4,
+.ticketGrid strong {
+  color: #0f172a;
+}
+
+.ticketGrid p {
+  color: #334155;
 }
 
 .badgeRow {
@@ -494,6 +531,17 @@
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   padding: 1.5rem;
+  color: #0f172a;
+}
+
+.trendingSection h3,
+.trendingSection h4,
+.trendingSection small {
+  color: #0f172a;
+}
+
+.trendingSection p {
+  color: #64748b;
 }
 
 .trendingHeader {
@@ -982,4 +1030,26 @@
 
 .savedCardRemoveBtn:hover {
   background: rgba(239, 68, 68, 0.75);
+}
+
+/* ── Curation card dynamic image box ─────────────────────────── */
+.curationImgBox {
+  height: 110px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 6px;
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  background-color: #cbd5e1;
+}
+
+.curationCard h4 {
+  color: #0f172a;
+}
+
+.curationCard p {
+  color: #64748b;
 }

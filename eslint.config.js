@@ -25,6 +25,16 @@ export default defineConfig([
     },
   },
 
+  // Serverless newsletter handler runs on a Node runtime, so it gets Node globals
+  // (process.env) instead of browser globals
+  {
+    files: ["src/api/newsletter/**/*.js"],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
+
   // Express backend
   {
     files: ["server/**/*.js"],

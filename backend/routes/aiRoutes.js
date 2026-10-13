@@ -1,8 +1,10 @@
-const express = require('express');
+import express from "express";
+import { getAIRecommendation, getAISupportResponse } from "../controllers/aiController.js";
+
 const router = express.Router();
-const { getAIRecommendation, getAISupportResponse } = require('../controllers/aiController');
 
-router.post('/recommend', getAIRecommendation);
-router.post('/support', getAISupportResponse);
+// Website AI support & recommendations — public for guests and members.
+router.post("/support", getAISupportResponse);
+router.post("/recommend", getAIRecommendation);
 
-module.exports = router;
+export default router;

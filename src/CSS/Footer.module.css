@@ -93,8 +93,8 @@
 /* --- MAIN FOOTER GRID (Matching Screenshot UI) --- */
 .footerGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 48px;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr;
+  gap: 40px;
   max-width: 1100px;
   margin: 0 auto;
 }

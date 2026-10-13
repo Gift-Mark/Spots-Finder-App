@@ -28,8 +28,7 @@ export default function Dashboard() {
   })();
 
   // Greeting logic:
-  // - Login passes state.greeting = "Welcome back, Jane"
-  // - Register passes state.greeting = "Good morning, Jane"
+  // - Login and Register pass a time-based state.greeting, e.g. "Good morning, Jane"
   // - Direct navigation (no state): compute time-based greeting from current hour
   const heroGreeting = (() => {
     if (location.state?.greeting) return location.state.greeting;
@@ -61,9 +60,10 @@ export default function Dashboard() {
   const [savedSpots, setSavedSpots] = useState([]);
   const [savedLoading, setSavedLoading] = useState(false);
 
-  // Bookings state
+  // Bookings state — Overview is the default panel and its bookings fetch runs on
+  // mount, so this flag starts true (loading flags are flipped where tab changes originate)
   const [myBookings, setMyBookings] = useState([]);
-  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
 
   // Profile state
   const [profileData, setProfileData] = useState({ firstName: '', lastName: '', email: '', profileImage: '' });
@@ -89,9 +89,10 @@ export default function Dashboard() {
   }, []);
 
   // Fetch saved spots when navigating to Saved panel
+  // (savedLoading is flipped true by the nav click handler — effects must not set
+  // state synchronously; the .finally() below clears it)
   useEffect(() => {
     if (activeNav === 'Saved') {
-      setSavedLoading(true);
       getMySavedSpots()
         .then(res => {
           // Backend returns { success, count, data: [...] }
@@ -103,10 +104,9 @@ export default function Dashboard() {
     }
   }, [activeNav]);
 
-  // Fetch bookings when navigating to Bookings panel
+  // Fetch bookings when navigating to Bookings panel OR when on Overview (for the passes tab)
   useEffect(() => {
-    if (activeNav === 'Bookings') {
-      setBookingsLoading(true);
+    if (activeNav === 'Bookings' || activeNav === 'Overview') {
       fetchMyBookings()
         .then(res => {
           const bookings = res?.data ?? (Array.isArray(res) ? res : []);
@@ -120,7 +120,6 @@ export default function Dashboard() {
   // Fetch profile when navigating to Profile panel
   useEffect(() => {
     if (activeNav === 'Profile') {
-      setProfileLoading(true);
       getUserProfile()
         .then(res => {
           const d = res.data || res;
@@ -136,6 +135,16 @@ export default function Dashboard() {
         .finally(() => setProfileLoading(false));
     }
   }, [activeNav]);
+
+  // Tab switching: flip the target panel's loading flag here (event-driven) instead of
+  // synchronously inside the fetch effects; each effect's .finally() clears the flag.
+  const changeNav = (nav) => {
+    if (nav === activeNav) return;
+    if (nav === 'Saved') setSavedLoading(true);
+    else if (nav === 'Bookings' || nav === 'Overview') setBookingsLoading(true);
+    else if (nav === 'Profile') setProfileLoading(true);
+    setActiveNav(nav);
+  };
 
   // Handle local image file selection — creates a preview URL
   const handleProfileImageFile = (e) => {
@@ -241,37 +250,37 @@ export default function Dashboard() {
             <small className={styles.sidebarLabel}>MAIN CONSOLE</small>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Overview' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Overview'); logBehavior('FILTER_SELECT', { nav: 'Overview' }); }}
+              onClick={() => { changeNav('Overview'); logBehavior('FILTER_SELECT', { nav: 'Overview' }); }}
             >
               📊 Overview
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Bookings' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Bookings'); logBehavior('FILTER_SELECT', { nav: 'Bookings' }); }}
+              onClick={() => { changeNav('Bookings'); logBehavior('FILTER_SELECT', { nav: 'Bookings' }); }}
             >
               🎟️ My Bookings
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Saved' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Saved'); logBehavior('FILTER_SELECT', { nav: 'Saved' }); }}
+              onClick={() => { changeNav('Saved'); logBehavior('FILTER_SELECT', { nav: 'Saved' }); }}
             >
               🔖 Saved Spots
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Profile' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Profile'); logBehavior('FILTER_SELECT', { nav: 'Profile' }); }}
+              onClick={() => { changeNav('Profile'); logBehavior('FILTER_SELECT', { nav: 'Profile' }); }}
             >
               ⚙️ Profile Settings
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Feed' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Feed'); logBehavior('FILTER_SELECT', { nav: 'Feed' }); }}
+              onClick={() => { changeNav('Feed'); logBehavior('FILTER_SELECT', { nav: 'Feed' }); }}
             >
               📡 Live Feed
             </button>
             <button
               className={`${styles.sideBtn} ${activeNav === 'Map' ? styles.sideBtnActive : ''}`}
-              onClick={() => { setActiveNav('Map'); logBehavior('VENUE_VIEW', { nav: 'Map' }); }}
+              onClick={() => { changeNav('Map'); logBehavior('VENUE_VIEW', { nav: 'Map' }); }}
             >
               🗺️ Map Engine
             </button>
@@ -297,7 +306,12 @@ export default function Dashboard() {
           <div className={styles.conciergeBox}>
             <strong>🎧 Jos Concierge</strong>
             <p>24/7 Plateau travel & dining assistance available.</p>
-            <button className={styles.settingsBtn}>⚙️ Settings</button>
+            <button
+              className={styles.settingsBtn}
+              onClick={() => changeNav('Profile')}
+            >
+              ⚙️ Settings
+            </button>
           </div>
         </aside>
 
@@ -396,6 +410,8 @@ export default function Dashboard() {
                 </div>
 
                 <div className={styles.ticketGrid}>
+                  {activeTab === 'Passes' && (
+                    <>
                   {/* LEFT PASS INFO */}
                   <div className={styles.ticketMain}>
                     <div className={styles.badgeRow}>
@@ -446,7 +462,6 @@ export default function Dashboard() {
                     </div>
 
                     <div className={styles.qrFrame}>
-                      {/* SVG QR CODE PATTERN MATCHING TARGET MOCKUP */}
                       <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2 2H10V10H2V2ZM4 4V8H8V4H4ZM14 2H22V10H14V2ZM16 4V8H20V4H16ZM2 14H10V22H2V14ZM4 16V20H8V16H4ZM12 12H14V14H12V12ZM14 14H16V16H14V14ZM16 12H18V14H16V12ZM18 14H20V16H18V14ZM20 12H22V14H20V12ZM12 16H14V18H12V16ZM14 18H16V20H14V18ZM16 16H18V18H16V16ZM18 18H20V20H18V18ZM20 16H22V18H20V16ZM12 20H14V22H12V20ZM16 20H18V22H16V20ZM20 20H22V22H20V20Z" fill="#0f172a"/>
                       </svg>
@@ -455,6 +470,53 @@ export default function Dashboard() {
                     <small className={styles.scanText}>SCAN AT ENTRANCE<br />Gate A • Turnstile #3</small>
                     <button className={styles.presentBtn}>Present Pass on Phone</button>
                   </div>
+                    </>
+                  )}
+
+                  {activeTab === 'Flights' && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      {bookingsLoading ? (
+                        <p className={styles.loadingText}>Loading flight reservations...</p>
+                      ) : myBookings.filter(b => b.bookingType === 'Flight Reservation' || (b.provider || '').toLowerCase().includes('flight') || (b.destination || '').toLowerCase().includes('jos')).length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+                          <p style={{ color: '#64748b', marginBottom: '1rem' }}>No flight reservations yet.</p>
+                          <Link to="/flights" className={styles.primaryDarkBtn} style={{ display: 'inline-block', textDecoration: 'none', padding: '0.65rem 1.5rem' }}>
+                            ✈️ Book a Flight to Jos
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className={styles.bookingsList}>
+                          {myBookings
+                            .filter(b => b.bookingType === 'Flight Reservation' || (b.provider || '').toLowerCase().includes('flight') || (b.destination || '').toLowerCase().includes('jos'))
+                            .map(booking => (
+                              <div key={booking._id} className={styles.bookingItem}>
+                                <div className={styles.bookingItemLeft}>
+                                  <span className={styles.bookingIcon}>✈️</span>
+                                  <div>
+                                    <strong className={styles.bookingVenue}>{booking.provider || 'Flight'}</strong>
+                                    <p className={styles.bookingMeta}>
+                                      📅 {booking.startDate ? new Date(booking.startDate).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' }) : '—'}
+                                      {booking.destination ? ` · ${booking.destination}` : ''}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className={styles.bookingItemRight}>
+                                  <span className={`${styles.bookingStatus} ${booking.paymentStatus === 'paid' ? styles.bookingStatusPaid : styles.bookingStatusPending}`}>
+                                    {booking.paymentStatus === 'paid' ? '✓ Confirmed' : '⏳ Pending'}
+                                  </span>
+                                  <strong className={styles.bookingAmount}>₦{(booking.amount || 0).toLocaleString()}</strong>
+                                  {booking.bookingReference && <small className={styles.bookingRef}>#{booking.bookingReference}</small>}
+                                </div>
+                              </div>
+                            ))
+                          }
+                          <div style={{ marginTop: '1rem', textAlign: 'right' }}>
+                            <Link to="/flights" className={styles.downloadBtn} style={{ textDecoration: 'none' }}>✈️ Book Another Flight</Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </section>
 
@@ -465,55 +527,55 @@ export default function Dashboard() {
                     <small>PLATEAU CURATIONS</small>
                     <h3>Trending Nearby in Jos</h3>
                   </div>
-                  <a href="#catalog" className={styles.viewCatalogLink}>View Full City Catalog ›</a>
+                  <Link to="/explore" className={styles.viewCatalogLink}>View Full City Catalog ›</Link>
                 </div>
 
                 <div className={styles.cards3Grid}>
-                  {/* CARD 1 */}
+                  {/* Shere Hills Rock Climbing */}
                   <div
                     className={styles.curationCard}
-                    onClick={() => logBehavior('VENUE_VIEW', { name: 'Shere Hills Monolith' })}
+                    onClick={() => { navigate('/place/shere-hills-rock-climbing'); logBehavior('VENUE_VIEW', { name: 'Shere Hills Rock Climbing' }); }}
                   >
-                    <div className={styles.imageBox}>
+                    <div className={styles.curationImgBox} style={{ backgroundImage: "url('/images/Shere hills hike.jpg')" }}>
                       <span className={styles.curTag}>HIKING & SCENIC</span>
-                      <span className={styles.ratingBadge}>★ 4.9 (182)</span>
+                      <span className={styles.ratingBadge}>★ 4.9 (84)</span>
                     </div>
-                    <h4>Shere Hills Monolith Trek</h4>
-                    <p>Ascend to the highest points of Plateau State. Guided trail runs, rocky caves, and breathtaking overlooks.</p>
+                    <h4>Shere Hills Rock Climbing & Trail Trek</h4>
+                    <p>Plateau State's highest peak at ~6,000ft — granite formations, caves and challenging ridge trails.</p>
                     <div className={styles.cardFooter}>
                       <small>From ₦3,500 / guide</small>
                       <span>→</span>
                     </div>
                   </div>
 
-                  {/* CARD 2 */}
+                  {/* Jos Wildlife Park */}
                   <div
                     className={styles.curationCard}
-                    onClick={() => logBehavior('VENUE_VIEW', { name: 'Jos Wildlife Park' })}
+                    onClick={() => { navigate('/place/jos-wildlife-park'); logBehavior('VENUE_VIEW', { name: 'Jos Wildlife Park' }); }}
                   >
-                    <div className={styles.imageBox2}>
+                    <div className={styles.curationImgBox} style={{ backgroundImage: "url('/images/wildlife park.jpg')" }}>
                       <span className={styles.curTag}>NATURE RESERVE</span>
-                      <span className={styles.ratingBadge}>★ 4.7 (210)</span>
+                      <span className={styles.ratingBadge}>★ 4.2 (310)</span>
                     </div>
-                    <h4>Jos Wildlife Park & Safari</h4>
-                    <p>A sprawling scenic conservation park offering tranquil pine tree picnic gardens and exotic regional fauna.</p>
+                    <h4>Jos Wildlife Park</h4>
+                    <p>Nigeria's premier nature reserve — vast pine forests, scenic wildlife viewing and habitat conservation.</p>
                     <div className={styles.cardFooter}>
                       <small>From ₦1,500 / entry</small>
                       <span>→</span>
                     </div>
                   </div>
 
-                  {/* CARD 3 */}
+                  {/* Solomon Lar Amusement Park */}
                   <div
                     className={styles.curationCard}
-                    onClick={() => logBehavior('VENUE_VIEW', { name: 'Solomon Lar Gardens' })}
+                    onClick={() => { navigate('/place/solomon-lar-amusement-park'); logBehavior('VENUE_VIEW', { name: 'Solomon Lar Amusement Park' }); }}
                   >
-                    <div className={styles.imageBox3}>
+                    <div className={styles.curationImgBox} style={{ backgroundImage: "url('/images/solomon lar.jpg')" }}>
                       <span className={styles.curTag}>LEISURE & DINING</span>
-                      <span className={styles.ratingBadge}>★ 4.8 (95)</span>
+                      <span className={styles.ratingBadge}>★ 4.4 (185)</span>
                     </div>
-                    <h4>Solomon Lar Leisure Gardens</h4>
-                    <p>Charming green haven perfect for weekend picnics, local grilled Plateau suya, and peaceful relaxation.</p>
+                    <h4>Solomon Lar Amusement Park</h4>
+                    <p>Serene urban park with artificial lakes, picnic grounds and family entertainment in Jos South.</p>
                     <div className={styles.cardFooter}>
                       <small>Free Public Access</small>
                       <span>→</span>

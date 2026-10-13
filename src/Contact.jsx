@@ -113,6 +113,7 @@ export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState('faq-1');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [ticketRef, setTicketRef] = useState('');
   const [fileName, setFileName] = useState('');
 
   const handleInputChange = (e) => {
@@ -135,6 +136,8 @@ export default function ContactPage() {
     // Simulate API call to backend support ticket system
     setTimeout(() => {
       setIsSubmitting(false);
+      // Assigned here (event-driven) so the ref stays stable while the modal re-renders
+      setTicketRef(`#JP-2026-${Math.floor(Math.random() * 8999) + 1000}`);
       setShowSuccessModal(true);
     }, 1200);
   };
@@ -149,6 +152,7 @@ export default function ContactPage() {
       attachment: null
     });
     setFileName('');
+    setTicketRef('');
     setShowSuccessModal(false);
   };
 
@@ -454,7 +458,7 @@ export default function ContactPage() {
               <div style={styles.ticketSummaryBox}>
                 <div style={styles.ticketRow}>
                   <span>Ticket Ref ID:</span>
-                  <strong style={{ color: '#F97316' }}>#JP-2026-{(Math.floor(Math.random() * 8999) + 1000)}</strong>
+                  <strong style={{ color: '#F97316' }}>{ticketRef}</strong>
                 </div>
                 <div style={styles.ticketRow}>
                   <span>Destination Email:</span>

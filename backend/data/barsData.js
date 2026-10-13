@@ -169,7 +169,23 @@ export const JOS_BARS_DIRECTORY = [
     neighborhood: "Millionaires Quarters",
     address: "Lamingo Road Axis, Jos",
     openingHours: "3:00 PM – 12:00 AM",
-    priceRange: "$$",     vibe: "Firepit Seating on Chilly Evenings, Outdoor Wooden Tables",     popularFor: ["Hot Pepper Soup Bowls", "Grilled Pork", "Late-Night Firepit Drinks"]   },    // ==========================================   // 3. HOTEL & RESTAURANT BARS (10)   // Target: Premium service, quiet meetings, cocktails, fine dining integration   // ==========================================   {     id: "hotel-bar-01",     name: "Barcardi Restaurant & Lounge Bar",     subCategory: "Hotel & Restaurant Bars",     neighborhood: "GRA",     address: "11 Dandaura Road, Off Wase Road, GRA, Jos",     openingHours: "12:00 PM – 11:30 PM",     priceRange: "$$$",
+    priceRange: "$$",
+    vibe: "Firepit Seating on Chilly Evenings, Outdoor Wooden Tables",
+    popularFor: ["Hot Pepper Soup Bowls", "Grilled Pork", "Late-Night Firepit Drinks"]
+  },
+  
+  // ==========================================
+  // 3. HOTEL & RESTAURANT BARS (10)
+  // Target: Premium service, quiet meetings, cocktails, fine dining integration
+  // ==========================================
+  {
+    id: "hotel-bar-01",
+    name: "Barcardi Restaurant & Lounge Bar",
+    subCategory: "Hotel & Restaurant Bars",
+    neighborhood: "GRA",
+    address: "11 Dandaura Road, Off Wase Road, GRA, Jos",
+    openingHours: "12:00 PM – 11:30 PM",
+    priceRange: "$$$",
     vibe: "Fine Dining Lounge, Classy Interior, High-End Cocktails",
     popularFor: ["Signature Cocktails", "Intercontinental Cuisine", "Business Drinks"]
   },

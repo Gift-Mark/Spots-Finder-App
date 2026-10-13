@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import JosPulseAI from "./Components/JosPulseAI";
 
 // Load route screens on demand so the initial bundle does not include every page.
 const Discover = lazy(() => import("./discover"));
@@ -86,6 +87,9 @@ function App() {
 
         </Routes>
       </Suspense>
+
+      {/* Global floating AI support agent — visible on every page */}
+      <JosPulseAI />
     </>
   );
 }

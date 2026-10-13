@@ -178,6 +178,31 @@
   color: #0b1324;
 }
 
+.guestButton {
+  min-height: 50px;
+  margin-top: 24px;
+  border: 1px solid #7138dd;
+  border-radius: 12px;
+  background: transparent;
+  color: #b497f2;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.guestButton:hover {
+  background: #7138dd;
+  color: white;
+}
+
+.guestHint {
+  margin: 14px 0 0;
+  text-align: center;
+  color: #9aa3b8;
+  font-size: 0.78rem;
+}
+
 @media (max-width: 380px) {
   .loginContainer {
     padding: 30px 24px;

@@ -1,24 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../CSS/Header.css';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
+  // The session lives in localStorage, so the user is derived during render (recomputed
+  // on route change) instead of copied into state by an effect, which cascaded renders.
+  const user = useMemo(() => {
     const storedUser = localStorage.getItem('user') || localStorage.getItem('jos_pulse_user');
     const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
-
-    if (storedUser && token) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        setUser({ firstName: 'Account' });
-      }
-    } else {
-      setUser(null);
+    if (!storedUser || !token) return null;
+    try {
+      return JSON.parse(storedUser);
+    } catch {
+      return { firstName: 'Account' };
     }
   }, [location.pathname]);
 
@@ -27,7 +24,6 @@ const Header = () => {
     localStorage.removeItem('jos_pulse_token');
     localStorage.removeItem('user');
     localStorage.removeItem('jos_pulse_user');
-    setUser(null);
     navigate('/login');
   };
 

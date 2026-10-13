@@ -5,7 +5,7 @@ export const SubscriptionCheckout = ({ businessId, email, planType }) => {
     reference: (new Date()).getTime().toString(),
     email: email,
     amount: planType === 'PREMIUM_ANNUAL' ? 12000000 : 5000000, // Amount in kobo
-    publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
+    publicKey: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
     metadata: {
       businessId,
       planType,
@@ -16,7 +16,7 @@ export const SubscriptionCheckout = ({ businessId, email, planType }) => {
 
   const onSuccess = (reference) => {
     // Payment completed on client, but webhook will do the official DB verification
-    alert("Payment successful! Your account status will update shortly.");
+    alert(`Payment successful! Reference: ${reference?.reference || 'n/a'}. Your account status will update shortly.`);
   };
 
   const onClose = () => {

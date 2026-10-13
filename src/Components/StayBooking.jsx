@@ -19,6 +19,7 @@ export function BookingModal({ hotel, onClose }) {
     };
     
     // Trigger Paystack / Backend Reservation API
+    console.log("Booking payload awaiting backend integration:", bookingDetails);
     alert(`Booking initiated for ${guestName} at ${hotel.name}! Check-in: ${checkIn}`);
     onClose();
   };

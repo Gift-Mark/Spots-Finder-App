@@ -57,30 +57,33 @@ export const TopEstablishmentsGrid = ({
 }) => {
   const [activeTab, setActiveTab] = useState('Popular');
   const [userPosition, setUserPosition] = useState(null);
-  const [locationError, setLocationError] = useState('');
+  const [locationDenied, setLocationDenied] = useState(false);
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  useEffect(() => {
-    if (filters.sortBy !== 'nearest') {
-      setLocationError('');
-      return undefined;
-    }
+  // Derived rather than stored: the message only ever shows for the 'nearest' sort, so
+  // the effect below never needs to set state synchronously (avoids cascading renders).
+  const locationError = filters.sortBy !== 'nearest'
+    ? ''
+    : !('geolocation' in navigator)
+      ? 'Location is not available in this browser.'
+      : locationDenied
+        ? 'Location permission was not granted.'
+        : '';
 
-    if (!navigator.geolocation) {
-      setLocationError('Location is not available in this browser.');
-      return undefined;
-    }
+  useEffect(() => {
+    if (filters.sortBy !== 'nearest') return undefined;
+    if (!('geolocation' in navigator)) return undefined;
 
     let isCurrentRequest = true;
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
         if (isCurrentRequest) {
           setUserPosition({ latitude: coords.latitude, longitude: coords.longitude });
-          setLocationError('');
+          setLocationDenied(false);
         }
       },
       () => {
-        if (isCurrentRequest) setLocationError('Location permission was not granted.');
+        if (isCurrentRequest) setLocationDenied(true);
       },
       { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
     );

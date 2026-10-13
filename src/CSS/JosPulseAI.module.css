@@ -39,11 +39,11 @@
   height: min(500px, calc(100dvh - 96px));
   background-color: #ffffff;
   border-radius: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(124, 45, 18, 0.18);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #fed7aa;
 }
 
 .chatHeader {
@@ -66,11 +66,16 @@
 .closeBtn {
   background: transparent;
   border: none;
-  color: #e2e8f0;
+  color: #fed7aa;
   cursor: pointer;
   width: 36px;
   height: 36px;
   border-radius: 6px;
+}
+
+.headerButtons {
+  display: flex;
+  align-items: center;
 }
 
 .messagesArea {
@@ -81,18 +86,19 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: #f8fafc;
+  background-color: #fff7ed;
 }
 
 .aiMsg {
   background-color: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #fed7aa;
   padding: 10px 12px;
   border-radius: 12px 12px 12px 2px;
   font-size: 12px;
-  color: #1e293b;
+  color: #1c1917;
   line-height: 1.4;
   max-width: 85%;
+  white-space: pre-line;
 }
 
 .userMsg {
@@ -104,22 +110,36 @@
   line-height: 1.4;
   align-self: flex-end;
   max-width: 85%;
+  white-space: pre-line;
 }
 
 .inputArea {
   display: flex;
   padding: 10px;
   background-color: #ffffff;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #fed7aa;
 }
 
 .inputArea input {
   flex: 1;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #fdba74;
   border-radius: 6px;
   padding: 8px 10px;
   font-size: 13px;
   outline: none;
+  background-color: #ffffff;
+  color: #1c1917;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputArea input::placeholder {
+  color: #c2410c;
+  opacity: 0.55;
+}
+
+.inputArea input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.18);
 }
 
 .inputArea button {
@@ -142,10 +162,10 @@
   margin: 0;
   padding: 8px 12px;
   background: #fff7ed;
-  color: #475569;
+  color: #9a3412;
   font-size: 10px;
   line-height: 1.35;
-  border-top: 1px solid #fed7aa;
+  border-top: 1px solid #fdba74;
 }
 
 @media (max-width: 520px) {

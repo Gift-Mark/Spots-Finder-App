@@ -1,6 +1,5 @@
 const josMuseumImage = '/images/Jos Museum.jpg';
 const nokImage = '/images/Nok.jpg';
-const riyomRockImage = '/images/Riyom-Rock-2-768x513.jpg';
 const nzemBeromImage = '/images/nzem berom.jpg';
 const motnaImage = '/images/MOTNA.jpg';
 
@@ -27,7 +26,7 @@ export const heritageItems = [
     description:
       'Discover the enigmatic clay figures that date back to 500 BC, representing one of the earliest known sculptural traditions in...',
     subtext: 'Museum Gallery',
-    image: '/images/Nok.jpg',
+    image: nokImage,
     link: '/culture/nok-terracottas',
     icon: '🏺',
     mapCoords: { top: '34%', left: '46%' },
@@ -66,7 +65,7 @@ export const heritageItems = [
     description:
       'Wander through full-scale replicas of major Nigerian architectural styles, from the Katsina Palace to traditional Mbari houses.',
     location: 'Museum Complex',
-    image: '/images/MOTNA.jpg',
+    image: motnaImage,
     link: '/culture/motna',
     icon: '🏘️',
     mapCoords: { top: '66%', left: '50%' },

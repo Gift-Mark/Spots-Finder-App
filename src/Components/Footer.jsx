@@ -92,9 +92,25 @@ export const Footer = () => {
         <div className={styles.linksCol}>
           <h4 className={styles.colHeading}>Explore</h4>
           <ul className={styles.linksList}>
-            <li><Link to="/explore">Local Guides</Link></li>
-            <li><Link to="/events">Event Ticketing</Link></li>
-            <li><Link to="/claim-venue">Claim Your Venue</Link></li>
+            <li><Link to="/explore">Discover Places</Link></li>
+            <li><Link to="/dining">Restaurants & Dining</Link></li>
+            <li><Link to="/nightlife">Nightlife</Link></li>
+            <li><Link to="/events">Events & Ticketing</Link></li>
+            <li><Link to="/culture">Culture & Heritage</Link></li>
+            <li><Link to="/stays">Stays & Hotels</Link></li>
+            <li><Link to="/flights">Flights to Jos</Link></li>
+            <li><Link to="/attractions">Attractions</Link></li>
+          </ul>
+        </div>
+
+        {/* Community Links */}
+        <div className={styles.linksCol}>
+          <h4 className={styles.colHeading}>Community</h4>
+          <ul className={styles.linksList}>
+            <li><Link to="/guides">Local Guides</Link></li>
+            <li><Link to="/claim">Claim Your Venue</Link></li>
+            <li><Link to="/golf">Golf</Link></li>
+            <li><Link to="/lounges">Lounges</Link></li>
           </ul>
         </div>
 
@@ -104,14 +120,7 @@ export const Footer = () => {
           <ul className={styles.linksList}>
             <li><Link to="/privacy">Privacy Policy</Link></li>
             <li><Link to="/terms">Terms of Service</Link></li>
-          </ul>
-        </div>
-
-        {/* Support Links */}
-        <div className={styles.linksCol}>
-          <h4 className={styles.colHeading}>Support</h4>
-          <ul className={styles.linksList}>
-            <li><Link to="/support">Contact Support</Link></li>
+            <li><Link to="/contact">Contact Support</Link></li>
           </ul>
         </div>
       </div>
