@@ -44,7 +44,14 @@ const placeSchema = new mongoose.Schema(
       type: String,
       enum: [
         "restaurant", "nightlife", "nature", "culture", "festival",
-        "sports", "golf", "landmark", "hotel", "cafe", "resort", "other"
+        "sports", "golf", "landmark", "hotel", "cafe", "resort", "other",
+        'Restaurant & Dining', 
+    'Hotel & Resort', 
+    'Golf & Sports Club', 
+    'Lounge & Nightlife', 
+    'Event Center & Arena', // <--- Add this here
+    'Leisure',
+    'Historical'
       ],
       index: true,
       required: true,

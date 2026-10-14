@@ -7,7 +7,7 @@ dotenv.config();
 
 // Credentials can be overridden from .env (SUPERADMIN_EMAIL / SUPERADMIN_PASSWORD)
 // so the real password never has to live in code.
-const ADMIN_EMAIL = process.env.SUPERADMIN_EMAIL || "superadmin@jospulse.com";
+const ADMIN_EMAIL = (process.env.SUPERADMIN_EMAIL || "superadmin@jospulse.com").toLowerCase();
 const ADMIN_PASSWORD = process.env.SUPERADMIN_PASSWORD || "SuperAdmin@123";
 const ADMIN_FIRST_NAME = process.env.SUPERADMIN_FIRST_NAME || "Super";
 const ADMIN_LAST_NAME = process.env.SUPERADMIN_LAST_NAME || "Admin";
@@ -16,17 +16,18 @@ const seedSuperAdmin = async () => {
   try {
     await connectDB();
 
-    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(ADMIN_PASSWORD, salt);
 
     // Idempotent: create the admin, or promote/reset an existing account.
-    const existing = await User.findOne({ email: ADMIN_EMAIL });
+    let existing = await User.findOne({ email: ADMIN_EMAIL });
     if (existing) {
       existing.role = "admin";
       existing.password = hashedPassword;
-      if (!existing.firstName) existing.firstName = ADMIN_FIRST_NAME;
-      if (!existing.lastName) existing.lastName = ADMIN_LAST_NAME;
+      existing.firstName = ADMIN_FIRST_NAME;
+      existing.lastName = ADMIN_LAST_NAME;
       await existing.save();
-      console.log(`✔ Existing account promoted to admin: ${ADMIN_EMAIL}`);
+      console.log(`✔ Existing account updated and promoted to admin: ${ADMIN_EMAIL}`);
     } else {
       await User.create({
         firstName: ADMIN_FIRST_NAME,

@@ -4,48 +4,27 @@ import {
   faPlus, 
   faPen, 
   faCheck, 
-  faXmark 
+  faXmark,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/PromotedVenuesTable.module.css';
 
-const listingsData = [
-  {
-    id: 1,
-    name: 'Rayfield Resort & Spa',
-    image: '/images/Rayfield Resort.jpg',
-    category: 'Leisure',
-    ownerEmail: 'admin@rayfield.com',
-    plan: 'Premium Gold',
-    status: 'Active',
-  },
-  {
-    id: 2,
-    name: 'Jos Museum Heritage Center',
-    image: '/images/Jos Museum.jpg',
-    category: 'Historical',
-    ownerEmail: 'curator@josmuseum.ng',
-    plan: 'Basic Free',
-    status: 'Pending',
-  },
-  {
-    id: 3,
-    name: 'The Cave Lounge',
-    image: '/images/Mees Palace.webp',
-    category: 'Nightlife',
-    ownerEmail: 'hello@cavelounge.com',
-    plan: 'Standard',
-    status: 'Expired',
-  },
-];
-
-export const PromotedVenuesTable = ({ onNewListing, onFilter }) => {
+export const PromotedVenuesTable = ({ 
+  venues = [], 
+  onNewListing, 
+  onFilter, 
+  onEdit, 
+  onDelete,
+  onApprove,
+  onReject 
+}) => {
   return (
     <div className={styles.tableCard}>
       {/* Header & Controls */}
       <div className={styles.cardHeader}>
         <div>
           <h2 className={styles.cardTitle}>Promoted Venue Listings</h2>
-          <p className={styles.cardSubtitle}>Manage active subscriptions and approvals.</p>
+          <p className={styles.cardSubtitle}>Manage active subscriptions, approvals, and live listings.</p>
         </div>
 
         <div className={styles.actionGroup}>
@@ -67,82 +46,121 @@ export const PromotedVenuesTable = ({ onNewListing, onFilter }) => {
             <tr>
               <th>VENUE NAME</th>
               <th>CATEGORY</th>
-              <th>OWNER EMAIL</th>
+              <th>LOCATION</th>
               <th>PLAN</th>
               <th>STATUS</th>
               <th className={styles.actionsHeader}>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {listingsData.map((item) => (
-              <tr key={item.id}>
-                {/* Venue Name & Thumbnail */}
-                <td className={styles.venueCell}>
-                  <img src={item.image} alt={item.name} className={styles.venueThumb} />
-                  <span className={styles.venueName}>{item.name}</span>
-                </td>
-
-                {/* Category Badge */}
-                <td>
-                  <span className={styles.categoryBadge}>{item.category}</span>
-                </td>
-
-                {/* Owner Email */}
-                <td className={styles.emailCell}>{item.ownerEmail}</td>
-
-                {/* Subscription Plan */}
-                <td className={styles.planCell}>{item.plan}</td>
-
-                {/* Status Badge */}
-                <td>
-                  <span
-                    className={`${styles.statusBadge} ${
-                      item.status === 'Active'
-                        ? styles.statusActive
-                        : item.status === 'Pending'
-                        ? styles.statusPending
-                        : styles.statusExpired
-                    }`}
-                  >
-                    <span className={styles.statusDot} />
-                    {item.status}
-                  </span>
-                </td>
-
-                {/* Actions */}
-                <td className={styles.actionsCell}>
-                  {item.status === 'Pending' ? (
-                    <div className={styles.pendingActions}>
-                      <button
-                        type="button"
-                        className={styles.approveBtn}
-                        title="Approve Listing"
-                        aria-label="Approve Listing"
-                      >
-                        <FontAwesomeIcon icon={faCheck} />
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.rejectBtn}
-                        title="Reject Listing"
-                        aria-label="Reject Listing"
-                      >
-                        <FontAwesomeIcon icon={faXmark} />
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      className={styles.editBtn}
-                      title="Edit Listing"
-                      aria-label="Edit Listing"
-                    >
-                      <FontAwesomeIcon icon={faPen} />
-                    </button>
-                  )}
+            {venues.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: '#64748B' }}>
+                  No venue listings found. Click "New Listing" to add one.
                 </td>
               </tr>
-            ))}
+            ) : (
+              venues.map((item) => {
+                const venueId = item._id || item.id;
+                const venueStatus = item.status || 'Active';
+                
+                return (
+                  <tr key={venueId}>
+                    {/* Venue Name & Thumbnail */}
+                    <td className={styles.venueCell}>
+                      <img 
+                        src={item.imageUrl || item.image || '/images/default-venue.jpg'} 
+                        alt={item.name} 
+                        className={styles.venueThumb} 
+                        onError={(e) => { e.target.src = 'https://via.placeholder.com/40'; }}
+                      />
+                      <span className={styles.venueName}>{item.name}</span>
+                    </td>
+
+                    {/* Category Badge */}
+                    <td>
+                      <span className={styles.categoryBadge}>{item.category || 'General'}</span>
+                    </td>
+
+                    {/* Location / Email */}
+                    <td className={styles.emailCell}>{item.location || item.ownerEmail || 'Jos, Plateau'}</td>
+
+                    {/* Subscription Plan */}
+                    <td className={styles.planCell}>{item.plan || item.priceRange || 'Standard'}</td>
+
+                    {/* Status Badge */}
+                    <td>
+                      <span
+                        className={`${styles.statusBadge} ${
+                          venueStatus === 'Active'
+                            ? styles.statusActive
+                            : venueStatus === 'Pending'
+                            ? styles.statusPending
+                            : styles.statusExpired
+                        }`}
+                      >
+                        <span className={styles.statusDot} />
+                        {venueStatus}
+                      </span>
+                    </td>
+
+                    {/* Actions (CRUD: Edit, Delete, Approve, Reject) */}
+                    <td className={styles.actionsCell}>
+                      <div className={styles.pendingActions} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                        {venueStatus === 'Pending' && onApprove && (
+                          <button
+                            type="button"
+                            className={styles.approveBtn}
+                            title="Approve Listing"
+                            aria-label="Approve Listing"
+                            onClick={() => onApprove(venueId)}
+                          >
+                            <FontAwesomeIcon icon={faCheck} />
+                          </button>
+                        )}
+
+                        {venueStatus === 'Pending' && onReject && (
+                          <button
+                            type="button"
+                            className={styles.rejectBtn}
+                            title="Reject Listing"
+                            aria-label="Reject Listing"
+                            onClick={() => onReject(venueId)}
+                          >
+                            <FontAwesomeIcon icon={faXmark} />
+                          </button>
+                        )}
+
+                        {onEdit && (
+                          <button
+                            type="button"
+                            className={styles.editBtn}
+                            title="Edit Listing"
+                            aria-label="Edit Listing"
+                            onClick={() => onEdit(item)}
+                          >
+                            <FontAwesomeIcon icon={faPen} />
+                          </button>
+                        )}
+
+                        {onDelete && (
+                          <button
+                            type="button"
+                            className={styles.rejectBtn}
+                            title="Delete Listing"
+                            aria-label="Delete Listing"
+                            onClick={() => onDelete(venueId)}
+                            style={{ backgroundColor: '#EF4444', color: '#FFF' }}
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>

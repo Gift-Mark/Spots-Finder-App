@@ -3,6 +3,8 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import connectDB from "./config/db.js";
 import { initEventCronJob } from "./jobs/eventCronJob.js";
@@ -23,6 +25,7 @@ import newsletterRoutes from "./routes/newsletterRoutes.js";
 import saveRoutes from "./routes/saveRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import claimRoutes from './routes/claimRoutes.js';
 
 dotenv.config();
 
@@ -30,6 +33,9 @@ dotenv.config();
 connectDB().catch((err) => {
   console.error("⚠️ Database connection error:", err.message);
 });
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -72,6 +78,10 @@ app.use("/api/saves", saveRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/users", userRoutes);
+app.use('/api/claims', claimRoutes);
+
+// Serve the uploads folder publicly so documents can be viewed via URL
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Root Endpoint
 app.get("/", (req, res) => {

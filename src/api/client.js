@@ -144,4 +144,31 @@ export const updateUserProfile = async (data) => {
   return response.data;
 };
 
+// --- VENDOR & BUSINESS API ---
+export const fetchVendorProfile = async () => {
+  const response = await api.get('/businesses/vendor/profile');
+  return response.data;
+};
+
+export const fetchVendorEvents = async () => {
+  const response = await api.get('/events/vendor/my-events');
+  return response.data;
+};
+
+export const createVendorEvent = async (eventData) => {
+  const response = await api.post('/events', eventData);
+  return response.data;
+};
+
+export const fetchVendorStats = async () => {
+  const response = await api.get('/businesses/vendor/stats');
+  return response.data;
+};
+
+// --- PLACES MUTATION API (Add Delete) ---
+export const deletePlace = async (id) => {
+  const response = await api.delete(`/places/${id}`);
+  return response.data;
+};
+
 export default api;
