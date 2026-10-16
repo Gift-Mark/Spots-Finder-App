@@ -1,8 +1,8 @@
-const Place = require('../models/Place');
+import Place  from '../models/Place.js';
 
 // @desc    Get all places with optional filtering by section/category
 // @route   GET /api/places
-exports.getPlaces = async (req, res) => {
+export const getPlaces = async (req, res) => {
   try {
     const { section, category, search } = req.query;
     let query = {};
@@ -26,7 +26,7 @@ exports.getPlaces = async (req, res) => {
 
 // @desc    Create a new spot, venue, or event
 // @route   POST /api/places
-exports.createPlace = async (req, res) => {
+export const createPlace = async (req, res) => {
   try {
     const newPlace = await Place.create(req.body);
     res.status(201).json({ success: true, data: newPlace });

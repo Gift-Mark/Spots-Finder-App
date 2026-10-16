@@ -171,4 +171,10 @@ export const deletePlace = async (id) => {
   return response.data;
 };
 
+// --- FLIGHTS API ---
+export const searchFlights = async (params = {}) => {
+  const response = await api.get('/flights/search', { params });
+  return response.data;
+};
+
 export default api;

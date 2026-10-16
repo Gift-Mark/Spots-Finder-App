@@ -5,6 +5,9 @@ import {
   createEvent,
   updateEvent,
   deleteEvent,
+  getAdminEvents,
+  updateEventStatus,
+  deleteAdminEvent
 } from "../controllers/eventController.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 

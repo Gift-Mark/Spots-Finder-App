@@ -26,6 +26,8 @@ import saveRoutes from "./routes/saveRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import claimRoutes from './routes/claimRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import flightRoutes from './routes/flightRoutes.js';
 
 dotenv.config();
 
@@ -79,6 +81,8 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/users", userRoutes);
 app.use('/api/claims', claimRoutes);
+app.use("/api/admin", adminRoutes);
+app.use('/api/flights', flightRoutes); // Assuming flightRoutes is defined elsewhere
 
 // Serve the uploads folder publicly so documents can be viewed via URL
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

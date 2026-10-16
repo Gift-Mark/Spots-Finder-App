@@ -11,13 +11,21 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  // Read message passed when redirected from Footer
   const redirectNotice = location.state?.message;
 
+  // Role-aware session check on mount
   useEffect(() => {
     const token = localStorage.getItem("token") || localStorage.getItem("jos_pulse_token");
+    const savedUser = JSON.parse(localStorage.getItem("user") || localStorage.getItem("jos_pulse_user") || "{}");
+    
     if (token) {
-      navigate("/userDashboard", { replace: true });
+      if (savedUser?.role === "admin") {
+        navigate("/SuperAdmin", { replace: true });
+      } else if (savedUser?.role === "vendor" || savedUser?.role === "business") {
+        navigate("/vendor", { replace: true });
+      } else {
+        navigate("/userDashboard", { replace: true });
+      }
     }
   }, [navigate]);
 
@@ -28,7 +36,7 @@ export const Login = () => {
     try {
       const data = await loginUser({ email, password });
 
-      // Persist the session across current and legacy keys so all components sync immediately
+      // Persist session tokens and user data securely
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("jos_pulse_token", data.token);
@@ -37,14 +45,13 @@ export const Login = () => {
       const hour = new Date().getHours();
       const timeGreeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
-      let defaultDashboard = "/userDashboard";
+      // Determine correct dashboard based strictly on user role
+      let destination = "/userDashboard";
       if (data.user?.role === "admin") {
-        defaultDashboard = "/SuperAdmin";
+        destination = "/SuperAdmin";
       } else if (data.user?.role === "vendor" || data.user?.role === "business") {
-        defaultDashboard = "/vendor";
+        destination = "/vendor";
       }
-
-      const destination = location.state?.from || location.state?.redirectTo || defaultDashboard;
 
       navigate(destination, {
         replace: true,
@@ -137,7 +144,6 @@ export const Login = () => {
           </button>
         </div>
 
-        {/* Guest browsing — the site is fully explorable without an account */}
         <button
           type="button"
           className={styles.guestButton}
@@ -152,3 +158,5 @@ export const Login = () => {
     </main>
   );
 };
+
+export default Login;

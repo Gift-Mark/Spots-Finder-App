@@ -193,3 +193,44 @@ export const deleteEvent = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+// @desc    Get all events for moderation queue
+export const getAdminEvents = async (req, res) => {
+  try {
+    const events = await Event.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: events });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update event approval status (Approve / Reject)
+export const updateEventStatus = async (req, res) => {
+  try {
+    const { status } = req.body; // 'Approved' or 'Rejected'
+    const updatedEvent = await Event.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true, runValidators: true }
+    );
+    if (!updatedEvent) {
+      return res.status(404).json({ success: false, message: 'Event not found' });
+    }
+    res.status(200).json({ success: true, data: updatedEvent });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete event submission
+export const deleteAdminEvent = async (req, res) => {
+  try {
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    if (!deletedEvent) {
+      return res.status(404).json({ success: false, message: 'Event not found' });
+    }
+    res.status(200).json({ success: true, message: 'Event deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
