@@ -1,0 +1,773 @@
+/* --- JOSPULSE STAYS & ACCOMMODATION PORTAL STYLING --- */
+
+.staysPageContainer {
+  background-color: #f8fafc;
+  color: #0f172a;
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  overflow-x: hidden;
+}
+
+/* 1. ACCOMMODATION SEARCH PANEL */
+.searchPanelSection {
+  max-width: 1100px;
+  margin: -4.5rem auto 2.5rem auto;
+  padding: 0 1.5rem;
+  position: relative;
+  z-index: 10;
+}
+
+.searchPanelCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 1.75rem;
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.12);
+}
+
+.searchPanelGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr 1.5fr auto;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.searchField label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.searchField input,
+.searchField select {
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  outline: none;
+  width: 100%;
+}
+
+.searchSubmitBtn {
+  background-color: #f97316;
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+  padding: 0.7rem 1.25rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  height: 41px;
+}
+
+.searchSubmitBtn:hover {
+  background-color: #ea580c;
+}
+
+.searchPerksRow {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* 2. CATEGORY & QUICK FILTER NAVIGATION */
+.categoryFilterSection {
+  max-width: 1100px;
+  margin: 0 auto 2.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.categoryPillsScroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+
+.categoryPillsScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.categoryPill {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.categoryPill:hover,
+.pillActive {
+  background-color: #0b132b;
+  color: #ffffff;
+  border-color: #0b132b;
+}
+
+.activeFilterNotice {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* 3. CURATED HIGHLAND SANCTUARIES */
+.curatedSanctuariesSection {
+  max-width: 1100px;
+  margin: 3.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.sectionEyebrow {
+  color: #f97316;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.sectionHeaderRow h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0;
+}
+
+.sectionHeaderRow p {
+  color: #64748b;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.seeAllLink {
+  color: #f97316;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+
+.sanctuariesGrid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+}
+
+.largeSanctuaryCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cardImgWrapper {
+  position: relative;
+  height: 260px;
+}
+
+.cardImgWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badgeFeatured {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: #0b132b;
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.cardContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ratingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+.priceTag {
+  color: #0b132b;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.cardContent h3 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0;
+}
+
+.cardContent p {
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.amenitiesIconsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #475569;
+  background-color: #f8fafc;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+
+.cardActionRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 0.5rem;
+}
+
+.verifiedNotice {
+  font-size: 0.7rem;
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.detailsBtn {
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.bookActionBtn {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 0.45rem 0.9rem;
+  border-radius: 0.375rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.stackedSanctuariesCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.smallSanctuaryCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem;
+}
+
+.smallSanctuaryCard img {
+  width: 130px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+.smallCardBody {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1;
+}
+
+.priceTagSmall {
+  font-weight: 800;
+  color: #0b132b;
+  font-size: 0.85rem;
+}
+
+.smallCardBody h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0;
+}
+
+.smallCardBody p {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.smallDetailsBtn {
+  color: #f97316;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+  align-self: flex-start;
+}
+
+/* 4. MORE VERIFIED PLATEAU ACCOMMODATIONS */
+.verifiedAccommodationsSection {
+  max-width: 1100px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+}
+
+.carouselControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carouselControls button {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.fourCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+.standardStayCard {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.stdImgBox {
+  position: relative;
+  height: 170px;
+}
+
+.stdImgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.stdBadge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.stdBody {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stdBody h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0;
+}
+
+.stdBody p {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.stdPriceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.stdPriceRow small {
+  color: #94a3b8;
+  font-size: 0.65rem;
+  display: block;
+}
+
+.stdPriceRow strong {
+  color: #0b132b;
+  font-size: 0.9rem;
+}
+
+.stdReserveBtn {
+  background-color: #0b132b;
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* 5. ZONES AND MAP SECTION */
+.zonesAndMapSection {
+  max-width: 1100px;
+  margin: 4rem auto;
+  padding: 0 1.5rem;
+}
+
+.zonesMapGrid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.zonesListCol {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.zoneListItem {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.zoneRank {
+  background-color: #f1f5f9;
+  color: #f97316;
+  font-weight: 800;
+  font-size: 0.85rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.zoneListItem h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0 0 0.2rem 0;
+}
+
+.zoneListItem p {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.zoneCount {
+  color: #f97316;
+  font-weight: 700;
+  font-size: 0.7rem;
+  display: inline-block;
+  margin-top: 0.3rem;
+}
+
+.mapContainerCol {
+  background-color: #e2e8f0;
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+  min-height: 360px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+}
+
+.interactiveMapMock {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #cbd5e1 0%, #94a3b8 100%);
+  position: relative;
+  min-height: 360px;
+}
+
+.mapPinPulse {
+  position: absolute;
+  background-color: #0b132b;
+  color: #ffffff;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  border: 2px solid #f97316;
+  cursor: pointer;
+}
+
+.mapWatermark {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  background-color: rgba(11, 19, 43, 0.85);
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+}
+
+/* 6. HIGHLAND CLIMATE PROMO BANNER */
+.climatePromoBanner {
+  max-width: 1100px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, #0b132b 0%, #1c2541 100%);
+  border-radius: 1.25Ref;
+  border-radius: 1.25rem;
+  display: grid;
+  grid-template-columns: 1.7fr 1.3fr;
+  gap: 2rem;
+  align-items: center;
+  color: #ffffff;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+}
+
+.promoBadge {
+  display: inline-block;
+  background-color: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  margin-bottom: 0.75rem;
+}
+
+.promoContentLeft h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.promoContentLeft p {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.climateMetricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.metricCard {
+  background-color: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.metricCard strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #f97316;
+  font-weight: 800;
+  margin-bottom: 0.15rem;
+}
+
+.metricCard span {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.promoActionsRow {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.primaryPromoBtn {
+  background-color: #f97316;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.secondaryPromoBtn {
+  background-color: transparent;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.promoCardRight {
+  background-color: #16203a;
+  border: 1px solid #2d3748;
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.cardHeaderFlex {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #f97316;
+}
+
+.adviceList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+}
+
+/* 7. FREQUENTLY ASKED QUESTIONS */
+.faqSection {
+  max-width: 900px;
+  margin: 4rem auto 5rem auto;
+  padding: 0 1.5rem;
+}
+
+.faqHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.faqHeader h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0b132b;
+  margin: 0.25rem 0;
+}
+
+.faqHeader p {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.faqAccordionList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.faqAccordionItem {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.faqQuestionBtn {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #0b132b;
+  cursor: pointer;
+  text-align: left;
+}
+
+.faqAnswerBox {
+  padding: 0 1.25rem 1.25rem 1.25rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* RESPONSIVE MEDIA QUERIES */
+@media (max-width: 900px) {
+  .searchPanelGrid {
+    grid-template-columns: 1fr;
+  }
+  .sanctuariesGrid,
+  .zonesMapGrid,
+  .climatePromoBanner {
+    grid-template-columns: 1fr;
+  }
+  .climateMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+}

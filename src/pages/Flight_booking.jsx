@@ -1,166 +1,158 @@
 import { useState, useEffect } from "react";
 import styles from "../CSS/FlightBooking.module.css";
-import { createBooking, searchFlights } from "../api/client.js";
-
-const AIRPORTS = [
-  { code: "JOS", city: "Jos", name: "Yakubu Gowon Airport" },
-  { code: "LOS", city: "Lagos", name: "Murtala Muhammed Intl" },
-  { code: "ABV", city: "Abuja", name: "Nnamdi Azikiwe Intl" },
-  { code: "PHC", city: "Port Harcourt", name: "Port Harcourt Intl" },
-  { code: "KAN", city: "Kano", name: "Mallam Aminu Kano Intl" }
-];
-
-const LIVE_FLIGHT_SCHEDULES = {
-  arrivals: [
-    { id: "ARR-01", flight: "P4-720", airline: "Air Peace", route: "Abuja (ABV)", time: "09:35 AM", gate: "Main Terminal • Gate 01", status: "Landed On Time", statusClass: "landed" },
-    { id: "ARR-02", flight: "VK-301", airline: "ValueJet", route: "Lagos (LOS)", time: "12:45 PM", gate: "Main Terminal • Gate 02", status: "Approaching Plateau", statusClass: "approaching" },
-    { id: "ARR-03", flight: "P4-728", airline: "Air Peace", route: "Abuja (ABV)", time: "04:20 PM", gate: "Main Terminal • Gate 01", status: "Scheduled", statusClass: "scheduled" }
-  ],
-  departures: [
-    { id: "DEP-01", flight: "P4-721", airline: "Air Peace", route: "Abuja (ABV)", time: "10:30 AM", gate: "Main Terminal • Gate 01", status: "Boarding", statusClass: "boarding" },
-    { id: "DEP-02", flight: "VK-302", airline: "ValueJet", route: "Lagos (LOS)", time: "01:45 PM", gate: "Main Terminal • Gate 02", status: "Scheduled", statusClass: "scheduled" }
-  ]
-};
+import { 
+  fetchAirports, 
+  fetchPublishedRoutes, 
+  fetchAirportFlights, 
+  createShuttleBooking, 
+  fetchAmenities, 
+  submitConciergeEnquiry 
+} from "../services/api.js";
+import Header from "../Components/headerNav.jsx";
+import HeroSection from "../Components/HeroSection.jsx";
+import Footer from "../Components/Footer.jsx";
 
 export default function FlightBookingPage() {
   const [tripType, setTripType] = useState("round-trip");
+  const [cabinClass, setCabinClass] = useState("Economy");
   const [origin, setOrigin] = useState("ABV");
   const [destination, setDestination] = useState("JOS");
-  const [departDate, setDepartDate] = useState("2026-10-18");
+  const [departDate, setDepartDate] = useState("2026-11-18");
   const [returnDate, setReturnDate] = useState("2026-11-18");
-  const [cabinClass, setCabinClass] = useState("Economy");
   const [passengers, setPassengers] = useState(1);
 
-  const [flights, setFlights] = useState([]);
+  const [airports, setAirports] = useState([]);
+  const [routes, setRoutes] = useState([]);
   const [flightTab, setFlightTab] = useState("arrivals");
-  const [selectedFlight, setSelectedFlight] = useState(null);
-  const [bookingConfirmed, setBookingConfirmed] = useState(false);
-  const [passengerName, setPassengerName] = useState("");
-  const [passengerEmail, setPassengerEmail] = useState("");
-  const [passengerPhone, setPassengerPhone] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [confirmedRef, setConfirmedRef] = useState("");
+  const [flightsStatus, setFlightsStatus] = useState([]);
+  const [amenities, setAmenities] = useState([]); // Kept and rendered in section 4
 
-  const loadFlights = async (selectedOrigin, selectedDestination, selectedDate) => {
-    try {
-      const data = await searchFlights({
-        origin: selectedOrigin,
-        destination: selectedDestination,
-        date: selectedDate,
-      });
-      if (data && data.success) {
-        setFlights(data.data);
+  // Shuttle state (Fully bound to shuttle form inputs)
+  const [shuttleName, setShuttleName] = useState("");
+  const [shuttleEmail, setShuttleEmail] = useState("");
+  const [shuttleRef, setShuttleRef] = useState("");
+
+  // Concierge state (Fully bound to concierge form inputs)
+  const [conciergeName, setConciergeName] = useState("");
+  const [conciergeEmail, setConciergeEmail] = useState("");
+  const [conciergeMsg, setConciergeMsg] = useState("");
+  const [conciergeSuccess, setConciergeSuccess] = useState(false);
+
+  useEffect(() => {
+    async function loadInitialData() {
+      try {
+        const airportRes = await fetchAirports();
+        if (airportRes?.success) setAirports(airportRes.data);
+
+        const routeRes = await fetchPublishedRoutes();
+        if (routeRes?.success) setRoutes(routeRes.data);
+
+        const flightRes = await fetchAirportFlights("JOS", "arrivals");
+        if (flightRes?.success) setFlightsStatus(flightRes.data);
+
+        const amenityRes = await fetchAmenities();
+        if (amenityRes?.success) setAmenities(amenityRes.data);
+      } catch (err) {
+        console.error("Initialization error:", err);
       }
+    }
+    loadInitialData();
+  }, []);
+
+  const handleFlightTabChange = async (tab) => {
+    setFlightTab(tab);
+    try {
+      const res = await fetchAirportFlights("JOS", tab);
+      if (res?.success) setFlightsStatus(res.data);
     } catch (err) {
-      console.error("Failed to fetch live flights:", err);
+      console.error("Failed to fetch flight telemetry:", err);
     }
   };
 
-  useEffect(() => {
-    queueMicrotask(() => {
-      loadFlights("ABV", "JOS", "2026-10-18");
-    });
-  }, []);
-
-  const handleSearchSubmit = (e) => {
+  const handleShuttleSubmit = async (e) => {
     e.preventDefault();
-    loadFlights(origin, destination, departDate);
-  };
-
-  const getFlightPrice = (flight) => {
-    const basePrice = cabinClass === "Business" 
-      ? (flight.businessPrice || flight.price * 1.8) 
-      : (flight.economyPrice || flight.price);
-    
-    return tripType === "round-trip" ? basePrice * 2 * passengers : basePrice * passengers;
-  };
-
-  const handleBook = async (e) => {
-    e.preventDefault();
-    if (!passengerName || !passengerEmail || !passengerPhone) return;
-    setIsSubmitting(true);
-
-    const finalAmount = getFlightPrice(selectedFlight);
-    const tripDescription = tripType === "round-trip" 
-      ? `Round Trip (${departDate} to ${returnDate})` 
-      : `One Way (${departDate})`;
-
     try {
-      const res = await createBooking({
-        bookingType: "Flight Reservation",
-        provider: `${selectedFlight.airline} (${selectedFlight.flightNumber || selectedFlight.code}) — ${origin} → ${destination} [${cabinClass}]`,
-        destination: `Yakubu Gowon Airport, Jos (JOS) - ${tripDescription}`,
-        startDate: departDate,
-        endDate: tripType === "round-trip" ? returnDate : departDate,
-        amount: finalAmount,
-        paymentStatus: "pending",
+      const res = await createShuttleBooking({
+        customerName: shuttleName || "Plateau Traveller",
+        email: shuttleEmail || "traveller@jospulse.ng",
+        pickupLocation: "Yakubu Gowon Airport (JOS)",
+        destination: "Jos City Centre / Rayfield",
+        pickupDateTime: `${departDate}T10:00:00Z`,
+        passengerCount: passengers,
+        luggageDetails: "Standard 20kg bags"
       });
-      setConfirmedRef(res?.data?.bookingReference || `JOS-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
+      if (res?.success) {
+        setShuttleRef(res.data.reference);
+        alert(`Shuttle booked successfully! Ref: ${res.data.reference}`);
+      }
     } catch {
-      setConfirmedRef(`JOS-${Math.random().toString(36).substring(2, 8).toUpperCase()}`);
-    } finally {
-      setIsSubmitting(false);
-      setBookingConfirmed(true);
+      alert("Shuttle booking failed. Please verify inputs.");
+    }
+  };
+
+  const handleConciergeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await submitConciergeEnquiry({
+        name: conciergeName,
+        email: conciergeEmail,
+        message: conciergeMsg,
+        category: "Airport Concierge Support"
+      });
+      if (res?.success) {
+        setConciergeSuccess(true);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
     <div className={styles.container}>
-      {/* 1. HERO BANNER */}
-      <section className={styles.heroBanner}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.heroTitle}>Discover the Vibe, Culture, and Beauty of Jos.</h1>
-          <p className={styles.heroSub}>
-            Your premier guide to the Plateau's vibrant nightlife, historic landmarks, Yakubu Gowon Airport connectivity, and breathtaking landscapes.
-          </p>
-          <div className={styles.heroSearchBar}>
-            <input type="text" placeholder="What are you looking for in Jos? (Hotels, Flights, Info...)" readOnly />
-            <button type="button">Search</button>
-          </div>
-          <div className={styles.heroPills}>
-            <span>✈️ Flights</span>
-            <span>🗺️ Map</span>
-            <span>🏛️ Landmarks</span>
-            <span>🍽️ Dining</span>
-            <span>🌙 Nightlife</span>
-            <span>🌿 Wellness</span>
-          </div>
-        </div>
-      </section>
+      <Header />
+      
+      {/* HERO SECTION */}
+      <HeroSection 
+        title="Discover the Vibe, Culture, and Beauty of Jos."
+        subtitle="Your premier guide to the Plateau's vibrant nightlife, lounges, Yakubu Gowon Airport connectivity, and breathtaking landscapes."
+        placeholder="What are you looking for? (e.g. Flights, Hotels, Shuttles)"
+        heroImage="/images/airport.jpg"
+        filterPills={[
+          { id: "flights", label: "Flights" },
+          { id: "golf", label: "Golf" },
+          { id: "festivals", label: "Festivals" },
+          { id: "dining", label: "Dining" },
+          { id: "nightlife", label: "Nightlife" },
+          { id: "where-to-stay", label: "Where to Stay" },
+        ]}
+      />
 
-      {/* 2. MAIN FLIGHT BOOKING ENGINE BANNER */}
+      {/* SECTION 1: FLIGHT BOOKING PANEL */}
       <section className={styles.bookingEngineSection}>
         <div className={styles.engineCard}>
           <div className={styles.engineHeaderBanner}>
-            <span className={styles.engineSubTag}>YAKUBU GOWON AIRPORT (JOS) • GATEWAY TO THE PLATEAU</span>
+            <span className={styles.engineSubTag}>
+              📍 YAKUBU GOWON AIRPORT (JOS) • GATEWAY TO THE PLATEAU
+            </span>
             <h2>Fly Direct to the Cool Plateau Highlands</h2>
-            <p>Fast, scenic 50-minute scheduled hops connecting Lagos (LOS) and Abuja (ABV) into Jos Airport (JOS). Skip long highway journeys and touch down directly at 1,280m built-in springtime weather.</p>
+            <p>
+              Fast, scenic 50-minute scheduled hops connecting Lagos (LOS) and Abuja (ABV) into Jos Airport (JOS). Skip long highway journeys and touch down directly at 1,280m built-in springtime weather.
+            </p>
           </div>
 
-          <form onSubmit={handleSearchSubmit} className={styles.searchCard}>
+          <div className={styles.searchCard}>
             <div className={styles.searchHeader}>
               <div className={styles.typeToggle}>
-                <button
-                  type="button"
-                  className={`${styles.toggleBtn} ${tripType === "round-trip" ? styles.toggleBtnActive : ""}`}
-                  onClick={() => setTripType("round-trip")}
-                >
-                  Round Trip
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.toggleBtn} ${tripType === "one-way" ? styles.toggleBtnActive : ""}`}
-                  onClick={() => setTripType("one-way")}
-                >
-                  One Way
-                </button>
-                <button
-                  type="button"
-                  className={`${styles.toggleBtn} ${tripType === "multi-city" ? styles.toggleBtnActive : ""}`}
-                  onClick={() => setTripType("multi-city")}
-                >
-                  Multi-City
-                </button>
+                {["round-trip", "one-way", "multi-city"].map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`${styles.toggleBtn} ${tripType === t ? styles.toggleBtnActive : ""}`}
+                    onClick={() => setTripType(t)}
+                  >
+                    {t.replace("-", " ").toUpperCase()}
+                  </button>
+                ))}
               </div>
 
               <div className={styles.cabinClassSelector}>
@@ -180,44 +172,48 @@ export default function FlightBookingPage() {
 
             <div className={styles.inputGrid}>
               <div className={styles.fieldGroup}>
-                <label>From (Origin)</label>
+                <label>From</label>
                 <select value={origin} onChange={(e) => setOrigin(e.target.value)}>
-                  {AIRPORTS.map((a) => (
-                    <option key={a.code} value={a.code}>
-                      {a.city} ({a.code})
-                    </option>
-                  ))}
+                  {airports.length > 0 ? (
+                    airports.map((a) => (
+                      <option key={a._id} value={a.iataCode}>{a.city} ({a.iataCode})</option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="ABV">Abuja (ABV)</option>
+                      <option value="LOS">Lagos (LOS)</option>
+                    </>
+                  )}
                 </select>
               </div>
 
+              <div className={styles.swapBadge}>⇄</div>
+
               <div className={styles.fieldGroup}>
-                <label>To (Destination)</label>
+                <label>To</label>
                 <select value={destination} onChange={(e) => setDestination(e.target.value)}>
-                  {AIRPORTS.map((a) => (
-                    <option key={a.code} value={a.code}>
-                      {a.city} ({a.code})
-                    </option>
-                  ))}
+                  {airports.length > 0 ? (
+                    airports.map((a) => (
+                      <option key={a._id} value={a.iataCode}>{a.city} ({a.iataCode})</option>
+                    ))
+                  ) : (
+                    <>
+                      <option value="JOS">Jos (JOS)</option>
+                      <option value="KAN">Kano (KAN)</option>
+                    </>
+                  )}
                 </select>
               </div>
 
               <div className={styles.fieldGroup}>
                 <label>Depart</label>
-                <input
-                  type="date"
-                  value={departDate}
-                  onChange={(e) => setDepartDate(e.target.value)}
-                />
+                <input type="date" value={departDate} onChange={(e) => setDepartDate(e.target.value)} />
               </div>
 
               {tripType === "round-trip" && (
                 <div className={styles.fieldGroup}>
                   <label>Return</label>
-                  <input
-                    type="date"
-                    value={returnDate}
-                    onChange={(e) => setReturnDate(e.target.value)}
-                  />
+                  <input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
                 </div>
               )}
 
@@ -226,112 +222,209 @@ export default function FlightBookingPage() {
                 <select value={passengers} onChange={(e) => setPassengers(Number(e.target.value))}>
                   <option value={1}>1 Adult</option>
                   <option value={2}>2 Adults</option>
-                  <option value={3}>3 Adults</option>
                   <option value={4}>4+ Group</option>
                 </select>
               </div>
 
-              <button type="submit" className={styles.searchSubmitBtn}>
+              <button type="button" className={styles.searchSubmitBtn} onClick={() => alert("Searching aviation inventory...")}>
                 Search Flights →
               </button>
             </div>
 
             <div className={styles.enginePerks}>
-              <span>🛡️ Insurance Included in Insurance</span>
+              <span>🛡️ Insurance Included in Fare</span>
               <span>🔄 Free Rescheduling 24h</span>
               <span>🚁 24/7 Ground Rescue Liaison</span>
               <span>🌄 Plateau Tourism Desk</span>
             </div>
-          </form>
+          </div>
         </div>
       </section>
 
-      {/* 3. SCHEDULED DOMESTIC FLIGHTS INTO JOS */}
+      {/* SECTION 2: POPULAR ROUTES */}
       <section className={styles.resultsSection}>
         <div className={styles.resultsHeader}>
           <div>
-            <span style={{ color: "#f97316", fontWeight: "700", fontSize: "0.8rem", textTransform: "uppercase" }}>Popular Routes</span>
+            <span className={styles.sectionSubtitle}>POPULAR ROUTES</span>
             <h3>Scheduled Domestic Flights into Jos</h3>
-            <p style={{ color: "#94a3b8", fontSize: "0.85rem" }}>Direct airlinks saving over 10 hours of overland road travel across rocky terrain.</p>
+            <p className={styles.sectionDesc}>
+              Direct airlinks saving over 10 hours of overland road travel across rocky terrain.
+            </p>
           </div>
-          <button className={styles.viewLiveRadarBtn}>View Live Flight Radar →</button>
+          <button type="button" className={styles.viewLiveRadarBtn}>
+            View Live Radar Tracker ↗
+          </button>
         </div>
 
         <div className={styles.routesGrid}>
-          {flights.length === 0 ? (
-            <p style={{ color: "#94a3b8", padding: "1rem" }}>Loading available scheduled flights...</p>
-          ) : (
-            flights.map((flight) => {
-              const calculatedPrice = getFlightPrice(flight);
-              return (
-                <div key={flight._id || flight.flightNumber} className={styles.routeCard}>
-                  <div className={styles.routeCardTop}>
-                    <span className={styles.badgePopular}>Most Popular</span>
-                    <small>🧳 20kg Included</small>
+          {routes.length > 0 ? (
+            routes.map((route) => (
+              <div key={route._id} className={styles.routeCard}>
+                <div className={styles.routeCardTop}>
+                  <span className={styles.badgePopular}>
+                    {route.isFeatured ? "Most Popular" : "Verified Route"}
+                  </span>
+                  <small>🧳 20kg Included</small>
+                </div>
+                <div className={styles.routeAirports}>
+                  <div>
+                    <h4>{route.originAirport?.iataCode || "LOS"}</h4>
+                    <small>{route.originAirport?.city || "Lagos"}</small>
                   </div>
-
-                  <div className={styles.routeAirports}>
-                    <div>
-                      <h4>{flight.origin}</h4>
-                      <small>Airport HUB</small>
-                    </div>
-                    <div className={styles.flightArrowLine}>
-                      <span>{flight.duration}</span>
-                      <div className={styles.dashLine}></div>
-                      <span style={{ color: "#22c55e" }}>Non-Stop</span>
-                    </div>
-                    <div>
-                      <h4>{flight.destination}</h4>
-                      <small>Yakubu Gowon</small>
-                    </div>
+                  <div className={styles.flightArrowLine}>
+                    <span>{route.durationMinutes || 55} mins</span>
+                    <div className={styles.dashLine}></div>
+                    <span className={styles.nonstopText}>Non-Stop</span>
                   </div>
-
-                  <div className={styles.airlineDetailsRow}>
-                    <div>
-                      <strong>{flight.airline}</strong>
-                      <div style={{ color: "#94a3b8", fontSize: "0.75rem" }}>{flight.flightNumber || flight.code} • {cabinClass}</div>
-                    </div>
-                    <div style={{ textAlign: "right" }}>
-                      <span style={{ color: "#22c55e", fontSize: "0.8rem", fontWeight: "bold" }}>On Time</span>
-                    </div>
-                  </div>
-
-                  <div className={styles.routeFooter}>
-                    <div>
-                      <small style={{ color: "#94a3b8" }}>Starting from</small>
-                      <div className={styles.routePrice}>₦{calculatedPrice.toLocaleString()}</div>
-                    </div>
-                    <button
-                      type="button"
-                      className={styles.selectRouteBtn}
-                      onClick={() => setSelectedFlight(flight)}
-                    >
-                      Select →
-                    </button>
+                  <div>
+                    <h4>{route.destinationAirport?.iataCode || "JOS"}</h4>
+                    <small>Yakubu Gowon</small>
                   </div>
                 </div>
-              );
-            })
+                <div className={styles.airlineDetailsRow}>
+                  <div>
+                    <strong>{route.airline}</strong>
+                    <div className={styles.flightTimes}>Daily Flight • 11:30 AM → 12:25 PM</div>
+                  </div>
+                </div>
+                <div className={styles.routeFooter}>
+                  <div>
+                    <small className={styles.startingFrom}>Starting from</small>
+                    <div className={styles.routePrice}>₦{(route.startingFare || 85000).toLocaleString()}</div>
+                  </div>
+                  <button type="button" className={styles.selectRouteBtn} onClick={() => {
+                    setOrigin(route.originAirport?.iataCode || "LOS");
+                    setDestination(route.destinationAirport?.iataCode || "JOS");
+                  }}>
+                    Select →
+                  </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <>
+              <div className={styles.routeCard}>
+                <div className={styles.routeCardTop}>
+                  <span className={styles.badgePopular}>Most Popular</span>
+                  <small>🧳 20kg Included</small>
+                </div>
+                <div className={styles.routeAirports}>
+                  <div>
+                    <h4>LOS</h4>
+                    <small>Lagos (LOS)</small>
+                  </div>
+                  <div className={styles.flightArrowLine}>
+                    <span>55 mins</span>
+                    <div className={styles.dashLine}></div>
+                    <span className={styles.nonstopText}>Direct Scheduled</span>
+                  </div>
+                  <div>
+                    <h4>JOS</h4>
+                    <small>Yakubu Gowon</small>
+                  </div>
+                </div>
+                <div className={styles.airlineDetailsRow}>
+                  <strong>Air Peace</strong>
+                  <span className={styles.flightTimes}>11:30 AM Depart</span>
+                </div>
+                <div className={styles.routeFooter}>
+                  <div>
+                    <small className={styles.startingFrom}>Starting from</small>
+                    <div className={styles.routePrice}>₦85,000</div>
+                  </div>
+                  <button type="button" className={styles.selectRouteBtn}>Select →</button>
+                </div>
+              </div>
+
+              <div className={styles.routeCard}>
+                <div className={styles.routeCardTop}>
+                  <span className={styles.badgeLight}>Premium Flight</span>
+                  <small>🧳 Express Boarding</small>
+                </div>
+                <div className={styles.routeAirports}>
+                  <div>
+                    <h4>ABV</h4>
+                    <small>Abuja (ABV)</small>
+                  </div>
+                  <div className={styles.flightArrowLine}>
+                    <span>35 mins</span>
+                    <div className={styles.dashLine}></div>
+                    <span className={styles.nonstopText}>Direct Scheduled</span>
+                  </div>
+                  <div>
+                    <h4>JOS</h4>
+                    <small>Yakubu Gowon</small>
+                  </div>
+                </div>
+                <div className={styles.airlineDetailsRow}>
+                  <strong>ValueJet / MaxAir</strong>
+                  <span className={styles.flightTimes}>09:15 AM Depart</span>
+                </div>
+                <div className={styles.routeFooter}>
+                  <div>
+                    <small className={styles.startingFrom}>Starting from</small>
+                    <div className={styles.routePrice}>₦48,500</div>
+                  </div>
+                  <button type="button" className={styles.selectRouteBtnOrange}>Select →</button>
+                </div>
+              </div>
+
+              <div className={styles.routeCard}>
+                <div className={styles.routeCardTop}>
+                  <span className={styles.badgeDark}>Overland Connect</span>
+                  <small>🧳 Custom Direct</small>
+                </div>
+                <div className={styles.routeAirports}>
+                  <div>
+                    <h4>KAN</h4>
+                    <small>Kano (KAN)</small>
+                  </div>
+                  <div className={styles.flightArrowLine}>
+                    <span>45 mins</span>
+                    <div className={styles.dashLine}></div>
+                    <span className={styles.nonstopText}>Eastern Route</span>
+                  </div>
+                  <div>
+                    <h4>JOS</h4>
+                    <small>Yakubu Gowon</small>
+                  </div>
+                </div>
+                <div className={styles.airlineDetailsRow}>
+                  <strong>Overland / Charter</strong>
+                  <span className={styles.flightTimes}>02:10 PM Depart</span>
+                </div>
+                <div className={styles.routeFooter}>
+                  <div>
+                    <small className={styles.startingFrom}>Starting from</small>
+                    <div className={styles.routePrice}>₦62,000</div>
+                  </div>
+                  <button type="button" className={styles.selectRouteBtn}>Select →</button>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </section>
 
-      {/* 4. LIVE FLIGHT STATUS RADAR TABLE */}
+      {/* SECTION 3: LIVE FLIGHT INFORMATION */}
       <section className={styles.radarSection}>
         <div className={styles.radarHeader}>
           <div>
+            <span className={styles.sectionSubtitle}>LIVE FLIGHT STATUS • YAKUBU GOWON AIRPORT</span>
             <h3>Today’s Flights at Yakubu Gowon Airport (JOS)</h3>
           </div>
           <div className={styles.radarTabs}>
             <button
+              type="button"
               className={`${styles.radarTabBtn} ${flightTab === "arrivals" ? styles.radarTabActive : ""}`}
-              onClick={() => setFlightTab("arrivals")}
+              onClick={() => handleFlightTabChange("arrivals")}
             >
               📥 Arrivals (Today)
             </button>
             <button
+              type="button"
               className={`${styles.radarTabBtn} ${flightTab === "departures" ? styles.radarTabActive : ""}`}
-              onClick={() => setFlightTab("departures")}
+              onClick={() => handleFlightTabChange("departures")}
             >
               📤 Departures (Today)
             </button>
@@ -344,180 +437,220 @@ export default function FlightBookingPage() {
               <tr>
                 <th>Flight No</th>
                 <th>Carrier</th>
-                <th>Origin/Dest</th>
+                <th>Origin / Dest</th>
                 <th>Sched. Time</th>
-                <th>Terminal/Gate</th>
+                <th>Terminal / Gate</th>
                 <th>Status</th>
                 <th>Radar Status</th>
               </tr>
             </thead>
             <tbody>
-              {LIVE_FLIGHT_SCHEDULES[flightTab].map((item) => (
-                <tr key={item.id}>
-                  <td><strong>{item.flight}</strong></td>
-                  <td>{item.airline}</td>
-                  <td>{item.route}</td>
-                  <td>{item.time}</td>
-                  <td>{item.gate}</td>
-                  <td>
-                    <span className={`${styles.statusPill} ${styles[item.statusClass]}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button className={styles.trackRouteBtn} onClick={() => alert(`Live telemetry tracking initiated for flight ${item.flight}`)}>
-                      Track Route ↗
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {flightsStatus.length > 0 ? (
+                flightsStatus.map((flight, idx) => (
+                  <tr key={idx}>
+                    <td><strong>{flight.flightNumber}</strong></td>
+                    <td>{flight.airline}</td>
+                    <td>{flight.originAirport} → {flight.destinationAirport}</td>
+                    <td>{new Date(flight.scheduledDeparture).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                    <td>{flight.terminal || "Main"} • {flight.gate || "Gate 01"}</td>
+                    <td>
+                      <span className={`${styles.statusPill} ${styles.landed}`}>{flight.status}</span>
+                    </td>
+                    <td>
+                      <button type="button" className={styles.trackRouteBtn} onClick={() => alert(`Live tracking active for ${flight.flightNumber}`)}>
+                        Track Route ↗
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <>
+                  <tr>
+                    <td><strong>P4 7128</strong></td>
+                    <td>Air Peace</td>
+                    <td>Abuja (ABV)</td>
+                    <td>09:15 AM <br/><small className={styles.estTime}>Est. 09:20 AM</small></td>
+                    <td>Main Terminal • Gate 01</td>
+                    <td><span className={`${styles.statusPill} ${styles.landed}`}>Landed / On Time</span></td>
+                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>VK 204</strong></td>
+                    <td>ValueJet</td>
+                    <td>Lagos (LOS)</td>
+                    <td>12:15 PM <br/><small className={styles.estTime}>Est. 12:40 PM</small></td>
+                    <td>Main Terminal • Gate 02</td>
+                    <td><span className={`${styles.statusPill} ${styles.approaching}`}>Approaching / Final</span></td>
+                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong>P4 7129</strong></td>
+                    <td>Air Peace</td>
+                    <td>Abuja (ABV)</td>
+                    <td>04:20 PM <br/><small className={styles.estTime}>Scheduled Departure</small></td>
+                    <td>Main Terminal • Gate 02</td>
+                    <td><span className={`${styles.statusPill} ${styles.scheduled}`}>Scheduled</span></td>
+                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                  </tr>
+                </>
+              )}
             </tbody>
           </table>
         </div>
-        <small style={{ display: "block", marginTop: "0.75rem", color: "#64748b", textAlign: "right" }}>
-          Radar telemetry automatically syncs every 60s.
-        </small>
+        <div className={styles.radarFooterNote}>
+          <span>* CLEAR VISIBILITY: 10km • SURFACE WIND 08 KTS • TEMPERATURE 19°C (FAVORABLE FLIGHT CONDITIONS)</span>
+          <span>Radar telemetry updates automatically every 60s</span>
+        </div>
       </section>
 
-      {/* 5. GROUND LOGISTICS & GUIDE */}
+      {/* SECTION 4: GROUND LOGISTICS & AIRPORT TRANSFERS */}
       <section className={styles.logisticsSection}>
-        <h3>Ground Logistics & Guide</h3>
-        <p style={{ color: "#94a3b8", marginBottom: "1.5rem" }}>Yakubu Gowon Airport, Heipang Ground Transfers & Amenities.</p>
+        <span className={styles.sectionSubtitle}>GROUND LOGISTICS & GUIDE</span>
+        <h3>Yakubu Gowon Airport, Heipang Ground Transfers</h3>
+        <p className={styles.sectionDesc}>
+          Seamless arrival experience from landing at Heipang (JOS) to Rayfield, Jos City, and Plateau Resort centres.
+        </p>
 
         <div className={styles.logisticsGrid}>
           <div className={styles.logisticsCard}>
-            <div className={styles.logisticsIcon}>📍</div>
-            <h4>Location & Distance</h4>
-            <p>Situated 35km southwest of City Centre in historic Heipang. A picturesque 35-minute drive along the high-grade dual-carriageway; feel the cool Lake expressway with sweeping rocky vistas.</p>
-            <span className={styles.logisticsTag}>Google Route: 35 mins (verified)</span>
-          </div>
-
-          <div className={styles.logisticsCard}>
-            <div className={styles.logisticsIcon}>🚐</div>
-            <h4>Official Jos Pulse Shuttles</h4>
-            <p>Pre-book verified air-conditioned airport taxis and direct transfers directly to Rayfield resort zones and Jos City Centre. Fixed pricing with zero airport haggling.</p>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem" }}>
-              <strong>From ₦7,500 / route</strong>
-              <button className={styles.bookShuttleBtn} onClick={() => alert("Shuttle reservation portal opened!")}>Book Shuttle</button>
+            <div className={styles.logisticsHeaderRow}>
+              <div className={styles.logisticsIcon}>📍</div>
+              <div>
+                <h4>Location & Distance</h4>
+              </div>
             </div>
+            <p>
+              Situated 35km southwest of City Centre in historic Heipang. A picturesque 35-minute drive along high-grade dual-carriageway with zero gridlock and scenic rocky vistas.
+            </p>
+            <span className={styles.logisticsTag}>📍 Google Route: 35 mins (verified)</span>
           </div>
 
           <div className={styles.logisticsCard}>
-            <div className={styles.logisticsIcon}>☕</div>
-            <h4>Arrival Amenities & Lounge</h4>
-            <p>Enjoy newly modernized air-conditioned VIP lounges, fast-track baggage carousels, Plateau State Tourism visitor desk with free printed hiking maps, and artisanal coffee.</p>
-            <span className={styles.logisticsTag}>Plateau Coffee Bar Main Terminal</span>
+            <div className={styles.logisticsHeaderRow}>
+              <div className={styles.logisticsIcon}>🚐</div>
+              <div>
+                <h4>Official Jos Pulse Shuttles</h4>
+              </div>
+              <span className={styles.prebookBadge}>PRE-BOOK DISCOUNT</span>
+            </div>
+            <p>
+              Pre-book verified air-conditioned airport taxis and direct transfers directly to Rayfield resort zones, hotel hubs, and central Jos City.
+            </p>
+
+            {/* Shuttle Form using setShuttleName and setShuttleEmail */}
+            <form onSubmit={handleShuttleSubmit} className={styles.shuttleForm}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "0.5rem" }}>
+                <input 
+                  type="text" 
+                  placeholder="Your Name" 
+                  value={shuttleName} 
+                  onChange={(e) => setShuttleName(e.target.value)} 
+                  required 
+                  style={{ padding: "0.4rem", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem", color: "#0f172a" }} 
+                />
+                <input 
+                  type="email" 
+                  placeholder="Your Email" 
+                  value={shuttleEmail} 
+                  onChange={(e) => setShuttleEmail(e.target.value)} 
+                  required 
+                  style={{ padding: "0.4rem", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem", color: "#0f172a" }} 
+                />
+              </div>
+              <div className={styles.shuttlePriceRow}>
+                <div>
+                  <small>Flat Rate</small>
+                  <div className={styles.shuttlePrice}>₦7,500 <small>/ pax</small></div>
+                </div>
+                <button type="submit" className={styles.bookShuttleBtn}>Book Shuttle</button>
+              </div>
+              {shuttleRef && <small className={styles.successMsg}>Ref: {shuttleRef}</small>}
+            </form>
+          </div>
+
+          <div className={styles.logisticsCard}>
+            <div className={styles.logisticsHeaderRow}>
+              <div className={styles.logisticsIcon}>☕</div>
+              <div>
+                <h4>Arrival Amenities & Lounge</h4>
+              </div>
+            </div>
+            <p>
+              Enjoy newly modernized air-conditioned VIP lounges, fast-track baggage carousels, Plateau State Tourism visitor desk, craft shops, and complimentary coffee.
+            </p>
+            {/* amenities state mapped safely here */}
+            {amenities.length > 0 ? (
+              amenities.slice(0, 1).map(amenity => (
+                <span key={amenity._id} className={styles.logisticsTag}>
+                  ☕ {amenity.name} - {amenity.location}
+                </span>
+              ))
+            ) : (
+              <span className={styles.logisticsTag}>☕ Plateau Coffee Bar: Stall 04 in Terminal</span>
+            )}
           </div>
         </div>
       </section>
 
-      {/* 6. BOTTOM PROMO BANNER */}
+      {/* SECTION 5: COLD-WEATHER & CONCIERGE BANNER */}
       <section className={styles.bottomPromoBanner}>
         <div className={styles.promoContent}>
-          <span className={styles.badgePromo}>Highland Destination Valuation</span>
+          <span className={styles.badgePromo}> Highland Elevation Notice: 1,280 Meters</span>
           <h2>Pack a Light Jacket: Jos is Nigeria’s Coldest Aviation Hub</h2>
-          <p>Due to high altitude, temperatures typically average between 18°C to 24°C year-round. October through March provides clear, crisp visibility for spectacular views of the rock formations during descent.</p>
+          <p>
+            Due to high altitude, temperatures typically average between 18°C to 24°C year-round. October through March provides clear, crisp visibility for spectacular scenic views of the monoliths during descent.
+          </p>
           <div className={styles.promoBulletGrid}>
             <span>✔️ Zero-fog ground drops during dry season</span>
             <span>✔️ Spectacular left-side window views of monoliths</span>
-            <span>✔️ Quick 55-minute passage with pressure-equalizing</span>
+            <span>✔️ Quick 55-minute passage from Lagos</span>
             <span>✔️ Direct highway access with zero police gridlock</span>
           </div>
         </div>
 
         <div className={styles.promoConciergeCard}>
-          <h4>Need Concierge Support?</h4>
-          <p>Personalized & group air-ticketing</p>
-          <button className={styles.conciergeChatBtn} onClick={() => alert("Connecting you with Jos Pulse Airport Concierge...")}>
-            Connect with Airport Concierge
-          </button>
-          <button className={styles.downloadGuideBtn}>
-            📥 Download Airport/Plateau Guided PDF
-          </button>
+          <div className={styles.conciergeIconHeader}>
+            <span className={styles.headsetIcon}>🎧</span>
+            <div>
+              <h4>Need Concierge Support?</h4>
+              <p>Personalized & group air-ticketing</p>
+            </div>
+          </div>
+          
+          {/* Concierge Form using setConciergeName, setConciergeEmail, and setConciergeMsg */}
+          <form onSubmit={handleConciergeSubmit} className={styles.conciergeForm}>
+            <input 
+              type="text" 
+              placeholder="Name" 
+              value={conciergeName} 
+              onChange={(e) => setConciergeName(e.target.value)} 
+              required 
+              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.8rem" }} 
+            />
+            <input 
+              type="email" 
+              placeholder="Email" 
+              value={conciergeEmail} 
+              onChange={(e) => setConciergeEmail(e.target.value)} 
+              required 
+              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.8rem" }} 
+            />
+            <textarea 
+              placeholder="How can we assist?" 
+              value={conciergeMsg} 
+              onChange={(e) => setConciergeMsg(e.target.value)} 
+              required 
+              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", height: "45px", fontSize: "0.8rem" }} 
+            />
+            <button type="submit" className={styles.conciergeChatBtn}>
+              Connect with Airport Concierge
+            </button>
+            {conciergeSuccess && <small className={styles.successMsg}>Enquiry submitted successfully!</small>}
+          </form>
         </div>
       </section>
 
-      {/* BOOKING MODAL */}
-      {selectedFlight && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalCard}>
-            <button
-              type="button"
-              className={styles.closeModalBtn}
-              onClick={() => {
-                setSelectedFlight(null);
-                setBookingConfirmed(false);
-              }}
-            >
-              ✕
-            </button>
-
-            {!bookingConfirmed ? (
-              <>
-                <div className={styles.modalHeader}>
-                  <h2>Passenger Booking Details</h2>
-                  <p>Reserving {cabinClass} ticket to Yakubu Gowon Airport, Jos ({tripType}).</p>
-                </div>
-
-                <div className={styles.flightSummaryPill}>
-                  <span>{selectedFlight.airline} ({selectedFlight.flightNumber || selectedFlight.code}) [{cabinClass}]</span>
-                  <span>₦{getFlightPrice(selectedFlight).toLocaleString()}</span>
-                </div>
-
-                <form onSubmit={handleBook} className={styles.passengerForm}>
-                  <div className={styles.fieldGroup}>
-                    <label>Full Passenger Name (As on ID)</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. Samuel Pam"
-                      value={passengerName}
-                      onChange={(e) => setPassengerName(e.target.value)}
-                    />
-                  </div>
-
-                  <div className={styles.fieldGroup}>
-                    <label>Email Address</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="samuel@example.com"
-                      value={passengerEmail}
-                      onChange={(e) => setPassengerEmail(e.target.value)}
-                    />
-                  </div>
-
-                  <div className={styles.fieldGroup}>
-                    <label>Phone Number</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+234 800 000 0000"
-                      value={passengerPhone}
-                      onChange={(e) => setPassengerPhone(e.target.value)}
-                    />
-                  </div>
-
-                  <button type="submit" className={styles.confirmPayBtn} disabled={isSubmitting}>
-                    {isSubmitting ? "Processing..." : `Pay ₦{getFlightPrice(selectedFlight).toLocaleString()} & Issue e-Ticket`}
-                  </button>
-                </form>
-              </>
-            ) : (
-              <div className={styles.ticketBox}>
-                <h2 style={{ color: "#22c55e", marginBottom: "0.5rem" }}>🎉 Booking Confirmed!</h2>
-                <p>Your {cabinClass} e-Ticket to Jos (JOS) has been issued.</p>
-                
-                <div className={styles.ticketCode}>{confirmedRef}</div>
-                
-                <p><strong>Passenger:</strong> {passengerName}</p>
-                <p><strong>Flight:</strong> {selectedFlight.airline} ({selectedFlight.flightNumber || selectedFlight.code}) [{cabinClass}]</p>
-                <p><strong>Trip:</strong> {tripType.toUpperCase()} ({departDate} {tripType === "round-trip" ? `to ${returnDate}` : ""})</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <Footer />
     </div>
   );
 }

@@ -4,6 +4,8 @@ import {
   getMyBookings,
   getBookingByIdentifier,
   updateBookingStatus,
+  createStayBooking,
+  getBookingByReference
 } from "../controllers/bookingController.js";
 import { protect } from "../middleware/authMiddleware.js";
 
@@ -17,4 +19,6 @@ router.get("/my-bookings", getMyBookings);
 router.get("/:identifier", getBookingByIdentifier);
 router.put("/:id", updateBookingStatus);
 
+router.post('/', createStayBooking);
+router.get('/:reference', getBookingByReference);
 export default router;
