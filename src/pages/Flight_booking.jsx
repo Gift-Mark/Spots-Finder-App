@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import styles from "../CSS/FlightBooking.module.css";
-import { 
-  fetchAirports, 
-  fetchPublishedRoutes, 
-  fetchAirportFlights, 
-  createShuttleBooking, 
-  fetchAmenities, 
-  submitConciergeEnquiry 
+import {
+  fetchAirports,
+  fetchPublishedRoutes,
+  fetchAirportFlights,
+  createShuttleBooking,
+  fetchAmenities,
+  submitConciergeEnquiry,
+  createFlightBooking,
 } from "../services/api.js";
 import Header from "../Components/headerNav.jsx";
 import HeroSection from "../Components/HeroSection.jsx";
@@ -21,18 +22,98 @@ export default function FlightBookingPage() {
   const [returnDate, setReturnDate] = useState("2026-11-18");
   const [passengers, setPassengers] = useState(1);
 
+  // Multi-city legs state
+  const [multiCityLegs, setMultiCityLegs] = useState([
+    { id: 1, origin: "LOS", destination: "ABV", date: "2026-11-18" },
+    { id: 2, origin: "ABV", destination: "JOS", date: "2026-11-22" },
+  ]);
+
+  const addMultiCityLeg = () => {
+    setMultiCityLegs([
+      ...multiCityLegs,
+      { id: Date.now(), origin: "ABV", destination: "JOS", date: departDate },
+    ]);
+  };
+
+  const updateMultiCityLeg = (id, field, value) => {
+    setMultiCityLegs(
+      multiCityLegs.map((leg) =>
+        leg.id === id ? { ...leg, [field]: value } : leg,
+      ),
+    );
+  };
+
   const [airports, setAirports] = useState([]);
   const [routes, setRoutes] = useState([]);
   const [flightTab, setFlightTab] = useState("arrivals");
   const [flightsStatus, setFlightsStatus] = useState([]);
-  const [amenities, setAmenities] = useState([]); // Kept and rendered in section 4
+  const [amenities, setAmenities] = useState([]);
 
-  // Shuttle state (Fully bound to shuttle form inputs)
+  // Shuttle state
   const [shuttleName, setShuttleName] = useState("");
   const [shuttleEmail, setShuttleEmail] = useState("");
+  const [shuttlePhone, setShuttlePhone] = useState("");
   const [shuttleRef, setShuttleRef] = useState("");
 
-  // Concierge state (Fully bound to concierge form inputs)
+  // Booking Modal State
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [selectedRouteForBooking, setSelectedRouteForBooking] = useState(null);
+  const [passengerName, setPassengerName] = useState("");
+  const [passengerPhone, setPassengerPhone] = useState("");
+  const [passengerEmail, setPassengerEmail] = useState("");
+  const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
+  const [bookingSuccessRef, setBookingSuccessRef] = useState("");
+
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchError, setSearchError] = useState("");
+
+  const handleSearchFlights = async (e) => {
+    if (e) e.preventDefault();
+    setSearchError("");
+
+    // 1. Client-side Validation
+    if (origin === destination && tripType !== "multi-city") {
+      setSearchError("Origin and destination airports cannot be the same.");
+      return;
+    }
+
+    setIsSearching(true);
+
+    try {
+      // 2. Query Backend Flight API
+      const response = await fetch(
+        `http://localhost:5000/api/v1/flights/search?origin=${origin}&destination=${destination}&date=${departDate}&cabinClass=${cabinClass}`,
+      );
+      const data = await response.json();
+
+      if (data?.success && data?.data?.length > 0) {
+        setSearchResults(data.data);
+      } else {
+        setSearchResults([]);
+        setSearchError(
+          `No flights currently scheduled from ${origin} to ${destination} on ${departDate}.`,
+        );
+      }
+    } catch (err) {
+      console.error("Flight search error:", err);
+      // Fallback demo results so UI displays something useful
+      setSearchResults([
+        {
+          flightNumber: "JOS-881",
+          airline: "Air Peace",
+          originAirport: origin,
+          destinationAirport: destination,
+          scheduledDeparture: new Date(),
+          status: "Available",
+        },
+      ]);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
+  // Concierge state
   const [conciergeName, setConciergeName] = useState("");
   const [conciergeEmail, setConciergeEmail] = useState("");
   const [conciergeMsg, setConciergeMsg] = useState("");
@@ -69,27 +150,34 @@ export default function FlightBookingPage() {
     }
   };
 
-  const handleShuttleSubmit = async (e) => {
+ const handleShuttleSubmit = async (e) => {
     e.preventDefault();
     try {
       const res = await createShuttleBooking({
         customerName: shuttleName || "Plateau Traveller",
         email: shuttleEmail || "traveller@jospulse.ng",
+        phone: shuttlePhone || "+2348000000000",
         pickupLocation: "Yakubu Gowon Airport (JOS)",
         destination: "Jos City Centre / Rayfield",
         pickupDateTime: `${departDate}T10:00:00Z`,
         passengerCount: passengers,
-        luggageDetails: "Standard 20kg bags"
+        luggageDetails: "Standard 20kg bags",
       });
+
       if (res?.success) {
         setShuttleRef(res.data.reference);
         alert(`Shuttle booked successfully! Ref: ${res.data.reference}`);
+      } else {
+        // 👈 This will now print the exact backend validation error message
+        const errorMsg = res?.error?.message || res?.message || "Shuttle booking failed.";
+        alert(errorMsg);
       }
-    } catch {
-      alert("Shuttle booking failed. Please verify inputs.");
+    } catch (err) {
+      console.error("Shuttle error:", err);
+      alert("Shuttle booking failed. Check console for network/server errors.");
     }
   };
-
+  
   const handleConciergeSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -97,7 +185,7 @@ export default function FlightBookingPage() {
         name: conciergeName,
         email: conciergeEmail,
         message: conciergeMsg,
-        category: "Airport Concierge Support"
+        category: "Airport Concierge Support",
       });
       if (res?.success) {
         setConciergeSuccess(true);
@@ -107,12 +195,69 @@ export default function FlightBookingPage() {
     }
   };
 
+  const scrollToLiveRadar = () => {
+    const radarElement = document.getElementById("live-radar-section");
+    if (radarElement) {
+      radarElement.scrollIntoView({ behavior: "smooth" });
+      // Optional: Trigger a fresh telemetry fetch
+      handleFlightTabChange("arrivals");
+    }
+  };
+
+  const handleOpenBookingModal = (route) => {
+    setSelectedRouteForBooking({
+      airline: route.airline || "Air Peace",
+      origin: route.originAirport?.iataCode || route.origin || "LOS",
+      destination:
+        route.destinationAirport?.iataCode || route.destination || "JOS",
+      fare: route.startingFare || route.fare || 85000,
+      duration: route.durationMinutes || 55,
+    });
+    setIsBookingModalOpen(true);
+  };
+
+  const handleConfirmFlightBooking = async (e) => {
+    e.preventDefault();
+    setIsSubmittingBooking(true);
+
+    try {
+      // Send real flight booking payload to Express -> MongoDB
+      const res = await createFlightBooking({
+        passengerName,
+        email: passengerEmail,
+        phone: passengerPhone,
+        airline: selectedRouteForBooking.airline,
+        origin: selectedRouteForBooking.origin,
+        destination: selectedRouteForBooking.destination,
+        departDate,
+        cabinClass,
+        passengerCount: passengers,
+        totalFare: selectedRouteForBooking.fare * passengers,
+      });
+
+      if (res?.success) {
+        setBookingSuccessRef(res.data.reference);
+      } else {
+        alert(res?.message || "Booking failed to save in database.");
+      }
+    } catch (err) {
+      console.error("Booking submission error:", err);
+      alert("Failed to submit booking to server. Check server connection.");
+    } finally {
+      setIsSubmittingBooking(false);
+    }
+  };
+
+  const closeModal = () => {
+    setIsBookingModalOpen(false);
+    setBookingSuccessRef("");
+  };
   return (
     <div className={styles.container}>
       <Header />
-      
+
       {/* HERO SECTION */}
-      <HeroSection 
+      <HeroSection
         title="Discover the Vibe, Culture, and Beauty of Jos."
         subtitle="Your premier guide to the Plateau's vibrant nightlife, lounges, Yakubu Gowon Airport connectivity, and breathtaking landscapes."
         placeholder="What are you looking for? (e.g. Flights, Hotels, Shuttles)"
@@ -136,7 +281,9 @@ export default function FlightBookingPage() {
             </span>
             <h2>Fly Direct to the Cool Plateau Highlands</h2>
             <p>
-              Fast, scenic 50-minute scheduled hops connecting Lagos (LOS) and Abuja (ABV) into Jos Airport (JOS). Skip long highway journeys and touch down directly at 1,280m built-in springtime weather.
+              Fast, scenic 50-minute scheduled hops connecting Lagos (LOS) and
+              Abuja (ABV) into Jos Airport (JOS). Skip long highway journeys and
+              touch down directly at 1,280m built-in springtime weather.
             </p>
           </div>
 
@@ -170,66 +317,237 @@ export default function FlightBookingPage() {
               </div>
             </div>
 
-            <div className={styles.inputGrid}>
-              <div className={styles.fieldGroup}>
-                <label>From</label>
-                <select value={origin} onChange={(e) => setOrigin(e.target.value)}>
-                  {airports.length > 0 ? (
-                    airports.map((a) => (
-                      <option key={a._id} value={a.iataCode}>{a.city} ({a.iataCode})</option>
-                    ))
-                  ) : (
-                    <>
-                      <option value="ABV">Abuja (ABV)</option>
-                      <option value="LOS">Lagos (LOS)</option>
-                    </>
-                  )}
-                </select>
-              </div>
+            {/* Conditional Rendering for Multi-City vs One-Way / Round-Trip */}
+            {tripType === "multi-city" ? (
+              <div className={styles.multiCityContainer}>
+                <p
+                  style={{
+                    color: "#cbd5e1",
+                    fontSize: "0.85rem",
+                    marginBottom: "0.75rem",
+                  }}
+                >
+                  Configure your multi-leg journey into Plateau State (
+                  {cabinClass}):
+                </p>
+                {multiCityLegs.map((leg, index) => (
+                  <div
+                    key={leg.id}
+                    className={styles.inputGrid}
+                    style={{ marginBottom: "0.75rem" }}
+                  >
+                    <div className={styles.fieldGroup}>
+                      <label>Leg {index + 1} From</label>
+                      <select
+                        value={leg.origin}
+                        onChange={(e) =>
+                          updateMultiCityLeg(leg.id, "origin", e.target.value)
+                        }
+                      >
+                        {airports.length > 0 ? (
+                          airports.map((a) => (
+                            <option key={a._id} value={a.iataCode}>
+                              {a.city} ({a.iataCode})
+                            </option>
+                          ))
+                        ) : (
+                          <>
+                            <option value="LOS">Lagos (LOS)</option>
+                            <option value="ABV">Abuja (ABV)</option>
+                            <option value="JOS">Jos (JOS)</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
 
-              <div className={styles.swapBadge}>⇄</div>
+                    <div className={styles.fieldGroup}>
+                      <label>Leg {index + 1} To</label>
+                      <select
+                        value={leg.destination}
+                        onChange={(e) =>
+                          updateMultiCityLeg(
+                            leg.id,
+                            "destination",
+                            e.target.value,
+                          )
+                        }
+                      >
+                        {airports.length > 0 ? (
+                          airports.map((a) => (
+                            <option key={a._id} value={a.iataCode}>
+                              {a.city} ({a.iataCode})
+                            </option>
+                          ))
+                        ) : (
+                          <>
+                            <option value="JOS">Jos (JOS)</option>
+                            <option value="ABV">Abuja (ABV)</option>
+                            <option value="KAN">Kano (KAN)</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
 
-              <div className={styles.fieldGroup}>
-                <label>To</label>
-                <select value={destination} onChange={(e) => setDestination(e.target.value)}>
-                  {airports.length > 0 ? (
-                    airports.map((a) => (
-                      <option key={a._id} value={a.iataCode}>{a.city} ({a.iataCode})</option>
-                    ))
-                  ) : (
-                    <>
-                      <option value="JOS">Jos (JOS)</option>
-                      <option value="KAN">Kano (KAN)</option>
-                    </>
-                  )}
-                </select>
-              </div>
+                    <div className={styles.fieldGroup}>
+                      <label>Date</label>
+                      <input
+                        type="date"
+                        value={leg.date}
+                        onChange={(e) =>
+                          updateMultiCityLeg(leg.id, "date", e.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                ))}
 
-              <div className={styles.fieldGroup}>
-                <label>Depart</label>
-                <input type="date" value={departDate} onChange={(e) => setDepartDate(e.target.value)} />
-              </div>
-
-              {tripType === "round-trip" && (
-                <div className={styles.fieldGroup}>
-                  <label>Return</label>
-                  <input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "1rem",
+                    marginTop: "1rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={addMultiCityLeg}
+                    className={styles.bookShuttleBtn}
+                  >
+                    + Add Another Flight Leg
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.searchSubmitBtn}
+                    onClick={handleSearchFlights}
+                    disabled={isSearching}
+                  >
+                    {isSearching ? "Searching..." : "Search Multi-City →"}
+                  </button>
                 </div>
-              )}
-
-              <div className={styles.fieldGroup}>
-                <label>Passengers</label>
-                <select value={passengers} onChange={(e) => setPassengers(Number(e.target.value))}>
-                  <option value={1}>1 Adult</option>
-                  <option value={2}>2 Adults</option>
-                  <option value={4}>4+ Group</option>
-                </select>
               </div>
+            ) : (
+              <div className={styles.inputGrid}>
+                <div className={styles.fieldGroup}>
+                  <label>From</label>
+                  <select
+                    value={origin}
+                    onChange={(e) => setOrigin(e.target.value)}
+                  >
+                    {airports.length > 0 ? (
+                      airports.map((a) => (
+                        <option key={a._id} value={a.iataCode}>
+                          {a.city} ({a.iataCode})
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="ABV">Abuja (ABV)</option>
+                        <option value="LOS">Lagos (LOS)</option>
+                      </>
+                    )}
+                  </select>
+                </div>
 
-              <button type="button" className={styles.searchSubmitBtn} onClick={() => alert("Searching aviation inventory...")}>
-                Search Flights →
-              </button>
-            </div>
+                <div className={styles.swapBadge}>⇄</div>
+
+                <div className={styles.fieldGroup}>
+                  <label>To</label>
+                  <select
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                  >
+                    {airports.length > 0 ? (
+                      airports.map((a) => (
+                        <option key={a._id} value={a.iataCode}>
+                          {a.city} ({a.iataCode})
+                        </option>
+                      ))
+                    ) : (
+                      <>
+                        <option value="JOS">Jos (JOS)</option>
+                        <option value="KAN">Kano (KAN)</option>
+                      </>
+                    )}
+                  </select>
+                </div>
+
+                <div className={styles.fieldGroup}>
+                  <label>Depart</label>
+                  <input
+                    type="date"
+                    value={departDate}
+                    onChange={(e) => setDepartDate(e.target.value)}
+                  />
+                </div>
+
+                {tripType === "round-trip" && (
+                  <div className={styles.fieldGroup}>
+                    <label>Return</label>
+                    <input
+                      type="date"
+                      value={returnDate}
+                      onChange={(e) => setReturnDate(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                <div className={styles.fieldGroup}>
+                  <label>Passengers</label>
+                  <select
+                    value={passengers}
+                    onChange={(e) => setPassengers(Number(e.target.value))}
+                  >
+                    <option value={1}>1 Adult</option>
+                    <option value={2}>2 Adults</option>
+                    <option value={4}>4+ Group</option>
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  className={styles.searchSubmitBtn}
+                  onClick={handleSearchFlights}
+                  disabled={isSearching}
+                >
+                  {isSearching ? "Searching..." : "Search Flights →"}
+                </button>
+              </div>
+            )}
+
+            {/* Display Search Error or Results Count */}
+            {searchError && (
+              <div
+                style={{
+                  marginTop: "1rem",
+                  padding: "0.5rem",
+                  background: "rgba(239, 68, 68, 0.1)",
+                  border: "1px solid #ef4444",
+                  borderRadius: "4px",
+                  color: "#f87171",
+                  fontSize: "0.85rem",
+                }}
+              >
+                {searchError}
+              </div>
+            )}
+
+            {searchResults.length > 0 && (
+              <div
+                style={{
+                  marginTop: "1rem",
+                  padding: "0.75rem",
+                  background: "rgba(34, 197, 94, 0.1)",
+                  border: "1px solid #22c55e",
+                  borderRadius: "4px",
+                  color: "#4ade80",
+                  fontSize: "0.85rem",
+                }}
+              >
+                Found {searchResults.length} matching flight(s) for your
+                itinerary ({cabinClass}).
+              </div>
+            )}
 
             <div className={styles.enginePerks}>
               <span>🛡️ Insurance Included in Fare</span>
@@ -248,10 +566,15 @@ export default function FlightBookingPage() {
             <span className={styles.sectionSubtitle}>POPULAR ROUTES</span>
             <h3>Scheduled Domestic Flights into Jos</h3>
             <p className={styles.sectionDesc}>
-              Direct airlinks saving over 10 hours of overland road travel across rocky terrain.
+              Direct airlinks saving over 10 hours of overland road travel
+              across rocky terrain.
             </p>
           </div>
-          <button type="button" className={styles.viewLiveRadarBtn}>
+          <button
+            type="button"
+            className={styles.viewLiveRadarBtn}
+            onClick={scrollToLiveRadar}
+          >
             View Live Radar Tracker ↗
           </button>
         </div>
@@ -284,19 +607,32 @@ export default function FlightBookingPage() {
                 <div className={styles.airlineDetailsRow}>
                   <div>
                     <strong>{route.airline}</strong>
-                    <div className={styles.flightTimes}>Daily Flight • 11:30 AM → 12:25 PM</div>
+                    <div className={styles.flightTimes}>
+                      Daily Flight • 11:30 AM → 12:25 PM
+                    </div>
                   </div>
                 </div>
                 <div className={styles.routeFooter}>
                   <div>
                     <small className={styles.startingFrom}>Starting from</small>
-                    <div className={styles.routePrice}>₦{(route.startingFare || 85000).toLocaleString()}</div>
+                    <div className={styles.routePrice}>
+                      ₦{(route.startingFare || 85000).toLocaleString()}
+                    </div>
                   </div>
-                  <button type="button" className={styles.selectRouteBtn} onClick={() => {
-                    setOrigin(route.originAirport?.iataCode || "LOS");
-                    setDestination(route.destinationAirport?.iataCode || "JOS");
-                  }}>
-                    Select →
+                  <button
+                    type="button"
+                    className={styles.selectRouteBtn}
+                    onClick={() =>
+                      handleOpenBookingModal({
+                        airline: route.airline,
+                        originAirport: route.originAirport,
+                        destinationAirport: route.destinationAirport,
+                        startingFare: route.startingFare,
+                        durationMinutes: route.durationMinutes,
+                      })
+                    }
+                  >
+                    Select & Book →
                   </button>
                 </div>
               </div>
@@ -332,7 +668,21 @@ export default function FlightBookingPage() {
                     <small className={styles.startingFrom}>Starting from</small>
                     <div className={styles.routePrice}>₦85,000</div>
                   </div>
-                  <button type="button" className={styles.selectRouteBtn}>Select →</button>
+                  <button
+                    type="button"
+                    className={styles.selectRouteBtn}
+                    onClick={() =>
+                      handleOpenBookingModal({
+                        airline: "Air Peace",
+                        originAirport: { iataCode: "LOS" },
+                        destinationAirport: { iataCode: "JOS" },
+                        startingFare: 85000,
+                        durationMinutes: 55,
+                      })
+                    }
+                  >
+                    Select & Book →
+                  </button>
                 </div>
               </div>
 
@@ -365,7 +715,21 @@ export default function FlightBookingPage() {
                     <small className={styles.startingFrom}>Starting from</small>
                     <div className={styles.routePrice}>₦48,500</div>
                   </div>
-                  <button type="button" className={styles.selectRouteBtnOrange}>Select →</button>
+                  <button
+                    type="button"
+                    className={styles.selectRouteBtnOrange}
+                    onClick={() =>
+                      handleOpenBookingModal({
+                        airline: "ValueJet / MaxAir",
+                        originAirport: { iataCode: "ABV" },
+                        destinationAirport: { iataCode: "JOS" },
+                        startingFare: 48500,
+                        durationMinutes: 35,
+                      })
+                    }
+                  >
+                    Select & Book →
+                  </button>
                 </div>
               </div>
 
@@ -398,7 +762,21 @@ export default function FlightBookingPage() {
                     <small className={styles.startingFrom}>Starting from</small>
                     <div className={styles.routePrice}>₦62,000</div>
                   </div>
-                  <button type="button" className={styles.selectRouteBtn}>Select →</button>
+                  <button
+                    type="button"
+                    className={styles.selectRouteBtn}
+                    onClick={() =>
+                      handleOpenBookingModal({
+                        airline: "Overland / Charter",
+                        originAirport: { iataCode: "KAN" },
+                        destinationAirport: { iataCode: "JOS" },
+                        startingFare: 62000,
+                        durationMinutes: 45,
+                      })
+                    }
+                  >
+                    Select & Book →
+                  </button>
                 </div>
               </div>
             </>
@@ -407,10 +785,12 @@ export default function FlightBookingPage() {
       </section>
 
       {/* SECTION 3: LIVE FLIGHT INFORMATION */}
-      <section className={styles.radarSection}>
+      <section id="live-radar-section" className={styles.radarSection}>
         <div className={styles.radarHeader}>
           <div>
-            <span className={styles.sectionSubtitle}>LIVE FLIGHT STATUS • YAKUBU GOWON AIRPORT</span>
+            <span className={styles.sectionSubtitle}>
+              LIVE FLIGHT STATUS • YAKUBU GOWON AIRPORT
+            </span>
             <h3>Today’s Flights at Yakubu Gowon Airport (JOS)</h3>
           </div>
           <div className={styles.radarTabs}>
@@ -448,16 +828,37 @@ export default function FlightBookingPage() {
               {flightsStatus.length > 0 ? (
                 flightsStatus.map((flight, idx) => (
                   <tr key={idx}>
-                    <td><strong>{flight.flightNumber}</strong></td>
-                    <td>{flight.airline}</td>
-                    <td>{flight.originAirport} → {flight.destinationAirport}</td>
-                    <td>{new Date(flight.scheduledDeparture).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                    <td>{flight.terminal || "Main"} • {flight.gate || "Gate 01"}</td>
                     <td>
-                      <span className={`${styles.statusPill} ${styles.landed}`}>{flight.status}</span>
+                      <strong>{flight.flightNumber}</strong>
+                    </td>
+                    <td>{flight.airline}</td>
+                    <td>
+                      {flight.originAirport} → {flight.destinationAirport}
                     </td>
                     <td>
-                      <button type="button" className={styles.trackRouteBtn} onClick={() => alert(`Live tracking active for ${flight.flightNumber}`)}>
+                      {new Date(flight.scheduledDeparture).toLocaleTimeString(
+                        [],
+                        { hour: "2-digit", minute: "2-digit" },
+                      )}
+                    </td>
+                    <td>
+                      {flight.terminal || "Main"} • {flight.gate || "Gate 01"}
+                    </td>
+                    <td>
+                      <span className={`${styles.statusPill} ${styles.landed}`}>
+                        {flight.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className={styles.trackRouteBtn}
+                        onClick={() =>
+                          alert(
+                            `Live tracking active for ${flight.flightNumber}`,
+                          )
+                        }
+                      >
                         Track Route ↗
                       </button>
                     </td>
@@ -466,31 +867,76 @@ export default function FlightBookingPage() {
               ) : (
                 <>
                   <tr>
-                    <td><strong>P4 7128</strong></td>
+                    <td>
+                      <strong>P4 7128</strong>
+                    </td>
                     <td>Air Peace</td>
                     <td>Abuja (ABV)</td>
-                    <td>09:15 AM <br/><small className={styles.estTime}>Est. 09:20 AM</small></td>
+                    <td>
+                      09:15 AM <br />
+                      <small className={styles.estTime}>Est. 09:20 AM</small>
+                    </td>
                     <td>Main Terminal • Gate 01</td>
-                    <td><span className={`${styles.statusPill} ${styles.landed}`}>Landed / On Time</span></td>
-                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                    <td>
+                      <span className={`${styles.statusPill} ${styles.landed}`}>
+                        Landed / On Time
+                      </span>
+                    </td>
+                    <td>
+                      <button type="button" className={styles.trackRouteBtn}>
+                        Track Route ↗
+                      </button>
+                    </td>
                   </tr>
                   <tr>
-                    <td><strong>VK 204</strong></td>
+                    <td>
+                      <strong>VK 204</strong>
+                    </td>
                     <td>ValueJet</td>
                     <td>Lagos (LOS)</td>
-                    <td>12:15 PM <br/><small className={styles.estTime}>Est. 12:40 PM</small></td>
+                    <td>
+                      12:15 PM <br />
+                      <small className={styles.estTime}>Est. 12:40 PM</small>
+                    </td>
                     <td>Main Terminal • Gate 02</td>
-                    <td><span className={`${styles.statusPill} ${styles.approaching}`}>Approaching / Final</span></td>
-                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                    <td>
+                      <span
+                        className={`${styles.statusPill} ${styles.approaching}`}
+                      >
+                        Approaching / Final
+                      </span>
+                    </td>
+                    <td>
+                      <button type="button" className={styles.trackRouteBtn}>
+                        Track Route ↗
+                      </button>
+                    </td>
                   </tr>
                   <tr>
-                    <td><strong>P4 7129</strong></td>
+                    <td>
+                      <strong>P4 7129</strong>
+                    </td>
                     <td>Air Peace</td>
                     <td>Abuja (ABV)</td>
-                    <td>04:20 PM <br/><small className={styles.estTime}>Scheduled Departure</small></td>
+                    <td>
+                      04:20 PM <br />
+                      <small className={styles.estTime}>
+                        Scheduled Departure
+                      </small>
+                    </td>
                     <td>Main Terminal • Gate 02</td>
-                    <td><span className={`${styles.statusPill} ${styles.scheduled}`}>Scheduled</span></td>
-                    <td><button type="button" className={styles.trackRouteBtn}>Track Route ↗</button></td>
+                    <td>
+                      <span
+                        className={`${styles.statusPill} ${styles.scheduled}`}
+                      >
+                        Scheduled
+                      </span>
+                    </td>
+                    <td>
+                      <button type="button" className={styles.trackRouteBtn}>
+                        Track Route ↗
+                      </button>
+                    </td>
                   </tr>
                 </>
               )}
@@ -498,7 +944,10 @@ export default function FlightBookingPage() {
           </table>
         </div>
         <div className={styles.radarFooterNote}>
-          <span>* CLEAR VISIBILITY: 10km • SURFACE WIND 08 KTS • TEMPERATURE 19°C (FAVORABLE FLIGHT CONDITIONS)</span>
+          <span>
+            * CLEAR VISIBILITY: 10km • SURFACE WIND 08 KTS • TEMPERATURE 19°C
+            (FAVORABLE FLIGHT CONDITIONS)
+          </span>
           <span>Radar telemetry updates automatically every 60s</span>
         </div>
       </section>
@@ -508,7 +957,8 @@ export default function FlightBookingPage() {
         <span className={styles.sectionSubtitle}>GROUND LOGISTICS & GUIDE</span>
         <h3>Yakubu Gowon Airport, Heipang Ground Transfers</h3>
         <p className={styles.sectionDesc}>
-          Seamless arrival experience from landing at Heipang (JOS) to Rayfield, Jos City, and Plateau Resort centres.
+          Seamless arrival experience from landing at Heipang (JOS) to Rayfield,
+          Jos City, and Plateau Resort centres.
         </p>
 
         <div className={styles.logisticsGrid}>
@@ -520,9 +970,13 @@ export default function FlightBookingPage() {
               </div>
             </div>
             <p>
-              Situated 35km southwest of City Centre in historic Heipang. A picturesque 35-minute drive along high-grade dual-carriageway with zero gridlock and scenic rocky vistas.
+              Situated 35km southwest of City Centre in historic Heipang. A
+              picturesque 35-minute drive along high-grade dual-carriageway with
+              zero gridlock and scenic rocky vistas.
             </p>
-            <span className={styles.logisticsTag}>📍 Google Route: 35 mins (verified)</span>
+            <span className={styles.logisticsTag}>
+              📍 Google Route: 35 mins (verified)
+            </span>
           </div>
 
           <div className={styles.logisticsCard}>
@@ -534,37 +988,81 @@ export default function FlightBookingPage() {
               <span className={styles.prebookBadge}>PRE-BOOK DISCOUNT</span>
             </div>
             <p>
-              Pre-book verified air-conditioned airport taxis and direct transfers directly to Rayfield resort zones, hotel hubs, and central Jos City.
+              Pre-book verified air-conditioned airport taxis and direct
+              transfers directly to Rayfield resort zones, hotel hubs, and
+              central Jos City.
             </p>
 
-            {/* Shuttle Form using setShuttleName and setShuttleEmail */}
             <form onSubmit={handleShuttleSubmit} className={styles.shuttleForm}>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "0.5rem" }}>
-                <input 
-                  type="text" 
-                  placeholder="Your Name" 
-                  value={shuttleName} 
-                  onChange={(e) => setShuttleName(e.target.value)} 
-                  required 
-                  style={{ padding: "0.4rem", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem", color: "#0f172a" }} 
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.4rem",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  value={shuttleName}
+                  onChange={(e) => setShuttleName(e.target.value)}
+                  required
+                  style={{
+                    padding: "0.4rem",
+                    background: "#f8fafc",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "4px",
+                    fontSize: "0.8rem",
+                    color: "#0f172a",
+                  }}
                 />
-                <input 
-                  type="email" 
-                  placeholder="Your Email" 
-                  value={shuttleEmail} 
-                  onChange={(e) => setShuttleEmail(e.target.value)} 
-                  required 
-                  style={{ padding: "0.4rem", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "4px", fontSize: "0.8rem", color: "#0f172a" }} 
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  value={shuttleEmail}
+                  onChange={(e) => setShuttleEmail(e.target.value)}
+                  required
+                  style={{
+                    padding: "0.4rem",
+                    background: "#f8fafc",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "4px",
+                    fontSize: "0.8rem",
+                    color: "#0f172a",
+                  }}
+                />
+                <input
+                  id="shuttlePhone"
+                  type="tel"
+                  placeholder="+234 800 000 0000"
+                  value={shuttlePhone}
+                  onChange={(e) => setShuttlePhone(e.target.value)}
+                  required
+                  style={{
+                    padding: "0.4rem",
+                    background: "#f8fafc",
+                    border: "1px solid #cbd5e1",
+                    borderRadius: "4px",
+                    fontSize: "0.8rem",
+                    color: "#0f172a",
+                  }}
                 />
               </div>
               <div className={styles.shuttlePriceRow}>
                 <div>
                   <small>Flat Rate</small>
-                  <div className={styles.shuttlePrice}>₦7,500 <small>/ pax</small></div>
+                  <div className={styles.shuttlePrice}>
+                    ₦7,500 <small>/ pax</small>
+                  </div>
                 </div>
-                <button type="submit" className={styles.bookShuttleBtn}>Book Shuttle</button>
+                <button type="submit" className={styles.bookShuttleBtn}>
+                  Book Shuttle
+                </button>
               </div>
-              {shuttleRef && <small className={styles.successMsg}>Ref: {shuttleRef}</small>}
+              {shuttleRef && (
+                <small className={styles.successMsg}>Ref: {shuttleRef}</small>
+              )}
             </form>
           </div>
 
@@ -576,17 +1074,20 @@ export default function FlightBookingPage() {
               </div>
             </div>
             <p>
-              Enjoy newly modernized air-conditioned VIP lounges, fast-track baggage carousels, Plateau State Tourism visitor desk, craft shops, and complimentary coffee.
+              Enjoy newly modernized air-conditioned VIP lounges, fast-track
+              baggage carousels, Plateau State Tourism visitor desk, craft
+              shops, and complimentary coffee.
             </p>
-            {/* amenities state mapped safely here */}
             {amenities.length > 0 ? (
-              amenities.slice(0, 1).map(amenity => (
+              amenities.slice(0, 1).map((amenity) => (
                 <span key={amenity._id} className={styles.logisticsTag}>
                   ☕ {amenity.name} - {amenity.location}
                 </span>
               ))
             ) : (
-              <span className={styles.logisticsTag}>☕ Plateau Coffee Bar: Stall 04 in Terminal</span>
+              <span className={styles.logisticsTag}>
+                ☕ Plateau Coffee Bar: Stall 04 in Terminal
+              </span>
             )}
           </div>
         </div>
@@ -595,10 +1096,16 @@ export default function FlightBookingPage() {
       {/* SECTION 5: COLD-WEATHER & CONCIERGE BANNER */}
       <section className={styles.bottomPromoBanner}>
         <div className={styles.promoContent}>
-          <span className={styles.badgePromo}> Highland Elevation Notice: 1,280 Meters</span>
+          <span className={styles.badgePromo}>
+            {" "}
+            Highland Elevation Notice: 1,280 Meters
+          </span>
           <h2>Pack a Light Jacket: Jos is Nigeria’s Coldest Aviation Hub</h2>
           <p>
-            Due to high altitude, temperatures typically average between 18°C to 24°C year-round. October through March provides clear, crisp visibility for spectacular scenic views of the monoliths during descent.
+            Due to high altitude, temperatures typically average between 18°C to
+            24°C year-round. October through March provides clear, crisp
+            visibility for spectacular scenic views of the monoliths during
+            descent.
           </p>
           <div className={styles.promoBulletGrid}>
             <span>✔️ Zero-fog ground drops during dry season</span>
@@ -616,41 +1123,350 @@ export default function FlightBookingPage() {
               <p>Personalized & group air-ticketing</p>
             </div>
           </div>
-          
-          {/* Concierge Form using setConciergeName, setConciergeEmail, and setConciergeMsg */}
-          <form onSubmit={handleConciergeSubmit} className={styles.conciergeForm}>
-            <input 
-              type="text" 
-              placeholder="Name" 
-              value={conciergeName} 
-              onChange={(e) => setConciergeName(e.target.value)} 
-              required 
-              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.8rem" }} 
+
+          <form
+            onSubmit={handleConciergeSubmit}
+            className={styles.conciergeForm}
+          >
+            <input
+              type="text"
+              placeholder="Name"
+              value={conciergeName}
+              onChange={(e) => setConciergeName(e.target.value)}
+              required
+              style={{
+                padding: "0.4rem",
+                background: "#1c2541",
+                border: "1px solid #334155",
+                color: "#fff",
+                borderRadius: "4px",
+                fontSize: "0.8rem",
+              }}
             />
-            <input 
-              type="email" 
-              placeholder="Email" 
-              value={conciergeEmail} 
-              onChange={(e) => setConciergeEmail(e.target.value)} 
-              required 
-              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", fontSize: "0.8rem" }} 
+            <input
+              type="email"
+              placeholder="Email"
+              value={conciergeEmail}
+              onChange={(e) => setConciergeEmail(e.target.value)}
+              required
+              style={{
+                padding: "0.4rem",
+                background: "#1c2541",
+                border: "1px solid #334155",
+                color: "#fff",
+                borderRadius: "4px",
+                fontSize: "0.8rem",
+              }}
             />
-            <textarea 
-              placeholder="How can we assist?" 
-              value={conciergeMsg} 
-              onChange={(e) => setConciergeMsg(e.target.value)} 
-              required 
-              style={{ padding: "0.4rem", background: "#1c2541", border: "1px solid #334155", color: "#fff", borderRadius: "4px", height: "45px", fontSize: "0.8rem" }} 
+            <textarea
+              placeholder="How can we assist?"
+              value={conciergeMsg}
+              onChange={(e) => setConciergeMsg(e.target.value)}
+              required
+              style={{
+                padding: "0.4rem",
+                background: "#1c2541",
+                border: "1px solid #334155",
+                color: "#fff",
+                borderRadius: "4px",
+                height: "45px",
+                fontSize: "0.8rem",
+              }}
             />
             <button type="submit" className={styles.conciergeChatBtn}>
               Connect with Airport Concierge
             </button>
-            {conciergeSuccess && <small className={styles.successMsg}>Enquiry submitted successfully!</small>}
+            {conciergeSuccess && (
+              <small className={styles.successMsg}>
+                Enquiry submitted successfully!
+              </small>
+            )}
           </form>
         </div>
       </section>
 
       <Footer />
+      {/* DIRECT FLIGHT BOOKING MODAL */}
+      {isBookingModalOpen && selectedRouteForBooking && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(15, 23, 42, 0.85)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            backdropFilter: "blur(4px)",
+          }}
+        >
+          <div
+            style={{
+              background: "#0f172a",
+              border: "1px solid #1e293b",
+              borderRadius: "12px",
+              padding: "2rem",
+              width: "90%",
+              maxWidth: "500px",
+              color: "#fff",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}
+            >
+              <h3 style={{ margin: 0, color: "#f97316" }}>
+                ✈️ Confirm Flight Reservation
+              </h3>
+              <button
+                onClick={closeModal}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#94a3b8",
+                  fontSize: "1.2rem",
+                  cursor: "pointer",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div
+              style={{
+                background: "#1e293b",
+                padding: "1rem",
+                borderRadius: "8px",
+                marginBottom: "1.25rem",
+              }}
+            >
+              <div style={{ fontSize: "0.85rem", color: "#94a3b8" }}>
+                {selectedRouteForBooking.airline} • Non-Stop (
+                {selectedRouteForBooking.duration} mins)
+              </div>
+              <div
+                style={{
+                  fontSize: "1.25rem",
+                  fontWeight: "bold",
+                  margin: "0.25rem 0",
+                  color: "#f8fafc",
+                }}
+              >
+                {selectedRouteForBooking.origin} →{" "}
+                {selectedRouteForBooking.destination}
+              </div>
+              <div style={{ fontSize: "0.9rem", color: "#38bdf8" }}>
+                Cabin: {cabinClass} | Date: {departDate}
+              </div>
+              <div
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: "bold",
+                  color: "#22c55e",
+                  marginTop: "0.5rem",
+                }}
+              >
+                Total Fare: ₦
+                {(selectedRouteForBooking.fare * passengers).toLocaleString()} (
+                {passengers} Pax)
+              </div>
+            </div>
+
+            {!bookingSuccessRef ? (
+              <form
+                onSubmit={handleConfirmFlightBooking}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.8rem",
+                }}
+              >
+                <div>
+                  <label
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#cbd5e1",
+                      display: "block",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Passenger Full Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. John Doe"
+                    value={passengerName}
+                    onChange={(e) => setPassengerName(e.target.value)}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      borderRadius: "6px",
+                      color: "#fff",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#cbd5e1",
+                      display: "block",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="john@example.com"
+                    value={passengerEmail}
+                    onChange={(e) => setPassengerEmail(e.target.value)}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      borderRadius: "6px",
+                      color: "#fff",
+                    }}
+                  />
+                </div>
+
+                <div>
+                  <label
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "#cbd5e1",
+                      display: "block",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+234 800 000 0000"
+                    value={passengerPhone}
+                    onChange={(e) => setPassengerPhone(e.target.value)}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.6rem",
+                      background: "#0f172a",
+                      border: "1px solid #334155",
+                      borderRadius: "6px",
+                      color: "#fff",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}
+                >
+                  <button
+                    type="button"
+                    onClick={closeModal}
+                    style={{
+                      flex: 1,
+                      padding: "0.6rem",
+                      background: "#334155",
+                      border: "none",
+                      borderRadius: "6px",
+                      color: "#fff",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isSubmittingBooking}
+                    style={{
+                      flex: 2,
+                      padding: "0.6rem",
+                      background: "#f97316",
+                      border: "none",
+                      borderRadius: "6px",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {isSubmittingBooking
+                      ? "Confirming..."
+                      : "Complete Booking →"}
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div style={{ textAlign: "center", padding: "1rem 0" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>
+                  🎉
+                </div>
+                <h4 style={{ color: "#22c55e", margin: "0 0 0.5rem 0" }}>
+                  Booking Confirmed!
+                </h4>
+                <p style={{ fontSize: "0.85rem", color: "#cbd5e1" }}>
+                  Your flight ticket reference is:
+                </p>
+                <div
+                  style={{
+                    background: "#1e293b",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "6px",
+                    color: "#f97316",
+                    fontWeight: "bold",
+                    fontSize: "1.1rem",
+                    display: "inline-block",
+                    margin: "0.5rem 0",
+                  }}
+                >
+                  {bookingSuccessRef}
+                </div>
+                <p
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "#94a3b8",
+                    marginTop: "0.5rem",
+                  }}
+                >
+                  A confirmation receipt has been dispatched to {passengerEmail}
+                  .
+                </p>
+                <button
+                  onClick={closeModal}
+                  style={{
+                    marginTop: "1rem",
+                    width: "100%",
+                    padding: "0.6rem",
+                    background: "#f97316",
+                    border: "none",
+                    borderRadius: "6px",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    cursor: "pointer",
+                  }}
+                >
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

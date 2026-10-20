@@ -99,6 +99,13 @@ const EventSchema = new mongoose.Schema(
       maxlength: 1000,
       default: "",
     },
+    // Add scoutCityUrl to your EventSchema in models/Events.js
+scoutCityUrl: {
+  type: String,
+  trim: true,
+  maxlength: 1000,
+  default: "",
+},
   },
   { timestamps: true },
 );

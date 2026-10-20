@@ -28,6 +28,12 @@ import userRoutes from "./routes/userRoutes.js";
 import claimRoutes from './routes/claimRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import flightRoutes from './routes/flightRoutes.js';
+import shuttleRoutes from './routes/shuttleRoutes.js';
+import conciergeRoutes from './routes/conciergeRoutes.js';
+import amenityRoutes from './routes/amenityRoutes.js';
+import accommodationRoutes from './routes/accommodationRoutes.js';
+import faqRoutes from './routes/faqRoutes.js';
+import travelContentRoutes from './routes/travelContentRoutes.js';
 
 dotenv.config();
 
@@ -82,7 +88,14 @@ app.use("/api/auth", userRoutes);
 app.use("/api/users", userRoutes);
 app.use('/api/claims', claimRoutes);
 app.use("/api/admin", adminRoutes);
-app.use('/api/flights', flightRoutes); // Assuming flightRoutes is defined elsewhere
+// Mount routes under /api/v1/ to match your frontend API calls
+app.use("/api/v1/flights", flightRoutes);
+app.use("/api/v1/shuttles", shuttleRoutes);
+app.use("/api/v1/concierge", conciergeRoutes);
+app.use("/api/v1/amenities", amenityRoutes);
+app.use("/api/v1/accommodations", accommodationRoutes);
+app.use("/api/v1/faqs", faqRoutes);
+app.use("/api/v1/travel-content", travelContentRoutes);
 
 // Serve the uploads folder publicly so documents can be viewed via URL
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -9,7 +9,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/VendorSidebar.module.css';
 
-export const VendorSidebar = ({ activeTab = 'Overview', onTabChange }) => {
+export const VendorSidebar = ({ activeTab, onTabChange, businessName, venueImage }) => {
   const menuItems = [
     { name: 'Overview', icon: faTableCellsLarge },
     { name: 'My Venue Profile', icon: faBuilding },
@@ -26,16 +26,24 @@ export const VendorSidebar = ({ activeTab = 'Overview', onTabChange }) => {
         <span className={styles.brandTag}>Vendor Dashboard</span>
       </div>
 
-      {/* Account Info */}
-      <div className={styles.accountCard}>
-        <img 
-          src="/images/Rayfield Golf club.webp"
-          alt="Rayfield Golf Club" 
-          className={styles.accountAvatar}
-        />
-        <div className={styles.accountDetails}>
-          <h3 className={styles.accountName}>Rayfield Golf Club</h3>
-          <span className={styles.accountRole}>Manager Account</span>
+      {/* Dynamic Account Info Card (Replaces hardcoded Rayfield Golf Club) */}
+      <div className={styles.accountCard} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', margin: '16px', backgroundColor: '#1E293B', borderRadius: '8px' }}>
+        {venueImage ? (
+          <img 
+            src={venueImage} 
+            alt={businessName} 
+            style={{ width: '40px', height: '40px', borderRadius: '6px', objectFit: 'cover' }} 
+          />
+        ) : (
+          <div style={{ width: '40px', height: '40px', borderRadius: '6px', backgroundColor: '#F97316', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#FFF', fontSize: '16px' }}>
+            {businessName ? businessName.charAt(0) : 'V'}
+          </div>
+        )}
+        <div style={{ overflow: 'hidden' }}>
+          <h3 className={styles.accountName} style={{ margin: 0, fontSize: '14px', color: '#FFFFFF', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            {businessName || 'Vendor Portal'}
+          </h3>
+          <span className={styles.accountRole} style={{ fontSize: '11px', color: '#94A3B8' }}>Verified Partner</span>
         </div>
       </div>
 

@@ -2,7 +2,7 @@
   background-color: #081935;
   color: #ffffff;
   padding: 48px 64px 40px;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* --- NEWSLETTER SECTION --- */

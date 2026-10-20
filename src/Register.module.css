@@ -2,48 +2,54 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 62px 16px 32px;
+  padding: 48px 16px 32px;
   background:
     radial-gradient(
-      circle at 85% 0%,
-      rgba(171, 125, 255, 0.55),
-      transparent 25%
+      circle at 50% 0%,
+      rgba(249, 115, 22, 0.18),
+      transparent 50%
     ),
-    #071222;
-  color: #ede9f7;
-  font-family: Georgia, "Times New Roman", serif;
+    #0f172a;
+  color: #f8fafc;
+  font-family: var(--font-sans);
 }
 
 .card {
-  width: min(100%, 358px);
-  padding: 28px 32px;
-  border: 1px solid rgba(159, 174, 204, 0.22);
+  width: min(100%, 420px);
+  padding: 36px 32px;
+  border: 1px solid #334155;
   border-radius: 24px;
-  background: rgba(11, 20, 39, 0.92);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  background: rgba(30, 41, 59, 0.95);
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 28px;
 }
 
 .logo {
-  margin: 0 0 25px;
-  font-size: 2.6rem;
-  font-weight: 500;
-  color: #c8a9ff;
+  margin: 0 0 12px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #f97316;
+  font-family: var(--font-sans);
 }
 
 .header h1 {
   margin: 0;
-  font-size: 1.65rem;
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
 }
 
 .subtitle {
-  margin: 12px 0 0;
-  color: #dbd4e5;
-  font-size: 0.98rem;
+  margin: 8px 0 0;
+  color: #94a3b8;
+  font-size: 0.92rem;
+  font-weight: 500;
 }
 
 .form {
@@ -53,134 +59,182 @@
 
 .inputGroup {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   text-align: left;
 }
 
 .inputGroup label {
-  font-size: 0.78rem;
-  font-weight: 700;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .inputGroup input {
   box-sizing: border-box;
   width: 100%;
-  min-height: 49px;
+  min-height: 46px;
   padding: 0 14px;
-  border: 1px solid #aeb4c3;
-  border-radius: 8px;
+  border: 1px solid #334155;
+  border-radius: 10px;
   outline: none;
-  background: #fff;
-  color: #171629;
-  font: inherit;
+  background: #0f172a;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.92rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.inputGroup input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
 }
 
 .inputGroup input::placeholder {
-  color: #d2cce5;
+  color: #64748b;
 }
 
 .passwordWrapper {
   display: flex;
   align-items: center;
-  min-height: 49px;
+  min-height: 46px;
   padding: 0 12px;
-  border: 1px solid #aeb4c3;
-  border-radius: 8px;
-  background: white;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background: #0f172a;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.passwordWrapper:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
 }
 
 .passwordWrapper input {
   min-width: 0;
   border: 0;
   padding: 0 8px;
+  background: transparent;
+  color: #ffffff;
+}
+
+.passwordWrapper input:focus {
+  box-shadow: none;
+  border: none;
 }
 
 .lockIcon {
   font-size: 0.9rem;
+  color: #64748b;
 }
 
 .visibilityButton {
   border: 0;
   background: transparent;
-  color: #c5bfd2;
-  font-size: 0.83rem;
+  color: #94a3b8;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+
+.visibilityButton:hover {
+  color: #ffffff;
 }
 
 .requirements {
   display: flex;
   flex-wrap: wrap;
-  gap: 9px 18px;
-  margin-top: -5px;
+  gap: 8px 16px;
+  margin-top: -2px;
 }
 
 .requirement,
 .validRequirement {
-  font-family: Arial, sans-serif;
-  font-size: 0.72rem;
-  color: #8d98ad;
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: #94a3b8;
 }
 
 .validRequirement {
-  color: #64e6c1;
+  color: #4ade80;
 }
 
 .createButton {
-  min-height: 52px;
-  margin-top: 3px;
+  min-height: 48px;
+  margin-top: 6px;
   border: 0;
-  border-radius: 12px;
-  background: #c5a4fa;
-  color: #43168e;
-  font: inherit;
+  border-radius: 10px;
+  background: #f97316;
+  color: #ffffff;
+  font-family: inherit;
   font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 
 .createButton:hover {
-  background: #d3b8ff;
+  background: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.45);
 }
 
 .terms {
-  margin: 24px 0 32px;
+  margin: 20px 0 24px;
   text-align: center;
-  color: #d9d3e3;
-  font-size: 0.76rem;
-  line-height: 1.45;
+  color: #94a3b8;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
 
 .terms a,
 .signInText a {
-  color: #39d0f5;
+  color: #f97316;
   text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.terms a:hover,
+.signInText a:hover {
+  color: #ea580c;
+  text-decoration: underline;
 }
 
 .divider {
   height: 1px;
-  background: #26344b;
+  background: #334155;
+  margin: 8px 0;
 }
 
 .signInText {
-  margin: 27px 0 0;
+  margin: 18px 0 0;
   text-align: center;
-  color: #dbd6e4;
+  color: #cbd5e1;
   font-size: 0.9rem;
-  font-weight: 700;
 }
 
 .error {
   margin: 0;
-  color: #ff9ca4;
+  color: #f87171;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 10px 14px;
+  border-radius: 8px;
   font-size: 0.85rem;
   text-align: center;
 }
 
-@media (max-width: 380px) {
+@media (max-width: 420px) {
   .card {
-    padding: 28px 24px;
+    padding: 28px 20px;
   }
 
   .header {
-    margin-bottom: 42px;
+    margin-bottom: 24px;
   }
 }

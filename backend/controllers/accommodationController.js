@@ -1,8 +1,8 @@
-const Accommodation = require('../models/Accommodation');
-const AccommodationZone = require('../models/AccommodationZone');
+import Accommodation from '../models/Accommodation.js';
+import AccommodationZone from '../models/AccommodationZone.js';
 
 // GET /api/v1/accommodations
-exports.getAccommodations = async (req, res) => {
+export const getAccommodations = async (req, res) => {
   try {
     const { category, zone, propertyType, search, minPrice, maxPrice } = req.query;
     let query = { isPublished: true };
@@ -34,7 +34,7 @@ exports.getAccommodations = async (req, res) => {
 };
 
 // GET /api/v1/accommodations/featured
-exports.getFeaturedAccommodations = async (req, res) => {
+export const getFeaturedAccommodations = async (req, res) => {
   try {
     const featured = await Accommodation.find({ isPublished: true, isFeatured: true }).limit(5);
     res.status(200).json({ success: true, count: featured.length, data: featured });
@@ -44,7 +44,7 @@ exports.getFeaturedAccommodations = async (req, res) => {
 };
 
 // GET /api/v1/accommodation-zones
-exports.getAccommodationZones = async (req, res) => {
+export const getAccommodationZones = async (req, res) => {
   try {
     const zones = await AccommodationZone.find({ isPublished: true }).sort({ displayPriority: 1 });
     res.status(200).json({ success: true, data: zones });

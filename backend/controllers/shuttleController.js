@@ -3,7 +3,17 @@ import crypto from "crypto";
 
 export const createShuttleBooking = async (req, res, next) => {
   try {
-    const { customerName, email, phone, pickupLocation, destination, pickupDateTime, passengerCount, luggageDetails, specialInstructions } = req.body;
+    const { 
+      customerName,
+       email,
+        phone,
+         pickupLocation,
+          destination,
+           pickupDateTime,
+            passengerCount,
+             luggageDetails,
+              specialInstructions
+             } = req.body;
 
     if (!customerName || !email || !phone || !pickupLocation || !pickupDateTime || !passengerCount) {
       return res.status(400).json({ success: false, error: { code: "VALIDATION_ERROR", message: "Missing required booking fields." } });

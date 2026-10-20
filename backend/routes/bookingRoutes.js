@@ -1,9 +1,5 @@
 import express from "express";
 import {
-  createBooking,
-  getMyBookings,
-  getBookingByIdentifier,
-  updateBookingStatus,
   createStayBooking,
   getBookingByReference
 } from "../controllers/bookingController.js";
@@ -14,10 +10,10 @@ const router = express.Router();
 // Enforce authentication on all booking operations
 router.use(protect);
 
-router.post("/", createBooking);
+/* router.post("/", createBooking);
 router.get("/my-bookings", getMyBookings);
 router.get("/:identifier", getBookingByIdentifier);
-router.put("/:id", updateBookingStatus);
+router.put("/:id", updateBookingStatus); */
 
 router.post('/', createStayBooking);
 router.get('/:reference', getBookingByReference);

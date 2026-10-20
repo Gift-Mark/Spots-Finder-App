@@ -1,92 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from './Components/headerNav';
 
-// Real-world Plateau State Events & Landmarks Data
-const FEATURED_EVENT = {
-  id: "evt-hero-plateau-carnival",
-  title: "Plateau Cultural & Christmas Carnival 2026",
-  category: "MUSIC & ARTS",
-  dateRange: "DEC 20 - 26",
-  description: "Experience Plateau State's premier annual cultural extravaganza featuring over 50 ethnic troupe performances, live music concerts, artisanal street markets, and culinary showcases at the Jos Peace Haven.",
-  location: "Jos Township Stadium & Crest Hotel Grounds, Jos",
-  ticketPrice: "₦2,000",
-  rawPrice: 2000,
-  vipPrice: 15000,
-  image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
-  promoted: true
-};
-
-const INITIAL_EVENTS = [
+// Fallback Plateau State Events (used if database is empty)
+const REAL_WORLD_FALLBACKS = [
   {
-    id: "evt-rayfield-golf",
-    title: "Rayfield Open Amateur Golf Championship",
+    _id: "evt-rayfield-golf",
+    title: "Rayfield Annual Classic Tournament",
     category: "Golf & Sports",
     tagColor: "#0284C7",
-    dateText: "Sat, Nov 14 • 7:00 AM",
-    location: "Rayfield Golf Club (1892), Jos",
-    price: "₦10,000",
-    rawPrice: 10000,
+    dateText: "This Saturday, 7:00 AM",
+    location: "Rayfield Golf Club",
+    ticketPrice: 10000,
     vipPrice: 35000,
-    image: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1535131749006-b7f58c99034b?auto=format&fit=crop&w=800&q=80",
+    description: "Annual regional amateur golf championship hosted at Africa's oldest golf club in Rayfield.",
+    scoutCityUrl: "https://chat.whatsapp.com/scoutcity-rayfield-golf"
   },
   {
-    id: "evt-heritage-dinner",
-    title: "Grand Plateau Heritage & Culinary Festival",
+    _id: "evt-heritage-dinner",
+    title: "Plateau Culinary Heritage Dinner",
     category: "Dining",
     tagColor: "#D97706",
-    dateText: "Fri, Nov 27 • 6:30 PM",
-    location: "Crispan Hotel & Event Center, Rayfield",
-    price: "₦15,000",
-    rawPrice: 15000,
+    dateText: "Next Friday, 6:30 PM",
+    location: "The View Restaurant",
+    ticketPrice: 15000,
     vipPrice: 40000,
-    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+    description: "An extraordinary multi-course culinary showcase celebrating authentic Plateau food traditions.",
+    scoutCityUrl: ""
   },
   {
-    id: "evt-shere-hills-trek",
-    title: "Shere Hills Annual Peak Expedition & Campfire",
-    category: "Outdoor & Adventure",
+    _id: "evt-wase-rock-trek",
+    title: "Wase Rock Expedition Challenge",
+    category: "Adventure",
     tagColor: "#2563EB",
-    dateText: "Sat, Dec 05 • 6:00 AM",
-    location: "Shere Hills Basecamp, Liberty Dam Road",
-    price: "₦5,000",
-    rawPrice: 5000,
+    dateText: "Dec 5, 8:00 AM",
+    location: "Wase Town Basecamp",
+    ticketPrice: 5000,
     vipPrice: 15000,
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80",
+    description: "Guided eco-adventure mountain hike to the famous volcanic dome monolith in Wase.",
+    scoutCityUrl: "https://chat.whatsapp.com/scoutcity-wase-trek"
   }
 ];
 
-const MORE_EVENTS = [
-  {
-    id: "evt-jos-trade-fair",
-    title: "Jos International Trade & Food Expo 2026",
-    category: "Traditional",
-    tagColor: "#059669",
-    dateText: "Dec 10 - 18 • 9:00 AM",
-    location: "Jos Polo Ground, Park Avenue",
-    price: "Free Entry",
-    rawPrice: 0,
-    vipPrice: 5000,
-    image: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80"
-  },
-  {
-    id: "evt-kruiseyard-jazz",
-    title: "Kruiseyard VIP Acoustic & Jazz Night",
-    category: "Music & Festivals",
-    tagColor: "#7C3AED",
-    dateText: "Fri, Dec 18 • 8:00 PM",
-    location: "Kruiseyard Lounge, Rayfield, Jos",
-    price: "₦5,000",
-    rawPrice: 5000,
-    vipPrice: 20000,
-    image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=80"
-  }
-];
+const PROMOTED_FALLBACK = {
+  _id: "evt-hero-plateau-rhythm",
+  title: "Plateau Rhythm & Roots Festival 2026",
+  category: "MUSIC & ARTS",
+  dateRange: "NOV 12 - 14",
+  description: "Experience three days of electrifying performances, local artisanal markets, and traditional culinary showcases set against the breathtaking backdrop of Plateau State.",
+  location: "Shere Hills Arena, Jos",
+  ticketPrice: 5000,
+  vipPrice: 25000,
+  image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80",
+  scoutCityUrl: "https://chat.whatsapp.com/scoutcity-plateau-rhythm-2026"
+};
 
 export default function RealWorldEventsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Events");
-  const [timeFilter, setTimeFilter] = useState("Upcoming Month");
-  const [eventsList, setEventsList] = useState(INITIAL_EVENTS);
-  const [hasLoadedMore, setHasLoadedMore] = useState(false);
+  const [timeFilter, setTimeFilter] = useState("Upcoming Week");
+  
+  const [promotedEvent, setPromotedEvent] = useState(PROMOTED_FALLBACK);
+  const [eventsList, setEventsList] = useState(REAL_WORLD_FALLBACKS);
+  const [loading, setLoading] = useState(true);
   
   // Modal State
   const [activeModalEvent, setActiveModalEvent] = useState(null);
@@ -96,17 +73,81 @@ export default function RealWorldEventsPage() {
   const [userData, setUserData] = useState({ name: '', email: '', phone: '' });
 
   const categories = [
-    "All Events",
-    "🎵 Music & Festivals",
-    "⛳ Golf & Sports",
-    "🏛️ Traditional",
-    "🍽️ Dining"
+    { name: "All Events", icon: "" },
+    { name: "Music & Festivals", icon: "🎵" },
+    { name: "Golf & Sports", icon: "⛳" },
+    { name: "Traditional", icon: "🏛️" },
+    { name: "Dining", icon: "🍽️" }
   ];
 
-  const handleLoadMore = () => {
-    setEventsList([...eventsList, ...MORE_EVENTS]);
-    setHasLoadedMore(true);
+  // Helper to format DB dates to UI strings
+  const formatEventDate = (dateStr) => {
+    if (!dateStr) return "Upcoming";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   };
+
+  // --- FETCH REAL EVENTS FROM BACKEND ---
+  const loadEventsFromAPI = useCallback(async () => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (selectedCategory !== "All Events") {
+        queryParams.append("category", selectedCategory);
+      }
+      
+      const res = await fetch(`http://localhost:5000/api/v1/events?${queryParams.toString()}`);
+      const result = await res.json();
+
+      if (result?.success && Array.isArray(result.data) && result.data.length > 0) {
+        const mapped = result.data.map(item => ({
+          _id: item._id,
+          title: item.title,
+          category: item.category || "General",
+          dateText: `${formatEventDate(item.eventDate)} • ${item.startTime || ''}`,
+          location: item.placeId?.name || item.organizer || "Jos, Plateau",
+          ticketPrice: item.ticketPrice || 0,
+          vipPrice: (item.ticketPrice || 0) * 2.5 || 15000,
+          image: item.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+          description: item.description,
+          scoutCityUrl: item.scoutCityUrl || "",
+          isPromoted: item.status === 'upcoming'
+        }));
+
+        const hero = mapped.find(e => e.isPromoted) || mapped[0];
+        const gridItems = mapped.filter(e => e._id !== hero._id);
+
+        setPromotedEvent({
+          ...hero,
+          dateRange: "UPCOMING SEASON",
+          location: hero.location
+        });
+
+        if (gridItems.length > 0) {
+          setEventsList(gridItems);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load live events, displaying Plateau fallbacks:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const initFetch = async () => {
+      setLoading(true);
+      await loadEventsFromAPI();
+      if (!isMounted) return;
+    };
+
+    initFetch();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCategory, loadEventsFromAPI]);
 
   const handleOpenTicketModal = (evt) => {
     setActiveModalEvent(evt);
@@ -122,12 +163,12 @@ export default function RealWorldEventsPage() {
   };
 
   const currentUnitPrice = activeModalEvent 
-    ? (ticketTier === 'vip' ? activeModalEvent.vipPrice : activeModalEvent.rawPrice) 
+    ? (ticketTier === 'vip' ? activeModalEvent.vipPrice : activeModalEvent.ticketPrice) 
     : 0;
 
   return (
     <div style={styles.pageWrapper}>
-      {/* NAVIGATION HEADER */}
+      {/* HEADER NAV */}
       <Header />
 
       {/* HERO SECTION */}
@@ -136,7 +177,7 @@ export default function RealWorldEventsPage() {
           <div>
             <h1 style={styles.heroTitle}>Discover the Pulse</h1>
             <p style={styles.heroSubtitle}>
-              Explore upcoming festivals, premier golf tournaments at Rayfield, hiking challenges at Shere Hills, and vibrant dining events across Plateau State.
+              Explore upcoming festivals, premier golf tournaments, and vibrant dining events across the rugged beauty of Plateau State.
             </p>
           </div>
 
@@ -146,103 +187,126 @@ export default function RealWorldEventsPage() {
               onChange={(e) => setTimeFilter(e.target.value)} 
               style={styles.timeDropdown}
             >
-              <option>Upcoming Month</option>
+              <option>Upcoming Week</option>
               <option>This Weekend</option>
-              <option>Q4 2026 Festival Season</option>
+              <option>This Month</option>
             </select>
           </div>
         </div>
 
-        {/* PILLS FILTER */}
+        {/* CATEGORY PILLS */}
         <div style={styles.filterPillsRow}>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              style={{
-                ...styles.pillBtn,
-                ...(selectedCategory === cat ? styles.activePillBtn : {})
-              }}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+          {categories.map((cat) => {
+            const isSelected = selectedCategory === cat.name;
+            return (
+              <button
+                key={cat.name}
+                style={{
+                  ...styles.pillBtn,
+                  ...(isSelected ? styles.activePillBtn : styles.inactivePillBtn)
+                }}
+                onClick={() => setSelectedCategory(cat.name)}
+              >
+                {cat.icon && <span style={{ marginRight: '6px' }}>{cat.icon}</span>}
+                {cat.name}
+              </button>
+            );
+          })}
         </div>
       </header>
 
       <main style={styles.mainContent}>
         {/* PROMOTED HERO CARD */}
-        <section style={styles.promotedCard}>
-          <div style={styles.promotedImageCol}>
-            <img 
-              src={FEATURED_EVENT.image} 
-              alt={FEATURED_EVENT.title} 
-              style={styles.promotedImg} 
-            />
-          </div>
-
-          <div style={styles.promotedDetailsCol}>
-            <span style={styles.promotedBadge}>⭐ Featured Festival</span>
-            <div style={styles.promotedMetaHeader}>
-              {FEATURED_EVENT.dateRange} • {FEATURED_EVENT.category}
+        {promotedEvent && (
+          <section style={styles.promotedCard}>
+            <div style={styles.promotedImageCol}>
+              <img 
+                src={promotedEvent.image} 
+                alt={promotedEvent.title} 
+                style={styles.promotedImg} 
+              />
             </div>
 
-            <h2 style={styles.promotedTitle}>{FEATURED_EVENT.title}</h2>
-            <p style={styles.promotedDescription}>{FEATURED_EVENT.description}</p>
+            <div style={styles.promotedDetailsCol}>
+              <span style={styles.promotedBadge}>☆ Promoted</span>
+              <div style={styles.promotedMetaHeader}>
+                {promotedEvent.dateRange || "NOV 12 - 14"} • {promotedEvent.category?.toUpperCase()}
+              </div>
 
-            <div style={styles.promotedLocationRow}>
-              <span>📍 {FEATURED_EVENT.location}</span>
-              <span style={{ margin: '0 8px' }}>•</span>
-              <span>🎫 Passes from {FEATURED_EVENT.ticketPrice}</span>
+              <h2 style={styles.promotedTitle}>{promotedEvent.title}</h2>
+              <p style={styles.promotedDescription}>{promotedEvent.description}</p>
+
+              <div style={styles.promotedLocationRow}>
+                <span>📍 {promotedEvent.location}</span>
+                <span style={{ margin: '0 8px' }}>•</span>
+                <span>🎫 Tickets from {promotedEvent.ticketPrice === 0 ? "Free" : `₦${promotedEvent.ticketPrice?.toLocaleString()}`}</span>
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <button 
+                  style={styles.btnGetTickets} 
+                  onClick={() => handleOpenTicketModal(promotedEvent)}
+                >
+                  Get Tickets →
+                </button>
+
+                {promotedEvent.scoutCityUrl && (
+                  <a 
+                    href={promotedEvent.scoutCityUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={styles.scoutCityBadge}
+                  >
+                    💬 View on ScoutCity (WhatsApp)
+                  </a>
+                )}
+              </div>
             </div>
-
-            <button 
-              style={styles.btnGetTickets} 
-              onClick={() => handleOpenTicketModal(FEATURED_EVENT)}
-            >
-              Get Tickets →
-            </button>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* EVENTS GRID */}
-        <section style={styles.eventsGrid}>
-          {eventsList.map((evt) => (
-            <div key={evt.id} style={styles.eventCard}>
-              <div style={styles.cardImageContainer}>
-                <img src={evt.image} alt={evt.title} style={styles.cardImg} />
-                <span style={{ ...styles.cardCategoryTag, backgroundColor: evt.tagColor }}>
-                  {evt.category}
-                </span>
-              </div>
+        {loading ? (
+          <p style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>Loading upcoming Plateau events...</p>
+        ) : (
+          <section style={styles.eventsGrid}>
+            {eventsList.map((evt) => (
+              <div key={evt._id} style={styles.eventCard}>
+                <div style={styles.cardImageContainer}>
+                  <img src={evt.image} alt={evt.title} style={styles.cardImg} />
+                  <span style={styles.cardCategoryTag}>
+                    {evt.category}
+                  </span>
+                </div>
 
-              <div style={styles.cardContent}>
-                <span style={styles.cardDate}>{evt.dateText}</span>
-                <h3 style={styles.cardTitle}>{evt.title}</h3>
-                <p style={styles.cardLocation}>📍 {evt.location}</p>
+                <div style={styles.cardContent}>
+                  <span style={styles.cardDate}>{evt.dateText}</span>
+                  <h3 style={styles.cardTitle}>{evt.title}</h3>
+                  <p style={styles.cardLocation}>📍 {evt.location}</p>
 
-                <div style={styles.cardFooter}>
-                  <span style={styles.cardPrice}>{evt.price}</span>
-                  <button 
-                    style={styles.cardBtn} 
-                    onClick={() => handleOpenTicketModal(evt)}
-                  >
-                    Get Pass ↗
-                  </button>
+                  {/* ScoutCity WhatsApp Community Button for Grid Cards */}
+                  {evt.scoutCityUrl && (
+                    <a 
+                      href={evt.scoutCityUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{ ...styles.scoutCityBadge, marginTop: '12px', width: 'fit-content' }}
+                    >
+                      💬 ScoutCity WhatsApp
+                    </a>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
-        </section>
+            ))}
+          </section>
+        )}
 
         {/* LOAD MORE BUTTON */}
-        {!hasLoadedMore && (
-          <div style={{ textAlign: 'center', margin: '40px 0 60px' }}>
-            <button style={styles.btnLoadMore} onClick={handleLoadMore}>
-              Load More Real Events ∨
-            </button>
-          </div>
-        )}
+        <div style={{ textAlign: 'center', margin: '40px 0 60px' }}>
+          <button style={styles.btnLoadMore} onClick={loadEventsFromAPI}>
+            Load More Events ∨
+          </button>
+        </div>
       </main>
 
       {/* FOOTER */}
@@ -251,7 +315,7 @@ export default function RealWorldEventsPage() {
           <div style={styles.footerBrandCol}>
             <h3 style={styles.footerBrand}>Jos Pulse</h3>
             <p style={styles.footerCopy}>
-              © 2026 Jos Pulse. The Official Culture & Tourism Hub of Plateau State, Nigeria.
+              © 2026 Jos Pulse. Celebrating the spirit of the Plateau.
             </p>
           </div>
 
@@ -275,7 +339,7 @@ export default function RealWorldEventsPage() {
         </div>
       </footer>
 
-      {/* CHECKOUT MODAL */}
+      {/* TICKETING / CHECKOUT MODAL */}
       {activeModalEvent && (
         <div style={styles.modalOverlay}>
           <div style={styles.modalCard}>
@@ -289,7 +353,7 @@ export default function RealWorldEventsPage() {
 
                 {checkoutStep === 1 && (
                   <div>
-                    <label style={styles.modalLabel}>Select Ticket Category</label>
+                    <label style={styles.modalLabel}>Select Ticket Tier</label>
                     <div style={styles.tierGrid}>
                       <div 
                         style={{ ...styles.tierBox, ...(ticketTier === 'regular' ? styles.tierBoxActive : {}) }}
@@ -297,7 +361,7 @@ export default function RealWorldEventsPage() {
                       >
                         <strong>Standard Access</strong>
                         <span style={{ color: '#F97316', fontWeight: 'bold' }}>
-                          {activeModalEvent.rawPrice === 0 ? 'Free Entry' : `₦${activeModalEvent.rawPrice.toLocaleString()}`}
+                          {activeModalEvent.ticketPrice === 0 ? 'Free Entry' : `₦${activeModalEvent.ticketPrice?.toLocaleString()}`}
                         </span>
                       </div>
 
@@ -307,13 +371,13 @@ export default function RealWorldEventsPage() {
                       >
                         <strong>VIP / Table Service</strong>
                         <span style={{ color: '#F97316', fontWeight: 'bold' }}>
-                          ₦{activeModalEvent.vipPrice.toLocaleString()}
+                          ₦{activeModalEvent.vipPrice?.toLocaleString()}
                         </span>
                       </div>
                     </div>
 
                     <div style={{ margin: '16px 0' }}>
-                      <label style={styles.modalLabel}>Number of Tickets</label>
+                      <label style={styles.modalLabel}>Quantity</label>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <button style={styles.qtyBtn} onClick={() => setTicketQty(Math.max(1, ticketQty - 1))}>-</button>
                         <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{ticketQty}</span>
@@ -349,7 +413,7 @@ export default function RealWorldEventsPage() {
                     </div>
 
                     <div style={{ marginBottom: '12px' }}>
-                      <label style={styles.modalLabel}>Email Address (For Electronic Pass)</label>
+                      <label style={styles.modalLabel}>Email Address</label>
                       <input 
                         type="email" 
                         required 
@@ -361,7 +425,7 @@ export default function RealWorldEventsPage() {
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
-                      <label style={styles.modalLabel}>Phone Number (WhatsApp Voucher Backup)</label>
+                      <label style={styles.modalLabel}>Phone Number</label>
                       <input 
                         type="tel" 
                         required 
@@ -373,23 +437,22 @@ export default function RealWorldEventsPage() {
                     </div>
 
                     <button type="submit" style={{ ...styles.btnGetTickets, width: '100%' }}>
-                      Pay & Get QR Voucher 🔒
+                      Generate QR Voucher 🔒
                     </button>
                   </form>
                 )}
               </div>
             ) : (
-              /* REAL-WORLD QR VOUCHER GENERATION */
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '36px' }}>🎟️</div>
                 <h3 style={{ color: '#16A34A', margin: '4px 0 8px' }}>E-Ticket Generated!</h3>
                 <p style={{ fontSize: '12px', color: '#64748B' }}>
-                  Confirmation sent to <strong>{userData.email}</strong>. Present this code at the gate.
+                  Confirmation sent to <strong>{userData.email}</strong>. Present this code at entry.
                 </p>
 
                 <div style={{ padding: '16px', background: '#F8FAFC', borderRadius: '8px', border: '1px solid #E2E8F0', margin: '16px 0' }}>
                   <img 
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=JOS-PULSE-${activeModalEvent.id}-${userData.email}`} 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=JOS-PULSE-${activeModalEvent._id}-${userData.email}`} 
                     alt="Official Event Pass QR Code" 
                     style={{ width: '140px', height: '140px' }}
                   />
@@ -411,77 +474,63 @@ export default function RealWorldEventsPage() {
   );
 }
 
-// INLINE STYLES MATCHING THE JOS PULSE DESIGN SYSTEM
+// INLINE STYLES MATCHING THE EXACT MOCKUP
 const styles = {
   pageWrapper: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: '#F9FAFB',
     minHeight: '100vh',
     fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
     color: '#0F172A'
   },
-  navbar: {
-    backgroundColor: '#FFFFFF',
-    borderBottom: '1px solid #E2E8F0',
-    padding: '16px 24px',
-    position: 'sticky',
-    top: 0,
-    zIndex: 100
-  },
-  navContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  logo: { fontSize: '22px', fontWeight: 'bold', color: '#0F172A' },
-  navLinks: { display: 'flex', gap: '24px' },
-  navLink: { textDecoration: 'none', color: '#64748B', fontSize: '14px', fontWeight: '500' },
-  activeNavLink: { color: '#0F172A', fontWeight: 'bold', borderBottom: '2px solid #F97316', paddingBottom: '4px' },
-  authButtons: { display: 'flex', gap: '12px' },
-  btnSignIn: { background: 'none', border: '1px solid #CBD5E1', padding: '8px 16px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px' },
-  btnJoin: { backgroundColor: '#F97316', color: '#FFFFFF', border: 'none', padding: '8px 18px', borderRadius: '6px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold' },
   heroSection: { maxWidth: '1200px', margin: '40px auto 20px', padding: '0 24px' },
   heroContent: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px', marginBottom: '28px' },
-  heroTitle: { fontSize: '36px', fontWeight: '800', margin: '0 0 10px', color: '#0F172A' },
-  heroSubtitle: { color: '#64748B', maxWidth: '600px', margin: 0, lineHeight: '1.5', fontSize: '15px' },
+  heroTitle: { fontSize: '42px', fontWeight: '800', margin: '0 0 10px', color: '#0F172A', letterSpacing: '-0.5px' },
+  heroSubtitle: { color: '#64748B', maxWidth: '580px', margin: 0, lineHeight: '1.5', fontSize: '15px' },
   timeDropdownWrapper: { minWidth: '160px' },
-  timeDropdown: { width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #CBD5E1', backgroundColor: '#FFFFFF', fontSize: '14px' },
-  filterPillsRow: { display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '10px' },
-  pillBtn: { padding: '8px 18px', borderRadius: '20px', border: 'none', backgroundColor: '#E2E8F0', color: '#475569', cursor: 'pointer', fontSize: '13px', fontWeight: '500', whiteSpace: 'nowrap' },
-  activePillBtn: { backgroundColor: '#0F172A', color: '#FFFFFF', fontWeight: 'bold' },
+  timeDropdown: { width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #E5E7EB', backgroundColor: '#FFFFFF', fontSize: '14px', color: '#374151', cursor: 'pointer' },
+  
+  filterPillsRow: { display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px' },
+  pillBtn: { padding: '8px 18px', borderRadius: '20px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', whiteSpace: 'nowrap', transition: 'all 0.2s ease' },
+  activePillBtn: { backgroundColor: '#111827', color: '#FFFFFF' },
+  inactivePillBtn: { backgroundColor: '#F3F4F6', color: '#4B5563' },
+  
   mainContent: { maxWidth: '1200px', margin: '0 auto', padding: '0 24px' },
-  promotedCard: { display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '32px', backgroundColor: '#FFFFFF', border: '2px solid #F97316', borderRadius: '16px', overflow: 'hidden', margin: '32px 0 48px', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.1)' },
-  promotedImageCol: { minHeight: '320px' },
+  
+  // HERO PROMOTED CARD
+  promotedCard: { display: 'grid', gridTemplateColumns: '1.3fr 1fr', gap: '32px', backgroundColor: '#FFFFFF', border: '1.5px solid #F97316', borderRadius: '16px', overflow: 'hidden', margin: '24px 0 40px', boxShadow: '0 4px 12px rgba(249, 115, 22, 0.08)' },
+  promotedImageCol: { minHeight: '340px' },
   promotedImg: { width: '100%', height: '100%', objectFit: 'cover' },
-  promotedDetailsCol: { padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' },
-  promotedBadge: { display: 'inline-block', backgroundColor: '#FFF7ED', color: '#C2410C', padding: '4px 10px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', width: 'fit-content', marginBottom: '12px' },
-  promotedMetaHeader: { fontSize: '12px', fontWeight: 'bold', color: '#F97316', letterSpacing: '0.5px', marginBottom: '8px' },
-  promotedTitle: { fontSize: '24px', fontWeight: 'bold', margin: '0 0 12px', color: '#0F172A' },
+  promotedDetailsCol: { padding: '32px 32px 32px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center' },
+  promotedBadge: { display: 'inline-block', backgroundColor: '#F97316', color: '#FFFFFF', padding: '4px 12px', borderRadius: '12px', fontSize: '11px', fontWeight: 'bold', width: 'fit-content', marginBottom: '16px' },
+  promotedMetaHeader: { fontSize: '12px', fontWeight: 'bold', color: '#C2410C', letterSpacing: '0.5px', marginBottom: '8px', textTransform: 'uppercase' },
+  promotedTitle: { fontSize: '26px', fontWeight: '800', margin: '0 0 12px', color: '#0F172A', lineHeight: '1.2' },
   promotedDescription: { color: '#64748B', fontSize: '14px', lineHeight: '1.6', margin: '0 0 20px' },
   promotedLocationRow: { fontSize: '13px', color: '#475569', marginBottom: '24px', display: 'flex', alignItems: 'center', flexWrap: 'wrap' },
   btnGetTickets: { backgroundColor: '#F97316', color: '#FFFFFF', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px', width: 'fit-content' },
-  eventsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' },
-  eventCard: { backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', overflow: 'hidden', display: 'flex', flexDirection: 'column' },
-  cardImageContainer: { position: 'relative', height: '200px' },
+  scoutCityBadge: { display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#25D366', color: '#FFFFFF', padding: '11px 18px', borderRadius: '8px', fontSize: '13px', fontWeight: 'bold', textDecoration: 'none' },
+  
+  // GRID CARDS
+  eventsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '24px' },
+  eventCard: { backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E5E7EB', overflow: 'hidden', display: 'flex', flexDirection: 'column' },
+  cardImageContainer: { position: 'relative', height: '210px' },
   cardImg: { width: '100%', height: '100%', objectFit: 'cover' },
-  cardCategoryTag: { position: 'absolute', top: '12px', left: '12px', color: '#FFFFFF', padding: '4px 10px', borderRadius: '4px', fontSize: '11px', fontWeight: 'bold' },
+  cardCategoryTag: { position: 'absolute', top: '12px', left: '12px', backgroundColor: '#1D4ED8', color: '#FFFFFF', padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 'bold' },
   cardContent: { padding: '20px', display: 'flex', flexDirection: 'column', flex: 1 },
-  cardDate: { fontSize: '12px', color: '#F97316', fontWeight: 'bold', marginBottom: '6px' },
-  cardTitle: { fontSize: '17px', fontWeight: 'bold', margin: '0 0 6px', color: '#0F172A' },
-  cardLocation: { fontSize: '13px', color: '#64748B', margin: '0 0 20px' },
-  cardFooter: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto', paddingTop: '12px', borderTop: '1px solid #F1F5F9' },
-  cardPrice: { fontSize: '16px', fontWeight: 'bold', color: '#0F172A' },
-  cardBtn: { backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', padding: '8px 14px', borderRadius: '6px', fontWeight: 'bold', cursor: 'pointer', fontSize: '12px', color: '#0F172A' },
-  btnLoadMore: { backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', padding: '12px 28px', borderRadius: '8px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', color: '#0F172A' },
-  footer: { backgroundColor: '#0F172A', color: '#FFFFFF', padding: '60px 24px 40px', marginTop: '60px' },
+  cardDate: { fontSize: '12px', color: '#DC2626', fontWeight: 'bold', marginBottom: '6px' },
+  cardTitle: { fontSize: '18px', fontWeight: '700', margin: '0 0 8px', color: '#0F172A', lineHeight: '1.3' },
+  cardLocation: { fontSize: '13px', color: '#64748B', margin: 0 },
+  
+  btnLoadMore: { backgroundColor: '#FFFFFF', border: '1px solid #111827', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', color: '#111827' },
+  
+  footer: { backgroundColor: '#0B132B', color: '#FFFFFF', padding: '60px 24px 40px', marginTop: '60px' },
   footerContainer: { maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '40px' },
   footerBrandCol: { paddingRight: '20px' },
-  footerBrand: { fontSize: '22px', fontWeight: 'bold', color: '#F97316', margin: '0 0 12px' },
+  footerBrand: { fontSize: '22px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 12px' },
   footerCopy: { color: '#94A3B8', fontSize: '13px', lineHeight: '1.5' },
   footerLinkCol: { display: 'flex', flexDirection: 'column', gap: '10px' },
   footerHeading: { fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 6px' },
   footerLink: { color: '#94A3B8', textDecoration: 'none', fontSize: '13px' },
+  
   modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.75)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' },
   modalCard: { backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '28px', width: '100%', maxWidth: '420px', position: 'relative' },
   btnClose: { position: 'absolute', top: '16px', right: '16px', background: 'none', border: 'none', fontSize: '18px', cursor: 'pointer' },

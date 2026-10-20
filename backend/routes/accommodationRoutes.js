@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { 
+import { 
   getAccommodations, 
   getFeaturedAccommodations, 
   getAccommodationZones 
-} = require('../controllers/accommodationController');
+} from '../controllers/accommodationController.js';
 
 router.get('/', getAccommodations);
 router.get('/featured', getFeaturedAccommodations);
 router.get('/zones', getAccommodationZones);
 
-module.exports = router;
+export default router;

@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faTableCellsLarge, 
   faBuilding, 
+  faHeadset,
   faCalendarCheck, 
   faUsers, 
   faBullhorn, 
@@ -14,6 +15,7 @@ export const AdminSidebar = ({ activeTab = 'Overview', onTabChange, onSignOut })
   const menuItems = [
     { name: 'Overview', icon: faTableCellsLarge },
     { name: 'Venue Management', icon: faBuilding },
+    { name: 'Concierge Support', icon: faHeadset }, // 👈 Added cleanly to the navigation array
     { name: 'Event Moderation', icon: faCalendarCheck },
     { name: 'Users', icon: faUsers },
     { name: 'Ads', icon: faBullhorn },

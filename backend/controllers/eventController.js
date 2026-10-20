@@ -95,6 +95,7 @@ export const createEvent = async (req, res) => {
       organizer,
       ticketUrl,
       sourceUrl,
+      scoutCityUrl,
       currency,
       recurrenceMonth,
       recurrenceDay,
@@ -123,6 +124,7 @@ export const createEvent = async (req, res) => {
       currency: currency || "NGN",
       recurrenceMonth: recurrenceMonth || null,
       recurrenceDay: recurrenceDay || null,
+      scoutCityUrl: scoutCityUrl || "",
       status: "upcoming",
     });
 

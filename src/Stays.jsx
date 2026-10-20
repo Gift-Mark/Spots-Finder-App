@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../src/Components/headerNav.jsx";
 import HeroSection from "../src/Components/HeroSection.jsx";
 import Footer from "../src/Components/Footer.jsx";
+import AccommodationMap from "../src/Components/AccomodationMap.jsx";
 import styles from "../src/CSS/StaysPage.module.css";
 import { 
   fetchAccommodations, 
@@ -22,10 +23,10 @@ export default function StaysPage() {
   
   const [activeCategory, setActiveCategory] = useState("all");
   
-  // All state variables now actively read and rendered below
+  // All state variables actively read and rendered
   const [accommodations, setAccommodations] = useState([]);
   const [featuredListings, setFeaturedListings] = useState([]);
-  const [zones, setZones] = useState([]);
+  const [zones, setZones] = useState([]); // Now mapped dynamically in Section 5
   const [faqs, setFaqs] = useState([]);
   const [travelContent, setTravelContent] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export default function StaysPage() {
         ]}
       />
 
-      {/* LOADING STATE (Reads `loading`) */}
+      {/* LOADING STATE */}
       {loading && (
         <div style={{ textAlign: "center", padding: "1rem", color: "#f97316", fontWeight: "bold" }}>
           Loading live Plateau inventory...
@@ -188,7 +189,7 @@ export default function StaysPage() {
         </div>
       </section>
 
-      {/* SECTION 3: CURATED HIGHLAND SANCTUARIES (Reads `featuredListings`) */}
+      {/* SECTION 3: CURATED HIGHLAND SANCTUARIES */}
       <section className={styles.curatedSanctuariesSection}>
         <div className={styles.sectionHeaderRow}>
           <div>
@@ -228,7 +229,6 @@ export default function StaysPage() {
               </div>
             ))
           ) : (
-            // Default static fallback rendering if API returns empty
             <div className={styles.largeSanctuaryCard}>
               <div className={styles.cardImgWrapper}>
                 <span className={styles.badgeFeatured}>FEATURED RESORT</span>
@@ -287,7 +287,7 @@ export default function StaysPage() {
         </div>
       </section>
 
-      {/* SECTION 4: MORE VERIFIED PLATEAU ACCOMMODATIONS (Reads `accommodations`) */}
+      {/* SECTION 4: MORE VERIFIED PLATEAU ACCOMMODATIONS */}
       <section className={styles.verifiedAccommodationsSection}>
         <div className={styles.sectionHeaderRow}>
           <div>
@@ -323,7 +323,6 @@ export default function StaysPage() {
               </div>
             ))
           ) : (
-            // Fallback static items matching screenshot
             [
               { name: "The Tin City Boutique Hotel", area: "Jos City Centre", price: "₦55,000", rating: "4.6", img: "/images/tin-city.jpg" },
               { name: "Plateau Pine Valley Chalets", area: "Lamingo Golf Course", price: "₦72,000", rating: "4.9", img: "/images/pine-valley.jpg" },
@@ -352,7 +351,7 @@ export default function StaysPage() {
         </div>
       </section>
 
-      {/* SECTION 5: PLATEAU ACCOMMODATION ZONES AND MAP (Reads `zones`) */}
+      {/* SECTION 5: PLATEAU ACCOMMODATION ZONES AND MAP (Now actively mapping `zones`) */}
       <section className={styles.zonesAndMapSection}>
         <div className={styles.sectionHeaderRow}>
           <div>
@@ -363,6 +362,7 @@ export default function StaysPage() {
         </div>
 
         <div className={styles.zonesMapGrid}>
+          {/* Left Column: Dynamic Zone List Mapping `zones` state */}
           <div className={styles.zonesListCol}>
             {zones.length > 0 ? (
               zones.map((zone, i) => (
@@ -377,10 +377,9 @@ export default function StaysPage() {
               ))
             ) : (
               [
-                { rank: "01", name: "Rayfield & GRA", desc: "Historic resort villas, golf courses, serene lake nightlife.", count: "14 Properties" },
-                { rank: "02", name: "Lamingo & Lamingo Dam", desc: "Highland lakeside views, modern chalets, and cool evening breeze.", count: "9 Properties" },
-                { rank: "03", name: "Jos City Centre & Tudun Wada", desc: "Bustling commerce, modern apartments, and easy transport hubs.", count: "18 Properties" },
-                { rank: "04", name: "Bukuru & Vom Escarpment", desc: "Scenic rocky highlands, alpine chalets, and quiet nature retreats.", count: "7 Properties" },
+                { rank: "01", name: "Rayfield & GRA", desc: "Historic resort villas, golf courses, serene lake nightlife.", count: "Crispan Suites & Rayfield Holiday Resort" },
+                { rank: "02", name: "Tudun Wada & City Centre", desc: "Central commercial district close to historic landmarks.", count: "Hill Station Hotel" },
+                { rank: "03", name: "Lamingo Dam Corridor", desc: "Highland lakeside views and cool evening mountain breezes.", count: "Lamingo Lodges" },
               ].map((zone, i) => (
                 <div key={i} className={styles.zoneListItem}>
                   <span className={styles.zoneRank}>{zone.rank}</span>
@@ -394,23 +393,14 @@ export default function StaysPage() {
             )}
           </div>
 
+          {/* Right Column: Live OpenStreetMap */}
           <div className={styles.mapContainerCol}>
-            <div className={styles.interactiveMapMock}>
-              <div className={styles.mapPinPulse} style={{ top: '40%', left: '50%' }}>
-                <span>Rayfield Grand Waterside (₦145,000)</span>
-              </div>
-              <div className={styles.mapPinPulse} style={{ top: '65%', left: '30%' }}>
-                <span>Hill Station Hotel (₦65,000)</span>
-              </div>
-              <div className={styles.mapWatermark}>
-                📍 Jos Plateau Interactive GIS Map • WGS84 Verified Coordinates
-              </div>
-            </div>
+            <AccommodationMap properties={accommodations} height="100%" />
           </div>
         </div>
       </section>
 
-      {/* SECTION 6: HIGHLAND CLIMATE & TRAVEL INFORMATION BANNER (Reads `travelContent`) */}
+      {/* SECTION 6: HIGHLAND CLIMATE & TRAVEL INFORMATION BANNER */}
       <section className={styles.climatePromoBanner}>
         <div className={styles.promoContentLeft}>
           <span className={styles.promoBadge}>❄️ HIGHLAND ELEVATION 1,280 METERS</span>
@@ -450,7 +440,7 @@ export default function StaysPage() {
         </div>
       </section>
 
-      {/* SECTION 7: FREQUENTLY ASKED STAYS QUESTIONS (Reads `faqs`) */}
+      {/* SECTION 7: FREQUENTLY ASKED STAYS QUESTIONS */}
       <section className={styles.faqSection}>
         <div className={styles.faqHeader}>
           <span className={styles.sectionEyebrow}>KNOWLEDGE BASE</span>

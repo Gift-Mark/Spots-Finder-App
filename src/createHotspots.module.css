@@ -4,7 +4,7 @@
   min-height: 100vh;
   background-color: #0b0e17;
   color: #f1f5f9;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
 }
 
 /* Sidebar */
@@ -25,7 +25,7 @@
 .logoTitle {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #a78bfa;
+  color: #f97316;
   margin: 0;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .navMenu li.activeNav {
-  background-color: #9333ea;
+  background-color: #f97316;
   color: #ffffff;
 }
 
@@ -76,8 +76,8 @@
   width: 100%;
   padding: 12px;
   background: transparent;
-  border: 1px solid #06b6d4;
-  color: #38bdf8;
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  color: #f97316;
   border-radius: 10px;
   font-weight: 600;
   font-size: 0.85rem;
@@ -100,7 +100,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #a78bfa, #38bdf8);
+  background: linear-gradient(135deg, #f97316, #ea580c);
   background: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop') center/cover;
 }
 
@@ -192,7 +192,7 @@
 }
 
 .primaryActionBtn {
-  background: #9333ea;
+  background: #f97316;
   color: #ffffff;
   border: none;
   padding: 10px 20px;
@@ -259,7 +259,7 @@
 }
 
 .purpleAccentCard {
-  border-left-color: #a78bfa;
+  border-left-color: #f97316;
 }
 
 .cyanAccentCard {
@@ -279,7 +279,7 @@
 }
 
 .sectionIcon {
-  color: #a78bfa;
+  color: #f97316;
   font-size: 1.2rem;
 }
 
@@ -484,8 +484,8 @@
 }
 
 .saveBtn {
-  background: #a78bfa;
-  color: #0b0e17;
+  background: #f97316;
+  color: #ffffff;
   border: none;
   padding: 12px 28px;
   border-radius: 10px;
@@ -495,4 +495,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+  background: #ea580c;
 }

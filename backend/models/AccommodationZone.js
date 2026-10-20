@@ -9,4 +9,5 @@ const AccommodationZoneSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const AccommodationZone = mongoose.model('AccommodationZone', AccommodationZoneSchema);
+
 export default AccommodationZone;

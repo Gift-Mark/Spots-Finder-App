@@ -84,4 +84,19 @@ export const createStayBooking = async (bookingData) => {
   return res.data;
 };
 
+// Post flight booking request to MongoDB
+export async function createFlightBooking(bookingData) {
+  try {
+    const response = await fetch("http://localhost:5000/api/v1/flights/book", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(bookingData),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating flight booking:", error);
+    throw error;
+  }
+}
+
 export default api;

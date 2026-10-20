@@ -2,9 +2,9 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: #0c1322;
-  color: #dce2f7;
+  font-family: var(--font-sans);
+  background-color: #0f172a;
+  color: #f1f5f9;
   min-height: 100vh;
   padding-bottom: 100px;
 }
@@ -41,8 +41,8 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #a078ff, #03b5d3);
-  box-shadow: 0 0 10px rgba(3, 181, 211, 0.4);
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.35);
   box-sizing: border-box;
 }
 
@@ -52,22 +52,23 @@
   border-radius: 50%;
   object-fit: cover;
   display: block;
-  background-color: #191f2f;
+  background-color: #1e293b;
 }
 
 .story-name {
   font-size: 11px;
-  color: #cbc3d7;
+  color: #94a3b8;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
+  font-weight: 500;
 }
 
 .story-item-live .story-name {
-  color: #03b5d3;
-  font-weight: bold;
+  color: #f97316;
+  font-weight: 700;
 }
 
 /* Feed social post cards */
@@ -80,11 +81,11 @@
 
 .post-card {
   width: 100%;
-  background-color: #191f2f;
+  background-color: #1e293b;
   border-radius: 16px;
-  border: 1px solid #2e3545;
+  border: 1px solid #334155;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .post-header {
@@ -126,7 +127,7 @@
 .location-tag {
   font-size: 11px;
   font-weight: bold;
-  color: #a078ff;
+  color: #f97316;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -134,7 +135,7 @@
 
 .post-time {
   font-size: 11px;
-  color: #cbc3d7;
+  color: #94a3b8;
   white-space: nowrap;
 }
 
@@ -142,7 +143,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
-  background-color: #0f1424;
+  background-color: #0f172a;
   overflow: hidden;
 }
 
@@ -157,10 +158,10 @@
   position: absolute;
   top: 12px;
   right: 12px;
-  background-color: #03b5d3;
-  color: #070e1d;
+  background-color: #f97316;
+  color: #ffffff;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 800;
   padding: 3px 8px;
   border-radius: 4px;
   letter-spacing: 0.5px;
@@ -170,7 +171,7 @@
   padding: 14px 14px 10px;
   font-size: 13.5px;
   line-height: 1.5;
-  color: #dce2f7;
+  color: #cbd5e1;
 }
 
 .post-actions {
@@ -191,12 +192,19 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #cbc3d7;
+  color: #94a3b8;
   font-size: 13px;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 0;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+
+.action-btn:hover,
+.share-btn:hover {
+  color: #f97316;
 }
 
 .action-btn i,
@@ -206,7 +214,7 @@
 }
 
 .action-btn-liked {
-  color: #ffb95f;
+  color: #f97316;
 }
 
 .fab-add {
@@ -215,16 +223,21 @@
   right: 16px;
   width: 50px;
   height: 50px;
-  background-color: #03b5d3;
+  background-color: #f97316;
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #070e1d;
+  color: #ffffff;
   font-size: 20px;
-  box-shadow: 0 4px 15px rgba(3, 181, 211, 0.4);
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
   z-index: 99;
   border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
 }
 
-
+.fab-add:hover {
+  background-color: #ea580c;
+  transform: scale(1.05);
+}

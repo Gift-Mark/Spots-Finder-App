@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const AccommodationSchema = new mongoose.Schema({
   name: { type: String, required: true, trim: true },
@@ -29,4 +29,4 @@ const AccommodationSchema = new mongoose.Schema({
   isFeatured: { type: Boolean, default: false }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Accommodation', AccommodationSchema);
+export default AccommodationSchema;
