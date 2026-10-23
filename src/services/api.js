@@ -7,6 +7,31 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" }
 });
 
+// --- PLACES & VENUE MANAGEMENT (Admin Dashboard) ---
+export const fetchPlaces = async () => {
+  const res = await api.get("/places");
+  return res.data;
+};
+
+export const createPlace = async (formData) => {
+  const res = await api.post("/places", formData, {
+    headers: { "Content-Type": undefined } // Allows browser to correctly set multipart/form-data boundary
+  });
+  return res.data;
+};
+
+export const updatePlace = async (id, formData) => {
+  const res = await api.put(`/places/${id}`, formData, {
+    headers: { "Content-Type": undefined } // Allows browser to correctly set multipart/form-data boundary
+  });
+  return res.data;
+};
+
+export const deletePlace = async (id) => {
+  const res = await api.delete(`/places/${id}`);
+  return res.data;
+};
+
 // --- FLIGHTS & TRAVEL SERVICES (Existing) ---
 export const fetchAirports = async () => {
   const res = await api.get("/flights/airports");

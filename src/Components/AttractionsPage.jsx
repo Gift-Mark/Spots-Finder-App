@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faMapMarkerAlt, faTicket, faClock, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { TOURIST_SPOTS } from '../../backend/data/attractionsData';
+import Header from './headerNav';
+import Footer from './Footer';
 import styles from '../CSS/AttractionsPage.module.css';
 
 const CATEGORIES = ['All', ...new Set(TOURIST_SPOTS.map((spot) => spot.category))];
@@ -22,6 +24,7 @@ export const AttractionsPage = () => {
 
   return (
     <div className={styles.pageWrapper}>
+      <Header />
       {/* Header Banner */}
       <header className={styles.header}>
         <div className={styles.container}>
@@ -105,6 +108,7 @@ export const AttractionsPage = () => {
           ))}
         </div>
       </main>
+      <Footer />
     </div>
   );
 };

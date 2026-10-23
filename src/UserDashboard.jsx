@@ -218,7 +218,7 @@ export default function Dashboard() {
           <nav className={styles.topNav}>
             <Link className={styles.active} to="/explore">Explore</Link>
             <Link to="/culture">Culture</Link>
-            <Link to="/DiningPage">Restaurants</Link>
+            <Link to="/dining">Restaurants</Link>
             <Link to="/flights">Flights</Link>
             <Link to="/stays">Stays</Link>
             <Link to="/events">Events</Link>

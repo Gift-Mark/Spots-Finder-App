@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Footer from './Components/Footer';
 
 export default function TermsOfServicePage() {
   const [activeSection, setActiveSection] = useState('platform-rules');
@@ -166,31 +167,7 @@ export default function TermsOfServicePage() {
       </div>
 
       {/* 4. FOOTER */}
-      <footer style={styles.footer}>
-        <div style={styles.footerContainer}>
-          <div style={styles.footerBrandCol}>
-            <h3 style={styles.footerBrand}>Jos Pulse</h3>
-            <p style={styles.footerCopy}>
-              © 2026 Jos Pulse. The Official Culture & Tourism Hub of Plateau State, Nigeria.
-            </p>
-          </div>
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Explore</h4>
-            <a href="/guides" style={styles.footerLink}>Local Guides</a>
-            <a href="/events" style={styles.footerLink}>Event Ticketing</a>
-          </div>
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Partners</h4>
-            <a href="/claim-venue" style={styles.footerLink}>Claim Your Venue</a>
-          </div>
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Legal & Support</h4>
-            <a href="/privacy" style={styles.footerLink}>Privacy Policy</a>
-            <a href="/terms" style={styles.footerLinkActiveText}>Terms of Service</a>
-            <a href="/contact" style={styles.footerLink}>Contact Support</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
@@ -246,14 +223,5 @@ const styles = {
   rulesGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '16px' },
   ruleCard: { padding: '16px', border: '1px solid #E2E8F0', borderRadius: '8px', backgroundColor: '#F8FAFC' },
   ruleCardText: { margin: '6px 0 0', fontSize: '12px', color: '#64748B', lineHeight: '1.5' },
-  contactCard: { backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', padding: '20px', borderRadius: '8px', marginTop: '12px' },
-  footer: { backgroundColor: '#0F172A', color: '#FFFFFF', padding: '60px 24px 40px' },
-  footerContainer: { maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '40px' },
-  footerBrandCol: { paddingRight: '20px' },
-  footerBrand: { fontSize: '22px', fontWeight: 'bold', color: '#F97316', margin: '0 0 12px' },
-  footerCopy: { color: '#94A3B8', fontSize: '13px', lineHeight: '1.5' },
-  footerLinkCol: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  footerHeading: { fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 6px' },
-  footerLink: { color: '#94A3B8', textDecoration: 'none', fontSize: '13px' },
-  footerLinkActiveText: { color: '#F97316', textDecoration: 'none', fontSize: '13px', fontWeight: 'bold' }
-};
+  contactCard: { backgroundColor: '#F8FAFC', border: '1px solid #CBD5E1', padding: '20px', borderRadius: '8px', marginTop: '12px' }
+};

@@ -26,6 +26,25 @@ export const fetchPlaceBySlug = async (slug) => {
   return response.data;
 };
 
+// --- PLACES MUTATION API ---
+export const createPlace = async (payload) => {
+  const response = await api.post('/places', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const updatePlace = async (id, payload) => {
+  const response = await api.put(`/places/${id}`, payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 // --- BOOKINGS API ---
 export const createBooking = async (bookingData) => {
   const response = await api.post('/bookings', bookingData);
@@ -92,17 +111,6 @@ export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   } catch (err) {
     console.error('Failed to log behavior:', err);
   }
-};
-
-// --- PLACES MUTATION API ---
-export const createPlace = async (payload) => {
-  const response = await api.post('/places', payload);
-  return response.data;
-};
-
-export const updatePlace = async (id, payload) => {
-  const response = await api.put(`/places/${id}`, payload);
-  return response.data;
 };
 
 // --- REVIEWS API ---

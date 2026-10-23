@@ -99,12 +99,19 @@ export const createPlace = async (req, res) => {
       address,
       latitude,
       longitude,
-      images,
       openingTime,
       closingTime,
       bookingUrl,
       tags,
     } = req.body;
+
+    // Handle uploaded file path if multer processed an image
+    let imageUrls = [];
+    if (req.file) {
+      imageUrls = [`/uploads/${req.file.filename}`];
+    } else if (req.body.images) {
+      imageUrls = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
+    }
 
     // Helper to auto-generate slug if not provided
     const generatedSlug = (slug || name)
@@ -124,11 +131,11 @@ export const createPlace = async (req, res) => {
       address,
       latitude,
       longitude,
-      images: images || [],
+      images: imageUrls,
       openingTime,
       closingTime,
       bookingUrl,
-      tags: tags || [],
+      tags: tags ? (Array.isArray(tags) ? tags : tags.split(",")) : [],
     });
 
     res.status(201).json({

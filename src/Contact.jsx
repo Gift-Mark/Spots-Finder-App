@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Footer from './Components/Footer';
 import { 
   Phone, 
   Mail, 
@@ -479,36 +480,7 @@ export default function ContactPage() {
       )}
 
       {/* 7. FOOTER */}
-      <footer style={styles.footer}>
-        <div style={styles.footerContainer}>
-          <div style={styles.footerBrandCol}>
-            <h3 style={styles.footerBrand}>Jos Pulse</h3>
-            <p style={styles.footerCopy}>
-              © 2026 Jos Pulse. The Official Culture & Tourism Hub of Plateau State, Nigeria. Discover events, hike Shere Hills safely, and support local businesses.
-            </p>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Explore</h4>
-            <a href="/guides" style={styles.footerLink}>Local Guides</a>
-            <a href="/events" style={styles.footerLink}>Event Ticketing</a>
-            <a href="/itineraries" style={styles.footerLink}>City Itineraries</a>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Partners</h4>
-            <a href="/claim-venue" style={styles.footerLink}>Claim Your Venue</a>
-            <a href="/promotions" style={styles.footerLink}>Promote an Event</a>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Legal & Support</h4>
-            <a href="/privacy" style={styles.footerLink}>Privacy Policy</a>
-            <a href="/terms" style={styles.footerLink}>Terms of Service</a>
-            <a href="/contact" style={styles.footerLinkActiveText}>Contact Support</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
@@ -1090,55 +1062,5 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '14px',
     cursor: 'pointer'
-  },
-  footer: {
-    backgroundColor: '#0F172A',
-    color: '#FFFFFF',
-    padding: '60px 24px 40px',
-    marginTop: '80px',
-    borderTop: '1px solid #1E293B'
-  },
-  footerContainer: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    display: 'grid',
-    gridTemplateColumns: '2fr 1fr 1fr 1fr',
-    gap: '40px'
-  },
-  footerBrandCol: {
-    paddingRight: '20px'
-  },
-  footerBrand: {
-    fontSize: '22px',
-    fontWeight: 'bold',
-    color: '#F97316',
-    margin: '0 0 12px'
-  },
-  footerCopy: {
-    color: '#94A3B8',
-    fontSize: '13px',
-    lineHeight: '1.6'
-  },
-  footerLinkCol: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '10px'
-  },
-  footerHeading: {
-    fontSize: '14px',
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    margin: '0 0 6px'
-  },
-  footerLink: {
-    color: '#94A3B8',
-    textDecoration: 'none',
-    fontSize: '13px'
-  },
-  footerLinkActiveText: {
-    color: '#F97316',
-    textDecoration: 'none',
-    fontSize: '13px',
-    fontWeight: 'bold'
   }
 };

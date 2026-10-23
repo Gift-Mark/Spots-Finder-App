@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Fix for Leaflet default marker icon path issue in React/Vite builds
+// Fix for default Leaflet marker icons in Vite builds
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
@@ -34,7 +34,6 @@ function ChangeView({ center }) {
 }
 
 export default function AccommodationMap({ properties = [], selectedZone = null, height = "380px" }) {
-  // Actively read `selectedZone` to calculate dynamic map center
   const currentCenter = useMemo(() => {
     if (selectedZone && ZONE_COORDINATES[selectedZone]) {
       return ZONE_COORDINATES[selectedZone];
@@ -50,23 +49,23 @@ export default function AccommodationMap({ properties = [], selectedZone = null,
         scrollWheelZoom={false} 
         style={{ height: "100%", width: "100%" }}
       >
-        {/* Recenter view dynamically whenever selectedZone changes */}
         <ChangeView center={currentCenter} />
 
-        {/* OpenStreetMap Free Tile Provider */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Render Map Markers for Real Verified Properties */}
-        {properties.map((property) => {
-          const lat = property.coordinates?.latitude || 9.8542;
-          const lng = property.coordinates?.longitude || 8.8910;
+        {properties.map((property, index) => {
+          const baseLat = 9.8965;
+          const baseLng = 8.8583;
+          
+          const lat = property.coordinates?.latitude || property.latitude || (baseLat + (index * 0.006));
+          const lng = property.coordinates?.longitude || property.longitude || (baseLng + (index * 0.006));
 
           return (
             <Marker 
-              key={property._id || property.slug} 
+              key={property._id || property.id || index} 
               position={[lat, lng]} 
               icon={customMarkerIcon}
             >
@@ -76,10 +75,10 @@ export default function AccommodationMap({ properties = [], selectedZone = null,
                     {property.name}
                   </h4>
                   <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.75rem", color: "#64748b" }}>
-                    📍 {property.neighborhood || "Jos"}
+                    📍 {property.neighborhood || "Jos Central"}
                   </p>
                   <strong style={{ color: "#ea580c", fontSize: "0.85rem" }}>
-                    ₦{(property.startingFare || 45000).toLocaleString()} / night
+                    ₦{(property.pricePerNight || property.startingFare || 35000).toLocaleString()} / night
                   </strong>
                 </div>
               </Popup>

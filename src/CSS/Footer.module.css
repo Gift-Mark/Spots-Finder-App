@@ -1,181 +1,107 @@
+.footer {
+  background-color: #0B132B;
+  color: #FFFFFF;
+  padding: 60px 24px 40px;
+  margin-top: 60px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .footerContainer {
-  background-color: #081935;
-  color: #ffffff;
-  padding: 48px 64px 40px;
-  font-family: var(--font-sans);
-}
-
-/* --- NEWSLETTER SECTION --- */
-.newsletterSection {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 1100px;
-  margin: 0 auto 36px;
-}
-
-.newsletterContent h3 {
-  font-size: 22px;
-  font-weight: 700;
-  margin: 0 0 6px;
-  color: #ffffff;
-}
-
-.newsletterContent p {
-  font-size: 14px;
-  color: #94a3b8;
-  margin: 0;
-}
-
-.newsletterForm {
-  display: flex;
-  gap: 12px;
-  max-width: 540px;
-  margin-top: 8px;
-}
-
-.newsletterInput {
-  flex: 1;
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #1e293b;
-  background-color: #0f2347;
-  color: #ffffff;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.2s ease;
-}
-
-.newsletterInput:focus {
-  border-color: #f97316;
-}
-
-.subscribeBtn {
-  padding: 12px 24px;
-  background-color: #f97316;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 14px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-}
-
-.subscribeBtn:hover {
-  background-color: #ea580c;
-}
-
-.subscribeBtn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.errorMessage {
-  color: #f87171;
-  font-size: 13px;
-  margin: 4px 0 0;
-}
-
-.successMessage {
-  color: #4ade80;
-  font-size: 13px;
-  margin: 4px 0 0;
-}
-
-.divider {
-  height: 1px;
-  background-color: #1e293b;
-  margin: 32px 0 40px;
-}
-
-/* --- MAIN FOOTER GRID (Matching Screenshot UI) --- */
-.footerGrid {
-  display: grid;
-  grid-template-columns: 2fr 1.2fr 1fr 1fr;
-  gap: 40px;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
 }
 
-.brandCol {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.footerBrandCol {
+  padding-right: 20px;
 }
 
-.brandTitle {
+.footerBrandLink {
+  text-decoration: none;
+  display: inline-block;
+  color: #FFFFFF;
+}
+
+.footerBrand {
   font-size: 24px;
   font-weight: 800;
-  margin: 0;
-  color: #ffffff;
+  color: #FFFFFF;
+  margin: 0 0 12px;
+  letter-spacing: -0.5px;
 }
 
-.brandAccent {
-  color: #f97316;
+.footerBrandAccent {
+  color: #F97316;
 }
 
-.brandSubtitle {
+.footerCopy {
+  color: #94A3B8;
   font-size: 13px;
-  color: #94a3b8;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
-  max-width: 280px;
+  max-width: 320px;
 }
 
-.linksCol {
+.footerLinkCol {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
-.colHeading {
+.footerHeading {
   font-size: 14px;
   font-weight: 700;
-  color: #f97316; /* Orange section header accents as seen in UI */
-  margin: 0;
-  text-transform: capitalize;
+  color: #FFFFFF;
+  margin: 0 0 4px;
+  letter-spacing: 0.2px;
 }
 
-.linksList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.linksList li a {
-  color: #cbd5e1;
-  font-size: 13px;
+.footerLink {
+  color: #94A3B8;
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-size: 13px;
+  transition: color 0.2s ease, transform 0.15s ease;
+  width: fit-content;
 }
 
-.linksList li a:hover {
-  color: #ffffff;
+.footerLink:hover {
+  color: #F97316;
+  transform: translateX(2px);
 }
 
-/* Responsive Scaling */
-@media (max-width: 868px) {
-  .footerContainer {
-    padding: 32px 24px;
+/* Tablet Layout */
+@media (max-width: 900px) {
+  .footer {
+    padding: 48px 20px 32px;
+    margin-top: 40px;
   }
 
-  .footerGrid {
+  .footerContainer {
     grid-template-columns: 1fr 1fr;
     gap: 32px;
   }
 
-  .newsletterForm {
-    flex-direction: column;
+  .footerBrandCol {
+    grid-column: span 2;
+    padding-right: 0;
   }
 }
 
-@media (max-width: 520px) {
-  .footerGrid {
+/* Mobile Layout */
+@media (max-width: 540px) {
+  .footer {
+    padding: 40px 16px 28px;
+  }
+
+  .footerContainer {
     grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .footerBrandCol {
+    grid-column: span 1;
   }
 }

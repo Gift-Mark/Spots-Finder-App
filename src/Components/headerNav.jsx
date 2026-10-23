@@ -32,7 +32,7 @@ const Header = () => {
     { name: 'Stays', path: '/stays' },
     { name: 'Culture & Heritage', path: '/culture' },
     { name: 'Flights', path: '/flights' },
-    { name: 'Restaurants', path: '/DiningPage' },
+    { name: 'Restaurants', path: '/dining' },
     { name: 'Events', path: '/events' },
   ];
 

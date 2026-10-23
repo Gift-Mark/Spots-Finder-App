@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import Header from './Components/headerNav';
+import Footer from './Components/Footer';
 
 // Fallback Plateau State Events (used if database is empty)
 const REAL_WORLD_FALLBACKS = [
@@ -310,34 +311,7 @@ export default function RealWorldEventsPage() {
       </main>
 
       {/* FOOTER */}
-      <footer style={styles.footer}>
-        <div style={styles.footerContainer}>
-          <div style={styles.footerBrandCol}>
-            <h3 style={styles.footerBrand}>Jos Pulse</h3>
-            <p style={styles.footerCopy}>
-              © 2026 Jos Pulse. Celebrating the spirit of the Plateau.
-            </p>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Explore</h4>
-            <a href="#guides" style={styles.footerLink}>Local Guides</a>
-            <a href="#ticketing" style={styles.footerLink}>Event Ticketing</a>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Partners</h4>
-            <a href="#claim" style={styles.footerLink}>Claim Your Venue</a>
-          </div>
-
-          <div style={styles.footerLinkCol}>
-            <h4 style={styles.footerHeading}>Legal & Support</h4>
-            <a href="#privacy" style={styles.footerLink}>Privacy Policy</a>
-            <a href="#terms" style={styles.footerLink}>Terms of Service</a>
-            <a href="#contact" style={styles.footerLink}>Contact Support</a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* TICKETING / CHECKOUT MODAL */}
       {activeModalEvent && (
@@ -522,14 +496,6 @@ const styles = {
   
   btnLoadMore: { backgroundColor: '#FFFFFF', border: '1px solid #111827', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', color: '#111827' },
   
-  footer: { backgroundColor: '#0B132B', color: '#FFFFFF', padding: '60px 24px 40px', marginTop: '60px' },
-  footerContainer: { maxWidth: '1200px', margin: '0 auto', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: '40px' },
-  footerBrandCol: { paddingRight: '20px' },
-  footerBrand: { fontSize: '22px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 12px' },
-  footerCopy: { color: '#94A3B8', fontSize: '13px', lineHeight: '1.5' },
-  footerLinkCol: { display: 'flex', flexDirection: 'column', gap: '10px' },
-  footerHeading: { fontSize: '14px', fontWeight: 'bold', color: '#FFFFFF', margin: '0 0 6px' },
-  footerLink: { color: '#94A3B8', textDecoration: 'none', fontSize: '13px' },
   
   modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(15, 23, 42, 0.75)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' },
   modalCard: { backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '28px', width: '100%', maxWidth: '420px', position: 'relative' },

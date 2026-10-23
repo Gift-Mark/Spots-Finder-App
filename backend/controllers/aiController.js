@@ -263,7 +263,73 @@ const WEBSITE_KNOWLEDGE = [
     id: "ai_chat",
     keywords: ["ai", "chatbot", "bot", "assistant", "who are you", "are you human", "are you a robot", "this chat"],
     answer:
-      "I'm Jos Pulse AI — the website's built-in assistant. I can answer questions about any page, place, price, hour, event or feature on Jos Pulse. Chat questions are saved with contact details removed to improve support; never share passwords or payment details here.",
+      "I'm Jos Pulse AI — the website's built-in assistant. I can answer questions about any page, place, price, opening hour, event or feature on Jos Pulse. I know about restaurants, hotels, nightlife, attractions, events, guides, golf, flights and more. Chat questions are saved with contact details removed; never share passwords or payment details here.",
+  },
+  {
+    id: "nightlife_detail",
+    keywords: ["nightlife", "night life", "clubs", "club in jos", "party in jos", "dj night", "live band", "bars in jos", "night out"],
+    answer:
+      "The Nightlife page (/nightlife) features the best clubs, bars and live music venues around Jos — from premium spots like The Net Club & Lounge in Rayfield to chill open-air gardens and late-night suya grills. Filter by category (Clubs, Lounges, Live Music, Bars) and use the search bar to find exactly your vibe.",
+  },
+  {
+    id: "attractions_detail",
+    keywords: ["attractions", "tourist spots", "tourist attractions", "sightseeing", "shere hills", "kurra falls", "wase rock", "highland", "national park"],
+    answer:
+      "The Attractions page (/attractions) highlights must-see destinations across Plateau State — Shere Hills, Kurra Falls, Wase Rock, Wase Wildlife Park, Highland Botanical Gardens and more. Each listing includes entry fees, best visiting times, highlights and guided tour options. Use the category tabs to filter by type.",
+  },
+  {
+    id: "guides_detail",
+    keywords: ["guide", "guides", "local guide", "certified guide", "hire guide", "book guide", "tour guide", "plateau guide"],
+    answer:
+      "The Guides page (/guides) features Plateau Tourism Board–certified local guides for treks, heritage tours, culinary crawls and more. You can browse guides by specialty, check ratings and book directly from the page by selecting a guide and submitting a reservation request. Prices start from around ₦7,000 for a half-day.",
+  },
+  {
+    id: "vendor_how",
+    keywords: ["how do i become a vendor", "become a vendor", "register my business", "register business", "add my venue", "list my venue", "partner with jos pulse"],
+    answer:
+      "To list your business on Jos Pulse, go to Claim Your Venue (/claim) and complete the 3-step form: enter your venue details, upload ownership proof, and set your account credentials. After the Jos Pulse team verifies your claim, you'll get access to the Vendor Dashboard to manage your listing, run campaigns and view analytics.",
+  },
+  {
+    id: "footer_links",
+    keywords: ["footer", "bottom of page", "site links", "navigation links", "all pages", "site map", "sitemap"],
+    answer:
+      "You can access all sections of Jos Pulse from the footer and top navigation: Explore (/explore), Dining (/dining), Stays (/stays), Events (/events), Nightlife (/nightlife), Lounges (/lounges), Golf (/golf), Culture (/culture), Attractions (/attractions), Guides (/guides), Flights (/flights), Claim Venue (/claim), Privacy (/privacy), Terms (/terms) and Contact (/contact).",
+  },
+  {
+    id: "rayfield_resort",
+    keywords: ["rayfield", "rayfield resort", "rayfield water park", "rayfield lake", "rayfield golf"],
+    answer:
+      "Rayfield is one of Jos's most iconic areas — home to the Rayfield Holiday Resort & Water Park (boating, jet skiing, water slides), the Rayfield Golf Club (Africa's oldest golf course), and the historic Rayfield suburb. The resort opens at 8:00 AM – 6:30 PM with entry from ₦500 for adults. Ask me about a specific Rayfield spot for more details.",
+  },
+  {
+    id: "shere_hills",
+    keywords: ["shere hills", "shere", "shere trek", "shere summit", "plateau hills", "hike jos"],
+    answer:
+      "Shere Hills is the iconic granite mountain range overlooking Jos, popular for trekking and summit hikes. It's accessible via a guided tour — browse our Local Guides (/guides) to book a certified trekking guide. Best visited in the dry season (November–March). Wear sturdy shoes and carry water.",
+  },
+  {
+    id: "suya",
+    keywords: ["suya", "suya spot", "suya in jos", "grilled meat", "west of mines", "suya crawl"],
+    answer:
+      "Jos is famous for its suya — spiced grilled beef skewers sold at roadside stalls across the city, especially along West of Mines Road and Ahmadu Bello Way. The Dining page (/dining) lists suya spots and Plateau Bites directories. Some late-night suya grills are also featured on the Nightlife page (/nightlife).",
+  },
+  {
+    id: "account_trouble",
+    keywords: ["forgot password", "reset password", "can't access account", "account locked", "not receiving email", "verification email"],
+    answer:
+      "If you've forgotten your password or can't access your account, go to the Login page (/login) and look for the 'Forgot Password' option. If you're still having trouble, contact the Jos Pulse support team via the Contact page (/contact) and they'll help you recover your account within 24 hours.",
+  },
+  {
+    id: "newsletter_detail",
+    keywords: ["newsletter", "subscribe newsletter", "email list", "unsubscribe", "stop emails"],
+    answer:
+      "To subscribe to the Jos Pulse newsletter, scroll to the footer on any page and enter your email address in the subscription form. You need to be signed in — guests are redirected to the login page first. To unsubscribe, contact support via the Contact page (/contact) with your email address.",
+  },
+  {
+    id: "platform_mission",
+    keywords: ["purpose", "mission", "goal", "what does jos pulse do", "why was this built", "what is the point"],
+    answer:
+      "Jos Pulse was built to celebrate and promote Plateau State, Nigeria — making it easier for locals and visitors to discover the best places to eat, stay, explore and experience events. It also empowers local businesses by giving them a platform to reach more customers, manage bookings and run promotions.",
   },
 ];
 
@@ -279,7 +345,7 @@ const EVENTS_RE = /\b(events?|what'?s\s+on|whats\s+on|happening|festivals?|conce
 const RECOMMEND_RE = /\b(recommends?|suggest|suggestions?|recommendations?|things\s+to\s+do|what\s+to\s+(do|see|eat|visit|drink)|where\s+(should|can)\s+(i|we|you)|where\s+to\s+(eat|stay|go|visit|party)|places\s+to\s+(visit|see|eat|stay|go)|best|top|popular|famous|nice\s+(places|spots))\b/i;
 
 const CAPABILITY_MENU =
-  "I can help with anything on Jos Pulse: places to eat, stay, party and explore; opening hours and entry prices; upcoming events; golf tee times; flights; using your account or dashboards; saving spots, reviews and check-ins; claiming a venue; privacy, terms and contact. Try asking things like \"What's on this weekend?\", \"Where can I eat in Jos?\" or \"What are Rayfield Resort's hours?\"";
+  "I can help with anything on Jos Pulse:\n• 🍽️ Restaurants, cafes & suya spots (/dining)\n• 🛏️ Hotels & stays (/stays)\n• 🎉 Events & ticketing (/events)\n• 🌙 Nightlife, clubs & bars (/nightlife)\n• 🏔️ Tourist attractions (/attractions)\n• 🧭 Local guides & tours (/guides)\n• ⛳ Golf & tee times (/golf)\n• ✈️ Flights to Jos (/flights)\n• 🏛️ Culture & heritage (/culture)\n• 💼 Claim your venue (/claim)\n• 🔐 Account help, reviews, saves\n\nTry: \"Best restaurants in Jos\", \"Events this weekend\", or \"Rayfield Resort hours\"";
 
 // --- dynamic data lookups ---------------------------------------------------
 

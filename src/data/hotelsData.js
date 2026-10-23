@@ -12,7 +12,7 @@ export const JOS_HOTELS = [
       { type: "Executive Suite", price: 75000 },
       { type: "Presidential Suite", price: 150000 }
     ],
-    image: "/images/hotels/crispan.jpg",
+    image: "/images/Crispan.jpg",
     phone: "+234 803 000 9001"
   },
   {
@@ -27,7 +27,7 @@ export const JOS_HOTELS = [
       { type: "Standard Room", price: 50000 },
       { type: "Luxury Suite", price: 85000 }
     ],
-    image: "/images/hotels/valada.jpg",
+    image: "/images/Valada.jpg",
     phone: "+234 803 000 9002"
   },
   {
@@ -42,7 +42,7 @@ export const JOS_HOTELS = [
       { type: "Superior Queen", price: 35000 },
       { type: "Royal Suite", price: 60000 }
     ],
-    image: "/images/hotels/silksuites.jpg",
+    image: "/images/Silk Suite.jpg",
     phone: "+234 803 000 9003"
   },
   {
@@ -57,7 +57,7 @@ export const JOS_HOTELS = [
       { type: "Classic Room", price: 30000 },
       { type: "Chalet", price: 55000 }
     ],
-    image: "/images/hotels/hillstation.jpg",
+    image: "/images/Hill Station.jpg",
     phone: "+234 803 000 9004"
   }
 ];

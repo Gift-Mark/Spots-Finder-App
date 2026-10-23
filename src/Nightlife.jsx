@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import styles from '../src/CSS/Nightlife.module.css';
+import Header from './Components/headerNav';
+import Footer from './Components/Footer';
+import styles from './CSS/Nightlife.module.css';
 
 const VENUES_DATA = [
   {
@@ -113,6 +115,8 @@ export const NightlifePage = () => {
 
   return (
     <div className={styles.container}>
+      <Header />
+
       {/* Hero Section */}
       <div className={styles.heroSection}>
         <h1 className={styles.heroTitle}>Experience the Pulse of Jos After Dark</h1>
@@ -335,6 +339,8 @@ export const NightlifePage = () => {
           </div>
         </div>
       )}
+
+      <Footer />
     </div>
   );
 };

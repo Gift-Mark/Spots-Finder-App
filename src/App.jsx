@@ -47,11 +47,18 @@ function App() {
           <Route path="/nightlife" element={<NightlifePage />} />
           <Route path="/lounges" element={<LoungesPage />} />
           <Route path="/dining" element={<DiningPage />} />
+          <Route path="/DiningPage" element={<Navigate to="/dining" replace />} />
+          <Route path="/diningpage" element={<Navigate to="/dining" replace />} />
+          <Route path="/dinner" element={<Navigate to="/dining" replace />} />
+          <Route path="/dinner-page" element={<Navigate to="/dining" replace />} />
+          <Route path="/restaurants" element={<Navigate to="/dining" replace />} />
           <Route path="/attractions" element={<AttractionsPage />} />
           <Route path="/stays" element={<StaysPage />} />
           <Route path="/stays/:slug" element={<StaysDetailsPage />} />
           <Route path="/guides" element={<GuidesPage />} />
           <Route path="/claim" element={<ClaimVenuePage />} />
+          <Route path="/claim-venue" element={<Navigate to="/claim" replace />} />
+          <Route path="/ticketing" element={<Navigate to="/events" replace />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/contact" element={<ContactPage />} />

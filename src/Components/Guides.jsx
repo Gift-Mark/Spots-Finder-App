@@ -9,6 +9,8 @@ import {
   faXmark,
   faUsers
 } from '@fortawesome/free-solid-svg-icons';
+import Header from './headerNav';
+import Footer from './Footer';
 
 const LOCAL_GUIDES_DATA = [
   {
@@ -156,7 +158,7 @@ export default function LocalGuidesPage() {
 
   return (
     <div style={styles.pageContainer}>
-      {}
+      <Header />
       <section style={styles.heroSection}>
         <div style={styles.heroOverlay}>
           <div style={styles.heroBadge}>
@@ -471,6 +473,7 @@ export default function LocalGuidesPage() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

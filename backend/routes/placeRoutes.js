@@ -1,5 +1,6 @@
 import express from "express";
 import mongoose from 'mongoose';
+import multer from 'multer';
 import {
   getAllPlaces,
   getPlaceByIdentifier,
@@ -9,14 +10,16 @@ import {
 } from "../controllers/place.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
+const upload = multer({dest: "uploads/"});
+
 const router = express.Router();
 
 router.get("/", getAllPlaces);
 router.get("/:identifier", getPlaceByIdentifier);
 
 // Protected routes for vendors & admins
-router.post("/", protect, authorizeRoles("vendor", "admin"), createPlace);
-router.put("/:id", protect, authorizeRoles("vendor", "admin"), updatePlace);
+router.post("/", protect, authorizeRoles("vendor", "admin"), upload.single("heroImage"), createPlace);
+router.put("/:id", protect, authorizeRoles("vendor", "admin"), upload.single("heroImage"), updatePlace);
 router.delete("/:id", protect, authorizeRoles("vendor", "admin"), deletePlace);
 
 // 1. Mongoose Schema for Flagged Reports
