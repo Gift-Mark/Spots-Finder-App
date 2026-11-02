@@ -7,7 +7,7 @@ import Review from "../models/Reviews.js";
  */
 export const createReview = async (req, res) => {
   try {
-    const { placeId, rating, comment, guestName, guestHandle, photos } = req.body;
+    const { placeId, staySlug, rating, comment, guestName, guestHandle, photos } = req.body;
 
     // Check if request has an authenticated user attached via middleware (if provided)
     const userId = req.user ? req.user._id : null;
@@ -16,6 +16,7 @@ export const createReview = async (req, res) => {
     const reviewData = {
       userId,
       placeId: placeId || null,
+      staySlug: staySlug || undefined,
       rating: rating || 5,
       comment,
       photos: photos || [],
@@ -48,8 +49,21 @@ export const createReview = async (req, res) => {
  */
 export const getAllReviews = async (req, res) => {
   try {
-    const { placeId } = req.query;
-    const filter = placeId ? { placeId } : {};
+    const { placeId, staySlug } = req.query;
+    const filter = {};
+
+    if (placeId) {
+      if (!/^[0-9a-fA-F]{24}$/.test(placeId)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid place id." });
+      }
+      filter.placeId = placeId;
+    }
+
+    if (staySlug) {
+      filter.staySlug = staySlug;
+    }
 
     const reviews = await Review.find(filter)
       .populate("userId", "firstName lastName profileImage")

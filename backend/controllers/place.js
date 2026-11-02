@@ -15,8 +15,15 @@ export const getAllPlaces = async (req, res) => {
     if (category) query.category = category;
     if (subcategory) query.subcategory = subcategory;
 
-    // Filter by status (defaults to 'active' for public views)
-    query.status = status || "active";
+    // Filter by status - only apply filter if status is explicitly provided and not empty
+    // This allows admin to fetch ALL places by passing status='' or omitting status
+    if (status && status !== '') {
+      query.status = status;
+    } else if (status === undefined) {
+      // Default to 'active' only when status param is completely absent (public views)
+      query.status = "active";
+    }
+    // If status === '', no status filter is applied (returns all)
 
     // Text search on name, summary, description, and tags
     if (search) {
@@ -106,9 +113,13 @@ export const createPlace = async (req, res) => {
     } = req.body;
 
     // Handle uploaded file path if multer processed an image
+    let heroImagePath = "";
     let imageUrls = [];
+    
     if (req.file) {
-      imageUrls = [`/uploads/${req.file.filename}`];
+      heroImagePath = `/uploads/${req.file.filename}`;
+      imageUrls = [heroImagePath];
+      console.log("✅ Image uploaded:", req.file.filename, "Path:", heroImagePath);
     } else if (req.body.images) {
       imageUrls = Array.isArray(req.body.images) ? req.body.images : [req.body.images];
     }
@@ -120,8 +131,9 @@ export const createPlace = async (req, res) => {
       .replace(/(^-|-$)+/g, "");
 
     const place = await Place.create({
-      businessId: businessId || req.user.businessId,
+      businessId: businessId || req.user?.businessId,
       name,
+      title: name,
       slug: generatedSlug,
       description,
       summary,
@@ -131,11 +143,14 @@ export const createPlace = async (req, res) => {
       address,
       latitude,
       longitude,
+      heroImage: heroImagePath,
+      coverImage: heroImagePath,
       images: imageUrls,
       openingTime,
       closingTime,
       bookingUrl,
       tags: tags ? (Array.isArray(tags) ? tags : tags.split(",")) : [],
+      ...req.body, // Include other fields from form
     });
 
     res.status(201).json({
@@ -169,13 +184,24 @@ export const updatePlace = async (req, res) => {
 
     // Role Guard: Vendors can only update places tied to their business
     if (
-      req.user.role !== "admin" &&
-      place.businessId.toString() !== req.user.businessId?.toString()
+      req.user?.role !== "admin" &&
+      place.businessId?.toString() !== req.user?.businessId?.toString()
     ) {
       return res.status(403).json({
         success: false,
         message: "Not authorized to update this listing.",
       });
+    }
+
+    // Handle new uploaded image if present
+    if (req.file) {
+      const heroImagePath = `/uploads/${req.file.filename}`;
+      req.body.heroImage = heroImagePath;
+      req.body.coverImage = heroImagePath;
+      if (!req.body.images || req.body.images.length === 0) {
+        req.body.images = [heroImagePath];
+      }
+      console.log("✅ Updated image:", req.file.filename, "Path:", heroImagePath);
     }
 
     place = await Place.findByIdAndUpdate(req.params.id, req.body, {

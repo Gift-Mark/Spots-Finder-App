@@ -1,5 +1,6 @@
 import Accommodation from '../models/Accommodation.js';
 import AccommodationZone from '../models/AccommodationZone.js';
+import RoomType from '../models/RoomType.js';
 
 // GET /api/v1/accommodations
 export const getAccommodations = async (req, res) => {
@@ -40,6 +41,51 @@ export const getFeaturedAccommodations = async (req, res) => {
     res.status(200).json({ success: true, count: featured.length, data: featured });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Error fetching featured accommodations', error: err.message });
+  }
+};
+
+// GET /api/v1/accommodations/:slug
+export const getAccommodationBySlug = async (req, res) => {
+  try {
+    const { slug } = req.params;
+
+    if (!slug) {
+      return res.status(400).json({ success: false, message: 'Accommodation slug is required.' });
+    }
+
+    // Allow lookup by slug (normal) or by Mongo id (legacy links).
+    const query = /^[0-9a-fA-F]{24}$/.test(slug)
+      ? { $or: [{ slug }, { _id: slug }] }
+      : { slug };
+
+    const accommodation = await Accommodation.findOne({
+      ...query,
+      isPublished: true
+    }).populate('zone');
+
+    if (!accommodation) {
+      return res.status(404).json({ success: false, message: 'Accommodation not found.' });
+    }
+
+    // Attach bookable room categories so the detail page can show real rates.
+    const roomTypes = await RoomType.find({
+      property: accommodation._id,
+      isPublished: true
+    })
+      .select('name nightlyRate')
+      .sort({ nightlyRate: 1 })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
+      data: { ...accommodation.toObject(), roomTypes }
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Server error fetching accommodation details',
+      error: err.message
+    });
   }
 };
 

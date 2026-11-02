@@ -38,6 +38,34 @@ export default function StaysPage() {
 
   const [selectedZoneKey, setSelectedZoneKey] = useState("rayfield-gra");
 
+  // Comprehensive list of FAQs
+  const DEFAULT_JOS_FAQS = [
+    {
+      question: "Do I need to book my stay in advance?",
+      answer: "Yes! Due to high demand during weekend retreats, tourism festivals, and holiday seasons in Plateau State, booking in advance ensures your preferred room category or mountain chalet is secured."
+    },
+    {
+      question: "Are airport pickup and local transport services available?",
+      answer: "Yes. The majority of our partner hotels, boutique lodges, and luxury resorts offer direct chauffeur transfers from Yakubu Gowon Airport in Heipang (JOS) straight to Rayfield, GRA, or Jos City Centre."
+    },
+    {
+      question: "What is the climate like at night in Jos, and do rooms have heating?",
+      answer: "Jos enjoys a high-altitude highland climate with crisp, refreshing evening temperatures dropping to 14°C–18°C. Properties listed on Jos Pulse are equipped with warm duvets, water heaters, and select resort chalets feature stone fireplaces."
+    },
+    {
+      question: "What are the standard check-in and check-out times?",
+      answer: "Standard check-in across most Jos properties is 2:00 PM onward, and check-out is by 11:00 AM or 12:00 PM. Early check-in or late check-out can usually be arranged directly with the front desk."
+    },
+    {
+      question: "How do I modify or cancel my reservation?",
+      answer: "You can view and manage your reservations directly from your User Dashboard under the 'Bookings' tab. Free cancellation policies depend on the individual venue's notice window."
+    },
+    {
+      question: "Is electricity and security guaranteed at the listed properties?",
+      answer: "All verified venues listed on Jos Pulse feature 24/7 power backup systems (solar or generator) as well as round-the-clock perimeter security and guest support."
+    }
+  ];
+
   useEffect(() => {
     async function loadStaysData() {
       try {
@@ -70,14 +98,11 @@ export default function StaysPage() {
           ]);
         }
 
-        if (faqRes?.success && faqRes.data.length > 0) {
+        // Use backend FAQs if there are at least 3 items, otherwise use the full 6-item default list
+        if (faqRes?.success && Array.isArray(faqRes.data) && faqRes.data.length >= 3) {
           setFaqs(faqRes.data);
         } else {
-          setFaqs([
-            { question: "Do I need to book in advance?", answer: "Yes! Due to high demand during weekend retreats and holiday seasons, advance booking ensures your preferred chalet or lakeside suite is secured." },
-            { question: "Are airport-pickup services available?", answer: "Yes. The majority of our boutique lodges and luxury resorts offer direct chauffeur transfers from Yakubu Gowon Airport in Heipang (JOS) straight to Rayfield or Jos City Centre." },
-            { question: "What is the temperature and climate like at night in Jos?", answer: "Every property partnered with the 'Jos Pulse Verified' badge maintains individual room heating or stone fireplaces to combat crisp evening drops down to 14°C." }
-          ]);
+          setFaqs(DEFAULT_JOS_FAQS);
         }
 
         if (travelRes?.success) setTravelContent(travelRes.data);
@@ -92,9 +117,7 @@ export default function StaysPage() {
           { name: "Rayfield & GRA", description: "Historic resort villas, golf courses, and serene lake environments." },
           { name: "Tudun Wada & City Centre", description: "Central commercial district close to historic landmarks." }
         ]);
-        setFaqs([
-          { question: "Do I need to book in advance?", answer: "Yes, booking in advance ensures availability, especially for weekend getaways and major holiday periods in Jos." }
-        ]);
+        setFaqs(DEFAULT_JOS_FAQS);
       } finally {
         setLoading(false);
       }
@@ -108,19 +131,17 @@ export default function StaysPage() {
   };
 
   const handleToggleSanctuaries = (e) => {
-  e.preventDefault();
-  setShowAllSanctuaries(prev => !prev);
-  
-  // If toggling back to "Show Less", smoothly scroll back up to Section 3 header
-  if (showAllSanctuaries) {
-    const sectionHeader = document.getElementById("sanctuaries-section");
-    if (sectionHeader) {
-      sectionHeader.scrollIntoView({ behavior: "smooth" });
+    e.preventDefault();
+    setShowAllSanctuaries(prev => !prev);
+    
+    if (showAllSanctuaries) {
+      const sectionHeader = document.getElementById("sanctuaries-section");
+      if (sectionHeader) {
+        sectionHeader.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  }
-};
+  };
 
-  // Filter accommodations dynamically based on the selected category tab
   const filteredAccommodations = accommodations.filter(stay => {
     if (activeCategory === "all") return true;
     const stayCat = (stay.category || stay.propertyType || "").toLowerCase();
@@ -212,49 +233,48 @@ export default function StaysPage() {
       </section>
 
       {/* SECTION 3: CURATED HIGHLAND SANCTUARIES */}
-<section id="sanctuaries-section" className={styles.curatedSanctuariesSection}>
-  <div className={styles.sectionHeaderRow}>
-    <div>
-      {/* <span className={styles.sectionEyebrow}>CURATED LOUNGES</span> */}
-      <h2>Curated Lounges</h2>
-      <p>Handpicked escapes featuring mountain views, private fireplaces, and serene Plateau retreats.</p>
-    </div>
-    <a href="#sanctuaries-section" onClick={handleToggleSanctuaries} className={styles.seeAllLink}>
-      {showAllSanctuaries ? "Show Less ↑" : "View all verified properties →"}
-    </a>
-  </div>
-
-  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem", width: "100%" }}>
-    {(showAllSanctuaries ? JOS_LOUNGES : JOS_LOUNGES.slice(0, 4)).map((lounge, idx) => (
-      <div 
-        key={lounge.id || lounge._id || idx} 
-        className={styles.smallSanctuaryCard} 
-        style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}
-      >
-        <div style={{ width: "100%", height: "200px", overflow: "hidden", borderRadius: "0.5rem 0.5rem 0 0" }}>
-          <img 
-            src={lounge.image} 
-            alt={lounge.name} 
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} 
-          />
-        </div>
-        <div className={styles.smallCardBody} style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "1.25rem" }}>
+      <section id="sanctuaries-section" className={styles.curatedSanctuariesSection}>
+        <div className={styles.sectionHeaderRow}>
           <div>
-            <div className={styles.ratingRow} style={{ marginBottom: "0.5rem" }}>
-              <span>⭐ {lounge.starRating || 4.7}</span>
-              <span className={styles.priceTagSmall}>₦{lounge.pricePerNight?.toLocaleString() || "45,000"} / night</span>
-            </div>
-            <h4 style={{ fontSize: "1.1rem", fontWeight: "700", margin: "0.25rem 0" }}>{lounge.name}</h4>
-            <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "0.25rem 0 0.75rem 0" }}>📍 {lounge.neighborhood}</p>
+            <h2>Curated Lounges</h2>
+            <p>Handpicked escapes featuring mountain views, private fireplaces, and serene Plateau retreats.</p>
           </div>
-          <Link to={`/stays/${lounge.id || lounge.slug}`} className={styles.smallDetailsBtn} style={{ marginTop: "1rem", textAlign: "center" }}>
-            View lounge
-          </Link>
+          <a href="#sanctuaries-section" onClick={handleToggleSanctuaries} className={styles.seeAllLink}>
+            {showAllSanctuaries ? "Show Less ↑" : "View all verified properties →"}
+          </a>
         </div>
-      </div>
-    ))}
-  </div>
-</section>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "1.5rem", width: "100%" }}>
+          {(showAllSanctuaries ? JOS_LOUNGES : JOS_LOUNGES.slice(0, 4)).map((lounge, idx) => (
+            <div 
+              key={lounge.id || lounge._id || idx} 
+              className={styles.smallSanctuaryCard} 
+              style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}
+            >
+              <div style={{ width: "100%", height: "200px", overflow: "hidden", borderRadius: "0.5rem 0.5rem 0 0" }}>
+                <img 
+                  src={lounge.image} 
+                  alt={lounge.name} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} 
+                />
+              </div>
+              <div className={styles.smallCardBody} style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: "1.25rem" }}>
+                <div>
+                  <div className={styles.ratingRow} style={{ marginBottom: "0.5rem" }}>
+                    <span>⭐ {lounge.starRating || 4.7}</span>
+                    <span className={styles.priceTagSmall}>₦{lounge.pricePerNight?.toLocaleString() || "45,000"} / night</span>
+                  </div>
+                  <h4 style={{ fontSize: "1.1rem", fontWeight: "700", margin: "0.25rem 0" }}>{lounge.name}</h4>
+                  <p style={{ fontSize: "0.85rem", color: "#64748b", margin: "0.25rem 0 0.75rem 0" }}>📍 {lounge.neighborhood}</p>
+                </div>
+                <Link to={`/stays/${lounge.id || lounge.slug}`} className={styles.smallDetailsBtn} style={{ marginTop: "1rem", textAlign: "center" }}>
+                  View lounge
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* SECTION 4: VERIFIED INVENTORY */}
       <section id="verified-inventory" className={styles.verifiedAccommodationsSection}>
@@ -303,7 +323,6 @@ export default function StaysPage() {
         <div className={styles.zonesMapGrid}>
           <div className={styles.zonesListCol}>
             {zones.map((zone, i) => {
-              // Generate a matching key for ZONE_COORDINATES
               const zoneKey = zone.name.toLowerCase().includes("rayfield") 
                 ? "rayfield-gra" 
                 : zone.name.toLowerCase().includes("lamingo") 
@@ -311,23 +330,23 @@ export default function StaysPage() {
                 : "tudun-wada-central";
 
               return (
-              <div 
-              key={i} 
-              className={styles.zoneListItem}
-              onClick={() => setSelectedZoneKey(zoneKey)}
-              style={{ 
+                <div 
+                  key={i} 
+                  className={styles.zoneListItem}
+                  onClick={() => setSelectedZoneKey(zoneKey)}
+                  style={{ 
                     cursor: "pointer", 
                     borderColor: selectedZoneKey === zoneKey ? "#f97316" : "#e2e8f0",
                     backgroundColor: selectedZoneKey === zoneKey ? "#fff7ed" : "#fff"
                   }}
-                  >
-                <span className={styles.zoneRank}>{`0${i + 1}`}</span>
-                <div>
-                  <h4>{zone.name}</h4>
-                  <p>{zone.description}</p>
-                  <small className={styles.zoneCount}>Verified Jos District</small>
+                >
+                  <span className={styles.zoneRank}>{`0${i + 1}`}</span>
+                  <div>
+                    <h4>{zone.name}</h4>
+                    <p>{zone.description}</p>
+                    <small className={styles.zoneCount}>Verified Jos District</small>
+                  </div>
                 </div>
-              </div>
               );
             })}
           </div>
@@ -348,26 +367,75 @@ export default function StaysPage() {
       </section>
 
       {/* SECTION 7: FAQ ACCORDION */}
-      <section className={styles.faqSection}>
-        <div className={styles.faqHeader}>
-          <span className={styles.sectionEyebrow}>KNOWLEDGE BASE</span>
-          <h2>Frequently Asked Stays Questions</h2>
+      <section className={styles.faqSection} style={{ maxWidth: "900px", margin: "4rem auto", padding: "0 1.5rem" }}>
+        <div className={styles.faqHeader} style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+          <span className={styles.sectionEyebrow} style={{ color: "#f97316", fontWeight: "700", fontSize: "0.8rem", textTransform: "uppercase", letterSpacing: "1px" }}>
+            KNOWLEDGE BASE
+          </span>
+          <h2 style={{ fontSize: "2rem", fontWeight: "800", color: "#0b132b", marginTop: "0.5rem" }}>
+            Frequently Asked Stays Questions
+          </h2>
+          <p style={{ color: "#64748b", fontSize: "0.95rem", marginTop: "0.5rem" }}>
+            Everything you need to know about booking, climate, and staying in Jos.
+          </p>
         </div>
 
-        <div className={styles.faqAccordionList}>
+        <div className={styles.faqAccordionList} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {faqs.map((item, index) => (
-            <div key={index} className={styles.faqAccordionItem}>
+            <div 
+              key={index} 
+              className={styles.faqAccordionItem}
+              style={{
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "0.75rem",
+                overflow: "hidden",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.02)",
+                transition: "all 0.2s ease"
+              }}
+            >
               <button 
                 type="button" 
                 className={styles.faqQuestionBtn}
                 onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                style={{
+                  width: "100%",
+                  padding: "1.25rem 1.5rem",
+                  background: openFaqIndex === index ? "#fff7ed" : "#ffffff",
+                  border: "none",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontWeight: "700",
+                  fontSize: "1rem",
+                  color: openFaqIndex === index ? "#c2410c" : "#0b132b"
+                }}
               >
                 <span>{item.question}</span>
-                <span>{openFaqIndex === index ? '−' : '+'}</span>
+                <span style={{ 
+                  fontSize: "1.25rem", 
+                  fontWeight: "400", 
+                  color: openFaqIndex === index ? "#f97316" : "#64748b",
+                  transition: "transform 0.2s ease" 
+                }}>
+                  {openFaqIndex === index ? '−' : '+'}
+                </span>
               </button>
+
               {openFaqIndex === index && (
-                <div className={styles.faqAnswerBox}>
-                  <p>{item.answer}</p>
+                <div 
+                  className={styles.faqAnswerBox}
+                  style={{
+                    padding: "0 1.5rem 1.25rem 1.5rem",
+                    background: "#fff7ed",
+                    borderTop: "1px solid #ffedd5"
+                  }}
+                >
+                  <p style={{ color: "#475569", fontSize: "0.95rem", lineHeight: "1.6", margin: 0 }}>
+                    {item.answer}
+                  </p>
                 </div>
               )}
             </div>

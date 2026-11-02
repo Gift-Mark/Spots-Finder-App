@@ -20,6 +20,12 @@ const ReviewSchema = new mongoose.Schema({
     ref: 'Place',                         
     required: false
   },
+  // Static/bundled stays have no Mongo id, so they are keyed by slug instead.
+  staySlug: {
+    type: String,
+    trim: true,
+    index: true
+  },
   rating: {
     type: Number,
     required: true,
@@ -42,8 +48,8 @@ const ReviewSchema = new mongoose.Schema({
   timestamps: true 
 });
 
-// Optional: Prevents a single user from reviewing the exact same place twice
-ReviewSchema.index({ placeId: 1, createdAt: -1 }, { unique: true });
+// Optional: speeds up per-place and per-stay review lookups
+ReviewSchema.index({ placeId: 1, staySlug: 1, createdAt: -1 });
 
 const Review = mongoose.model("Review", ReviewSchema);
 

@@ -313,7 +313,7 @@ export function PlaceDetail() {
     // Optimistic toggle
     setIsSaved(prev => !prev);
     try {
-      const res = await toggleSaveSpot(placeId);
+      const res = await toggleSaveSpot(placeId, place);
       // Reconcile with server response
       setIsSaved(res?.isSaved ?? !isSaved);
     } catch {

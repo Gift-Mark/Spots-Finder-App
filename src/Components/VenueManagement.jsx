@@ -1,10 +1,19 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { getVenueImageUrl } from '../utils/imageHelpers';
 
 export const VenueManagement = ({ venues = [], onEdit, onDelete, onRefresh }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+
+  // Calculate statistics
+  const stats = {
+    total: venues.length,
+    active: venues.filter(v => (v.status || 'active') === 'active').length,
+    pending: venues.filter(v => v.status === 'pending').length,
+    inactive: venues.filter(v => v.status === 'inactive').length,
+  };
 
   // Filter venues based on local tab controls
   const filteredVenues = (venues || []).filter((venue) => {
@@ -29,11 +38,65 @@ export const VenueManagement = ({ venues = [], onEdit, onDelete, onRefresh }) =>
 
   return (
     <div style={{ backgroundColor: '#FFFFFF', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+      {/* Statistics Summary */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
+        gap: '16px', 
+        marginBottom: '24px' 
+      }}>
+        <div style={{ 
+          padding: '16px', 
+          backgroundColor: '#F8FAFC', 
+          borderRadius: '10px', 
+          border: '2px solid #E2E8F0' 
+        }}>
+          <div style={{ fontSize: '12px', color: '#64748B', fontWeight: '600', marginBottom: '4px' }}>TOTAL VENUES</div>
+          <div style={{ fontSize: '32px', fontWeight: '700', color: '#0F172A' }}>{stats.total}</div>
+          <div style={{ fontSize: '11px', color: '#94A3B8', marginTop: '2px' }}>Across all pages</div>
+        </div>
+
+        <div style={{ 
+          padding: '16px', 
+          backgroundColor: '#DCFCE7', 
+          borderRadius: '10px', 
+          border: '2px solid #86EFAC' 
+        }}>
+          <div style={{ fontSize: '12px', color: '#166534', fontWeight: '600', marginBottom: '4px' }}>ACTIVE</div>
+          <div style={{ fontSize: '32px', fontWeight: '700', color: '#15803D' }}>{stats.active}</div>
+          <div style={{ fontSize: '11px', color: '#16A34A', marginTop: '2px' }}>Live on website</div>
+        </div>
+
+        <div style={{ 
+          padding: '16px', 
+          backgroundColor: '#FEF3C7', 
+          borderRadius: '10px', 
+          border: '2px solid #FDE047' 
+        }}>
+          <div style={{ fontSize: '12px', color: '#854D0E', fontWeight: '600', marginBottom: '4px' }}>PENDING</div>
+          <div style={{ fontSize: '32px', fontWeight: '700', color: '#A16207' }}>{stats.pending}</div>
+          <div style={{ fontSize: '11px', color: '#CA8A04', marginTop: '2px' }}>Awaiting review</div>
+        </div>
+
+        <div style={{ 
+          padding: '16px', 
+          backgroundColor: '#FEE2E2', 
+          borderRadius: '10px', 
+          border: '2px solid #FCA5A5' 
+        }}>
+          <div style={{ fontSize: '12px', color: '#991B1B', fontWeight: '600', marginBottom: '4px' }}>INACTIVE</div>
+          <div style={{ fontSize: '32px', fontWeight: '700', color: '#B91C1C' }}>{stats.inactive}</div>
+          <div style={{ fontSize: '11px', color: '#DC2626', marginTop: '2px' }}>Hidden from public</div>
+        </div>
+      </div>
+
       {/* Header & Controls */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#1E293B' }}>Venue Directory & Management</h2>
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748B' }}>Comprehensive control over all platform listings, verification, and data audits.</p>
+          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748B' }}>
+            Showing {filteredVenues.length} of {stats.total} venues
+          </p>
         </div>
 
         {/* Search & Status Filter Controls */}
@@ -109,10 +172,10 @@ export const VenueManagement = ({ venues = [], onEdit, onDelete, onRefresh }) =>
                   <tr key={venueId} style={{ borderBottom: '1px solid #F1F5F9', fontSize: '14px', color: '#0F172A' }}>
                     <td style={{ padding: '12px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <img 
-                        src={venue.heroImage || venue.imageUrl || '/images/default-venue.jpg'} 
+                        src={getVenueImageUrl(venue)} 
                         alt={venue.name} 
                         style={{ width: '38px', height: '38px', borderRadius: '6px', objectFit: 'cover' }}
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/38'; }}
+                        onError={(e) => { e.target.src = '/images/Rayfield Resort.jpg'; }}
                       />
                       <div>
                         <span style={{ fontWeight: '600', display: 'block' }}>{venue.name}</span>

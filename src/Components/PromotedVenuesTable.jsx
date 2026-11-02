@@ -9,6 +9,7 @@ import {
   faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/PromotedVenuesTable.module.css';
+import { getVenueImageUrl } from '../utils/imageHelpers';
 
 export const PromotedVenuesTable = ({ 
   venues = [], 
@@ -35,8 +36,10 @@ export const PromotedVenuesTable = ({
       {/* Header & Controls */}
       <div className={styles.cardHeader}>
         <div>
-          <h2 className={styles.cardTitle}>Promoted Venue Listings</h2>
-          <p className={styles.cardSubtitle}>Manage active subscriptions, approvals, and live listings.</p>
+          <h2 className={styles.cardTitle}>Promoted Venue Listings ({venues.length} total)</h2>
+          <p className={styles.cardSubtitle}>
+            Showing {filteredVenues.length} of {venues.length} venues - Manage active subscriptions, approvals, and live listings.
+          </p>
         </div>
 
         <div className={styles.actionGroup} style={{ position: 'relative', display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -143,10 +146,10 @@ export const PromotedVenuesTable = ({
                     {/* Venue Name & Thumbnail */}
                     <td className={styles.venueCell}>
                       <img 
-                        src={item.imageUrl || item.heroImage || '/images/default-venue.jpg'} 
+                        src={getVenueImageUrl(item)} 
                         alt={item.name} 
                         className={styles.venueThumb} 
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/40'; }}
+                        onError={(e) => { e.target.src = '/images/Rayfield Resort.jpg'; }}
                       />
                       <span className={styles.venueName}>{item.name}</span>
                     </td>

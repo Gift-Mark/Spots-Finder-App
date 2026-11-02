@@ -7,10 +7,13 @@ const SaveSchema = new mongoose.Schema({
     required: true
   },
   placeId: {
-    type: mongoose.Schema.Types.ObjectId, // Defines this field as a MongoDB ID
-    ref: 'Place',                         // Links it directly to your 'Place' model
-    required: true
-  }
+    type: mongoose.Schema.Types.Mixed,
+    required: true,
+  },
+  placeSnapshot: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null,
+  },
 }, {
   // Configures Mongoose to automatically generate 'createdAt' but omit 'updatedAt'
   timestamps: { createdAt: true, updatedAt: false }

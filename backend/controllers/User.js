@@ -146,6 +146,18 @@ export const updateUserProfile = async (req, res) => {
     user.middleName = req.body.middleName !== undefined ? req.body.middleName : user.middleName;
     user.profileImage = req.body.profileImage || user.profileImage;
 
+    if (typeof req.body.email === "string" && req.body.email.trim()) {
+      const email = req.body.email.trim().toLowerCase();
+      const existingUser = await User.findOne({ email, _id: { $ne: user._id } });
+      if (existingUser) {
+        return res.status(409).json({
+          success: false,
+          message: "That email address is already in use.",
+        });
+      }
+      user.email = email;
+    }
+
     if (req.body.locationPermission !== undefined) {
       user.locationPermission = req.body.locationPermission;
     }

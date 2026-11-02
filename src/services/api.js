@@ -4,7 +4,19 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  headers: { "Content-Type": "application/json" }
+  headers: { "Content-Type": "application/json" },
+  timeout: 20000,
+});
+
+// Attach the auth token to every request. Booking and other protected
+// endpoints require it, and this instance previously had no interceptor.
+api.interceptors.request.use((config) => {
+  const token =
+    localStorage.getItem("token") || localStorage.getItem("jos_pulse_token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // --- PLACES & VENUE MANAGEMENT (Admin Dashboard) ---
@@ -81,7 +93,7 @@ export const fetchFeaturedAccommodations = async () => {
 
 // Fetch individual property details by slug
 export const fetchAccommodationDetails = async (slug) => {
-  const res = await api.get(`/accommodations/${slug}`);
+  const res = await api.get(`/accommodations/${encodeURIComponent(slug)}`);
   return res.data;
 };
 

@@ -700,6 +700,144 @@
   line-height: 1.5;
 }
 
+.postEngagement {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-top: 1px solid #f1f5f9;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.engagementButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  color: #64748b;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.engagementButton:hover,
+.engagementButtonActive {
+  color: #e11d48;
+}
+
+.commentSection {
+  padding: 14px 16px 16px;
+  border-top: 1px solid #f1f5f9;
+  background: #fbfdff;
+}
+
+.commentList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.noComments {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.commentItem,
+.commentForm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.commentAvatar {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #e2e8f0;
+}
+
+.commentBody {
+  min-width: 0;
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: #f1f5f9;
+}
+
+.commentMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.commentMeta strong {
+  color: #0f172a;
+  font-size: 0.8rem;
+}
+
+.commentMeta time {
+  color: #94a3b8;
+  font-size: 0.68rem;
+}
+
+.commentBody p {
+  margin: 4px 0 0;
+  color: #334155;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.commentForm {
+  align-items: center;
+  margin-top: 14px;
+}
+
+.commentForm input {
+  min-width: 0;
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  outline: none;
+  font: inherit;
+}
+
+.commentForm input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+.commentForm button {
+  padding: 9px 14px;
+  border: 0;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.commentForm button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.feedActionError {
+  margin: 10px 0 0;
+  color: #b91c1c;
+  font-size: 0.8rem;
+}
+
 /* ── Missing sidebar widget classes ───────────────────────────── */
 .miniLogList {
   display: flex;

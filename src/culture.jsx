@@ -4,7 +4,7 @@ import HeroSection from './Components/HeroSection';
 import HeritageGrid from './Components/HeritageGrid';
 import styles from './CSS/culture.module.css';
 
-import { Footer } from './Components/Footer';
+import Footer from './Components/Footer';
 import ItineraryProvider from './Components/ItineraryProvider';
 
 const heroImage = '/images/shere hills.jpg';

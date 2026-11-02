@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import JosPulseAI from "./Components/JosPulseAI";
 import StaysDetailsPage from "./pages/StaysDetails";
+import StaysSearchPage from "./Components/StaysSearch";
 
 // Load route screens on demand so the initial bundle does not include every page.
 const Discover = lazy(() => import("./discover"));
@@ -50,6 +51,7 @@ function App() {
           <Route path="/DiningPage" element={<Navigate to="/dining" replace />} />
           <Route path="/diningpage" element={<Navigate to="/dining" replace />} />
           <Route path="/dinner" element={<Navigate to="/dining" replace />} />
+          <Route path="/stays/search" element={<StaysSearchPage />} />
           <Route path="/dinner-page" element={<Navigate to="/dining" replace />} />
           <Route path="/restaurants" element={<Navigate to="/dining" replace />} />
           <Route path="/attractions" element={<AttractionsPage />} />

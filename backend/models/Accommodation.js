@@ -29,4 +29,8 @@ const AccommodationSchema = new mongoose.Schema({
   isFeatured: { type: Boolean, default: false }
 }, { timestamps: true });
 
-export default AccommodationSchema;
+const Accommodation =
+  mongoose.models.Accommodation ||
+  mongoose.model('Accommodation', AccommodationSchema);
+
+export default Accommodation;

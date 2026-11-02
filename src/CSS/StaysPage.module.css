@@ -5,7 +5,9 @@
   color: #0f172a;
   min-height: 100vh;
   font-family: var(--font-sans);
-  overflow-x: hidden;
+  /* `clip` prevents horizontal overflow without creating a scroll container,
+     which would break the sticky reservation sidebar on the details page. */
+  overflow-x: clip;
 }
 
 /* 1. ACCOMMODATION SEARCH PANEL */
@@ -768,6 +770,88 @@
     grid-template-columns: 1fr;
   }
   .climateMetricsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+/* --- STAY DETAILS PAGE --- */
+.stayDetailMain {
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 0 1.5rem;
+}
+
+.stayDetailHero {
+  position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  color: #ffffff;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1.5rem;
+}
+
+.stayDetailQuickInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stayDetailContentGrid {
+  display: grid;
+  grid-template-columns: 1.7fr 1.1fr;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.stayDetailSidebar {
+  position: sticky;
+  top: 2rem;
+}
+
+.stayDetailAmenitiesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stayDetailGalleryGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .stayDetailContentGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .stayDetailSidebar {
+    position: static;
+    top: auto;
+  }
+
+  .stayDetailHero {
+    padding: 1.5rem;
+  }
+
+  .stayDetailAmenitiesGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .stayDetailMain {
+    padding: 0 1rem;
+  }
+
+  .stayDetailHero h1 {
+    font-size: 1.9rem !important;
+  }
+
+  .stayDetailAmenitiesGrid {
     grid-template-columns: 1fr;
   }
 }

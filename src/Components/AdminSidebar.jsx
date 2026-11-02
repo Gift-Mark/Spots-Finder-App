@@ -15,8 +15,8 @@ export const AdminSidebar = ({ activeTab = 'Overview', onTabChange, onSignOut })
   const menuItems = [
     { name: 'Overview', icon: faTableCellsLarge },
     { name: 'Venue Management', icon: faBuilding },
-    { name: 'Concierge Support', icon: faHeadset }, // 👈 Added cleanly to the navigation array
-    { name: 'Event Moderation', icon: faCalendarCheck },
+    { name: 'Event Management', icon: faCalendarCheck },
+    { name: 'Concierge Support', icon: faHeadset },
     { name: 'Users', icon: faUsers },
     { name: 'Ads', icon: faBullhorn },
     { name: 'System Logs', icon: faTerminal },

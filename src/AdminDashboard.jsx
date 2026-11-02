@@ -15,11 +15,14 @@ import {
   createPlace,
   updatePlace,
   deletePlace,
+  fetchEvents,
+  createVendorEvent,
 } from "./api/client";
 
 export const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("Overview");
   const [venues, setVenues] = useState([]);
+  const [events, setEvents] = useState([]);
   const [adminSearchQuery, setAdminSearchQuery] = useState("");
 
   // State for Concierge Enquiries
@@ -30,7 +33,7 @@ export const AdminDashboard = () => {
   // State for Flagged Content Queue
   const [flaggedItems, setFlaggedItems] = useState([]);
 
-  // Modal / Form state for Create & Update
+  // Modal / Form state for Create & Update Venues
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVenue, setEditingVenue] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -50,6 +53,24 @@ export const AdminDashboard = () => {
     displayStatus: "Open Now",
     priceRange: "₦₦",
     status: "active",
+  });
+
+  // Modal / Form state for Create & Update Events
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [selectedEventImage, setSelectedEventImage] = useState(null);
+  const [eventFormData, setEventFormData] = useState({
+    title: "",
+    description: "",
+    category: "Concert",
+    eventDate: "",
+    startTime: "",
+    endTime: "",
+    ticketPrice: 0,
+    availableTickets: 0,
+    organizer: "",
+    ticketUrl: "",
+    placeId: "",
   });
 
   const createSlug = (text) => {
@@ -83,44 +104,150 @@ export const AdminDashboard = () => {
     }
   }, [conciergeFilter]);
 
-  // --- READ: Fetch venues ---
+  // --- READ: Fetch venues (ALL statuses for admin) ---
   const loadVenues = useCallback(async () => {
     try {
-      const response = await fetchPlaces();
-
+      // Direct API call to ensure we get all venues
+      const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
+      const response = await fetch('http://localhost:5000/api/places?limit=1000&status=', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const data = await response.json();
+      console.log('📊 Raw API Response:', data);
+      
       let venueList = [];
-      if (Array.isArray(response)) {
-        venueList = response;
-      } else if (response && Array.isArray(response.data)) {
-        venueList = response.data;
-      } else if (response && Array.isArray(response.places)) {
-        venueList = response.places;
-      } else if (response && response.data && Array.isArray(response.data.data)) {
-        venueList = response.data.data;
+      if (Array.isArray(data)) {
+        venueList = data;
+      } else if (data && Array.isArray(data.data)) {
+        venueList = data.data;
+      } else if (data && Array.isArray(data.places)) {
+        venueList = data.places;
       }
 
+      console.log(`📊 Admin Dashboard loaded ${venueList.length} total venues from database`);
+      console.log('Total from API:', data.total || venueList.length);
+      
       setVenues(venueList);
     } catch (err) {
       console.error("Venue load error:", err);
+      console.error("Error details:", err.response?.data || err.message);
     }
   }, []);
 
-  // --- READ: Fetch all dashboard data on mount (Consolidated to prevent cascading warnings & unused helper issues) ---
+  // --- READ: Fetch events ---
+  const loadEvents = useCallback(async () => {
+    try {
+      const response = await fetchEvents();
+
+      let eventList = [];
+      if (Array.isArray(response)) {
+        eventList = response;
+      } else if (response && Array.isArray(response.data)) {
+        eventList = response.data;
+      }
+
+      setEvents(eventList);
+    } catch (err) {
+      console.error("Event load error:", err);
+    }
+  }, []);
+
+  // --- DELETE: Delete venue by ID ---
+  const handleDeleteVenue = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this venue listing?")) return;
+    try {
+      await deletePlace(id);
+      alert("Venue deleted successfully!");
+      setTimeout(() => loadVenues(), 300);
+    } catch (err) {
+      alert("Failed to delete venue: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  // --- EVENT MODAL HANDLERS ---
+  const handleOpenCreateEventModal = () => {
+    setEditingEvent(null);
+    setEventFormData({
+      title: "",
+      description: "",
+      category: "Concert",
+      eventDate: "",
+      startTime: "",
+      endTime: "",
+      ticketPrice: 0,
+      availableTickets: 0,
+      organizer: "",
+      ticketUrl: "",
+      placeId: "",
+    });
+    setIsEventModalOpen(true);
+    setSelectedEventImage(null);
+  };
+
+  const handleSaveEvent = async (e) => {
+    e.preventDefault();
+
+    // Validation
+    if (!eventFormData.placeId) {
+      alert("Please select a venue for this event.");
+      return;
+    }
+
+    const payload = {
+      ...eventFormData,
+      image: selectedEventImage ? URL.createObjectURL(selectedEventImage) : "", // In production, upload to backend
+    };
+
+    try {
+      await createVendorEvent(payload);
+      alert(`✓ Event Published!\n\nTitle: ${eventFormData.title}\nDate: ${eventFormData.eventDate}\nVenue: ${eventFormData.placeId}\n\nEvent will appear on the Events page immediately.`);
+      setIsEventModalOpen(false);
+      setSelectedEventImage(null);
+      setTimeout(() => loadEvents(), 300);
+    } catch (err) {
+      alert("Failed to create event: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  // --- READ: Fetch all dashboard data on mount ---
   useEffect(() => {
     let isMounted = true;
 
     const fetchAllDashboardData = async () => {
       try {
-        // 1. Fetch Venues
-        const venueResponse = await fetchPlaces();
-        let venueList = [];
-        if (Array.isArray(venueResponse)) venueList = venueResponse;
-        else if (venueResponse?.data) venueList = venueResponse.data;
-        else if (venueResponse?.places) venueList = venueResponse.places;
+        // 1. Fetch ALL Venues (direct API call to ensure no filtering)
+        const token = localStorage.getItem('token') || localStorage.getItem('jos_pulse_token');
+        const venueResponse = await fetch('http://localhost:5000/api/places?limit=1000&status=', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         
-        if (isMounted) setVenues(venueList);
+        const venueData = await venueResponse.json();
+        console.log('📊 useEffect API Response:', venueData);
+        
+        let venueList = [];
+        if (Array.isArray(venueData)) venueList = venueData;
+        else if (venueData?.data) venueList = venueData.data;
+        else if (venueData?.places) venueList = venueData.places;
+        
+        if (isMounted) {
+          setVenues(venueList);
+          console.log(`📊 Dashboard loaded ${venueList.length} total venues`);
+        }
 
-        // 2. Fetch Flagged Content
+        // 2. Fetch Events
+        const eventsResponse = await fetchEvents();
+        let eventList = [];
+        if (Array.isArray(eventsResponse)) eventList = eventsResponse;
+        else if (eventsResponse?.data) eventList = eventsResponse.data;
+        
+        if (isMounted) setEvents(eventList);
+
+        // 3. Fetch Flagged Content
         const flaggedResponse = await fetch("/api/admin/flagged-content", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
@@ -131,7 +258,7 @@ export const AdminDashboard = () => {
 
         if (isMounted) setFlaggedItems(itemsList);
 
-        // 3. Fetch Concierge Enquiries
+        // 4. Fetch Concierge Enquiries
         const url = conciergeFilter === "all" 
           ? "http://localhost:5000/api/v1/concierge" 
           : `http://localhost:5000/api/v1/concierge?status=${conciergeFilter}`;
@@ -209,7 +336,7 @@ export const AdminDashboard = () => {
   const handleOpenEditModal = (venue) => {
     setEditingVenue(venue);
     setFormData({
-      name: venue.name || "",
+      name: venue.name || venue.title || "",
       category: venue.category || "Restaurant & Dining",
       location: venue.location || "",
       address: venue.address || venue.location || "",
@@ -231,10 +358,59 @@ export const AdminDashboard = () => {
 
   const handleSaveVenue = async (e) => {
     e.preventDefault();
+
+    // Enhanced Category-to-Section mapping with comprehensive coverage
+    let targetSection = "dining"; // default fallback
+    const catLower = formData.category.toLowerCase();
+
+    // Exact category mapping for robust wiring
+    const categoryMap = {
+      'restaurant & dining': 'dining',
+      'restaurant': 'dining',
+      'dining': 'dining',
+      'cafe': 'dining',
+      'hotel & resort': 'stays',
+      'hotel': 'stays',
+      'resort': 'stays',
+      'accommodation': 'stays',
+      'stay': 'stays',
+      'lounge & nightlife': 'nightlife',
+      'nightlife': 'nightlife',
+      'lounge': 'lounges',
+      'bar': 'nightlife',
+      'club': 'nightlife',
+      'event center & arena': 'events',
+      'event': 'events',
+      'arena': 'events',
+      'festival': 'events',
+      'music & festivals': 'events',
+      'golf & sports club': 'golf',
+      'golf': 'golf',
+      'sports': 'golf',
+      'cultural landmark': 'culture',
+      'culture': 'culture',
+      'landmark': 'culture',
+      'museum': 'culture',
+      'heritage': 'culture',
+      'attraction': 'attractions',
+      'nature': 'attractions',
+      'other': 'explore',
+    };
+
+    // Find matching section from map
+    targetSection = categoryMap[catLower] || 
+                    Object.entries(categoryMap).find(([key]) => 
+                      catLower.includes(key)
+                    )?.[1] || 'explore';
+
+    const generatedSlug = createSlug(formData.name);
+
     const data = new FormData();
     data.append("name", formData.name);
-    data.append("slug", createSlug(formData.name));
+    data.append("title", formData.name);
+    data.append("slug", generatedSlug);
     data.append("category", formData.category);
+    data.append("section", targetSection);
     data.append("location", formData.location);
     data.append("address", formData.address || formData.location);
     data.append("description", formData.description);
@@ -246,33 +422,27 @@ export const AdminDashboard = () => {
     data.append("openingTime", formData.openingTime);
     data.append("closingTime", formData.closingTime);
     data.append("entryPrice", formData.entryPrice);
+    data.append("priceRange", formData.priceRange || "₦₦");
 
-    if (selectedFile) data.append("heroImage", selectedFile);
+    // Send image as 'heroImage' field (backend expects this name)
+    if (selectedFile) {
+      data.append("heroImage", selectedFile);
+      console.log("✅ Uploading image:", selectedFile.name, selectedFile.type, selectedFile.size);
+    }
 
     try {
       if (editingVenue) {
         await updatePlace(editingVenue._id || editingVenue.id, data);
-        alert("Venue updated successfully!");
+        alert(`✓ Venue Updated!\n\nName: ${formData.name}\nCategory: ${formData.category}\nAuto-routed to: /${targetSection}\nSlug: ${generatedSlug}\n\nVisitors can now find this place on the ${targetSection} page.`);
       } else {
         await createPlace(data);
-        alert("New venue created successfully!");
+        alert(`✓ New Venue Published!\n\nName: ${formData.name}\nCategory: ${formData.category}\nAuto-routed to: /${targetSection}\nSlug: ${generatedSlug}\n\nVisitors will see this on the ${targetSection} page immediately.`);
       }
       setIsModalOpen(false);
       setSelectedFile(null);
       setTimeout(() => loadVenues(), 300);
     } catch (err) {
       alert("Operation failed: " + (err.response?.data?.message || err.message));
-    }
-  };
-
-  const handleDeleteVenue = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this venue listing?")) return;
-    try {
-      await deletePlace(id);
-      alert("Venue deleted successfully!");
-      setTimeout(() => loadVenues(), 300);
-    } catch (err) {
-      alert("Failed to delete venue: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -314,8 +484,8 @@ export const AdminDashboard = () => {
                     ? "Venue Directory Management"
                     : activeTab === "Concierge Support"
                       ? "Airport Concierge Enquiries"
-                      : activeTab === "Event Moderation"
-                        ? "Event Moderation Queue"
+                      : activeTab === "Event Management"
+                        ? "Event Management"
                         : activeTab === "Users"
                           ? "User Management & Permissions"
                           : activeTab === "Ads"
@@ -347,6 +517,23 @@ export const AdminDashboard = () => {
                 }}
               >
                 + Add New Listing
+              </button>
+            )}
+
+            {activeTab === 'Event Management' && (
+              <button
+                onClick={handleOpenCreateEventModal}
+                style={{
+                  backgroundColor: "#F97316",
+                  color: "#FFF",
+                  border: "none",
+                  padding: "10px 16px",
+                  borderRadius: "8px",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                }}
+              >
+                + Add New Event
               </button>
             )}
           </div>
@@ -459,7 +646,7 @@ export const AdminDashboard = () => {
 
           {activeTab === "Overview" && (
             <PromotedVenuesTable
-              venues={filteredVenues}
+              venues={filteredVenues.slice(0, 8)}
               onNewListing={handleOpenCreateModal}
               onEdit={handleOpenEditModal}
               onDelete={handleDeleteVenue}
@@ -477,7 +664,7 @@ export const AdminDashboard = () => {
             />
           )}
 
-          {activeTab === "Event Moderation" && <EventModeration />}
+          {activeTab === "Event Management" && <EventModeration />}
           {activeTab === "Users" && <UserManagement />}
           {activeTab === "Ads" && <AdManagement />}
           {activeTab === "System Logs" && <SystemLogs />}
@@ -514,17 +701,21 @@ export const AdminDashboard = () => {
               </div>
 
               <div>
-                <label style={modalStyles.label}>Category</label>
+                <label style={modalStyles.label}>Category & Wiring</label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                   style={modalStyles.input}
                 >
-                  <option>Restaurant & Dining</option>
-                  <option>Hotel & Resort</option>
-                  <option>Golf & Sports Club</option>
-                  <option>Lounge & Nightlife</option>
-                  <option>Event Center & Arena</option>
+                  <option value="Restaurant & Dining">Restaurant & Dining → /dining</option>
+                  <option value="Hotel & Resort">Hotel & Resort → /stays</option>
+                  <option value="Lounge & Nightlife">Lounge & Nightlife → /nightlife</option>
+                  <option value="Event Center & Arena">Event Center & Arena → /events</option>
+                  <option value="Music & Festivals">Music & Festivals → /events</option>
+                  <option value="Golf & Sports Club">Golf & Sports Club → /golf</option>
+                  <option value="Cultural Landmark">Cultural Landmark → /culture</option>
+                  <option value="Attraction">Tourist Attraction → /attractions</option>
+                  <option value="Nature">Nature & Parks → /attractions</option>
                 </select>
               </div>
 
@@ -549,18 +740,78 @@ export const AdminDashboard = () => {
                 />
               </div>
 
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={modalStyles.label}>Phone Number</label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    style={modalStyles.input}
+                    placeholder="+234 XXX XXX XXXX"
+                  />
+                </div>
+
+                <div>
+                  <label style={modalStyles.label}>Listing Status</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    style={modalStyles.input}
+                  >
+                    <option value="active">✓ Active (Visible to public)</option>
+                    <option value="pending">⏳ Pending (Under review)</option>
+                    <option value="inactive">✕ Inactive (Hidden)</option>
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label style={modalStyles.label}>Upload Venue Image</label>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setSelectedFile(e.target.files[0])}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setSelectedFile(file);
+                  }}
                   style={{ ...modalStyles.input, padding: "8px 12px", cursor: "pointer" }}
                 />
                 {selectedFile && (
-                  <p style={{ fontSize: "12px", color: "#16A34A", marginTop: "4px" }}>
-                    Selected: {selectedFile.name}
-                  </p>
+                  <div style={{ marginTop: "12px" }}>
+                    <img
+                      src={URL.createObjectURL(selectedFile)}
+                      alt="Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: "240px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "2px solid #F97316",
+                        boxShadow: "0 2px 8px rgba(249, 115, 22, 0.2)"
+                      }}
+                    />
+                    <p style={{ fontSize: "12px", color: "#16A34A", marginTop: "8px", fontWeight: "600" }}>
+                      ✓ Selected: {selectedFile.name}
+                    </p>
+                  </div>
+                )}
+                {!selectedFile && editingVenue?.heroImage && (
+                  <div style={{ marginTop: "12px" }}>
+                    <p style={{ fontSize: "11px", color: "#64748B", marginBottom: "6px" }}>Current image:</p>
+                    <img
+                      src={editingVenue.heroImage}
+                      alt="Current"
+                      style={{
+                        width: "100%",
+                        maxHeight: "180px",
+                        objectFit: "cover",
+                        borderRadius: "6px",
+                        border: "1px solid #CBD5E1",
+                        opacity: 0.7
+                      }}
+                    />
+                  </div>
                 )}
               </div>
 
@@ -577,6 +828,213 @@ export const AdminDashboard = () => {
                   style={{ padding: "10px 16px", background: "#F97316", color: "#FFF", border: "none", borderRadius: "6px", fontWeight: "bold", cursor: "pointer" }}
                 >
                   {editingVenue ? "Save Changes" : "Publish Listing"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* CREATE / EDIT EVENT MODAL */}
+      {isEventModalOpen && (
+        <div style={modalStyles.overlay}>
+          <div style={modalStyles.modalContainer}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h2 style={{ marginTop: 0, marginBottom: 0, fontSize: "20px", fontWeight: "700", color: "#1E293B" }}>
+                {editingEvent ? "Edit Event" : "Create New Event"}
+              </h2>
+              <button
+                type="button"
+                onClick={() => setIsEventModalOpen(false)}
+                style={{ background: "none", border: "none", fontSize: "18px", cursor: "pointer", color: "#64748B" }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEvent} style={{ display: "flex", flexDirection: "column", gap: "14px", marginTop: "16px" }}>
+              <div>
+                <label style={modalStyles.label}>Event Title</label>
+                <input
+                  type="text"
+                  required
+                  value={eventFormData.title}
+                  onChange={(e) => setEventFormData({ ...eventFormData, title: e.target.value })}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Category</label>
+                <select
+                  value={eventFormData.category}
+                  onChange={(e) => setEventFormData({ ...eventFormData, category: e.target.value })}
+                  style={modalStyles.input}
+                >
+                  <option value="Concert">Concert</option>
+                  <option value="Festival">Festival</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Conference">Conference</option>
+                  <option value="Networking">Networking</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Exhibition">Exhibition</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Venue (Select Place)</label>
+                <select
+                  required
+                  value={eventFormData.placeId}
+                  onChange={(e) => setEventFormData({ ...eventFormData, placeId: e.target.value })}
+                  style={modalStyles.input}
+                >
+                  <option value="">-- Select Venue --</option>
+                  {venues.map((venue) => (
+                    <option key={venue._id || venue.id} value={venue._id || venue.id}>
+                      {venue.name || venue.title} - {venue.location || venue.address}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={modalStyles.label}>Event Date</label>
+                  <input
+                    type="date"
+                    required
+                    value={eventFormData.eventDate}
+                    onChange={(e) => setEventFormData({ ...eventFormData, eventDate: e.target.value })}
+                    style={modalStyles.input}
+                  />
+                </div>
+
+                <div>
+                  <label style={modalStyles.label}>Start Time</label>
+                  <input
+                    type="time"
+                    required
+                    value={eventFormData.startTime}
+                    onChange={(e) => setEventFormData({ ...eventFormData, startTime: e.target.value })}
+                    style={modalStyles.input}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                <div>
+                  <label style={modalStyles.label}>End Time</label>
+                  <input
+                    type="time"
+                    required
+                    value={eventFormData.endTime}
+                    onChange={(e) => setEventFormData({ ...eventFormData, endTime: e.target.value })}
+                    style={modalStyles.input}
+                  />
+                </div>
+
+                <div>
+                  <label style={modalStyles.label}>Ticket Price (₦)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={eventFormData.ticketPrice}
+                    onChange={(e) => setEventFormData({ ...eventFormData, ticketPrice: e.target.value })}
+                    style={modalStyles.input}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Available Tickets</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={eventFormData.availableTickets}
+                  onChange={(e) => setEventFormData({ ...eventFormData, availableTickets: e.target.value })}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Organizer</label>
+                <input
+                  type="text"
+                  value={eventFormData.organizer}
+                  onChange={(e) => setEventFormData({ ...eventFormData, organizer: e.target.value })}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Ticket URL (Optional)</label>
+                <input
+                  type="url"
+                  value={eventFormData.ticketUrl}
+                  onChange={(e) => setEventFormData({ ...eventFormData, ticketUrl: e.target.value })}
+                  style={modalStyles.input}
+                  placeholder="https://tickets.example.com"
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Description</label>
+                <textarea
+                  rows="4"
+                  required
+                  value={eventFormData.description}
+                  onChange={(e) => setEventFormData({ ...eventFormData, description: e.target.value })}
+                  style={modalStyles.input}
+                />
+              </div>
+
+              <div>
+                <label style={modalStyles.label}>Upload Event Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setSelectedEventImage(file);
+                  }}
+                  style={{ ...modalStyles.input, padding: "8px 12px", cursor: "pointer" }}
+                />
+                {selectedEventImage && (
+                  <div style={{ marginTop: "12px" }}>
+                    <img
+                      src={URL.createObjectURL(selectedEventImage)}
+                      alt="Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: "240px",
+                        objectFit: "cover",
+                        borderRadius: "8px",
+                        border: "2px solid #F97316",
+                        boxShadow: "0 2px 8px rgba(249, 115, 22, 0.2)"
+                      }}
+                    />
+                    <p style={{ fontSize: "12px", color: "#16A34A", marginTop: "8px", fontWeight: "600" }}>
+                      ✓ Selected: {selectedEventImage.name}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ display: "flex", gap: "10px", justifyContent: "flex-end", marginTop: "10px" }}>
+                <button
+                  type="button"
+                  onClick={() => setIsEventModalOpen(false)}
+                  style={{ padding: "10px 16px", background: "#E2E8F0", color: "#0F172A", border: "none", borderRadius: "6px", cursor: "pointer" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  style={{ padding: "10px 16px", background: "#F97316", color: "#FFF", border: "none", borderRadius: "6px", fontWeight: "bold", cursor: "pointer" }}
+                >
+                  {editingEvent ? "Save Changes" : "Publish Event"}
                 </button>
               </div>
             </form>

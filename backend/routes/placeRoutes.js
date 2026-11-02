@@ -1,6 +1,5 @@
 import express from "express";
 import mongoose from 'mongoose';
-import multer from 'multer';
 import {
   getAllPlaces,
   getPlaceByIdentifier,
@@ -10,7 +9,7 @@ import {
 } from "../controllers/place.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
 
-const upload = multer({dest: "uploads/"});
+import upload from '../middleware/uploadMiddleware.js'
 
 const router = express.Router();
 
@@ -21,6 +20,9 @@ router.get("/:identifier", getPlaceByIdentifier);
 router.post("/", protect, authorizeRoles("vendor", "admin"), upload.single("heroImage"), createPlace);
 router.put("/:id", protect, authorizeRoles("vendor", "admin"), upload.single("heroImage"), updatePlace);
 router.delete("/:id", protect, authorizeRoles("vendor", "admin"), deletePlace);
+
+// Use upload.single('heroImage') to catch the uploaded file
+router.post('/places', upload.single('heroImage'), createPlace);
 
 // 1. Mongoose Schema for Flagged Reports
 const reportSchema = new mongoose.Schema({

@@ -152,7 +152,7 @@ export const Login = () => {
           Continue as Guest
         </button>
         <p className={styles.guestHint}>
-          Browse places, events, dining and stays — no account needed.
+          Browse places, events, dining and stays no account needed.
         </p>
       </section>
     </main>

@@ -26,6 +26,11 @@ export const fetchPlaceBySlug = async (slug) => {
   return response.data;
 };
 
+export const toggleSaveSpot = async (placeId, placeSnapshot) => {
+  const response = await api.post('/saves/toggle', { placeId, placeSnapshot });
+  return response.data;
+};
+
 // --- PLACES MUTATION API ---
 export const createPlace = async (payload) => {
   const response = await api.post('/places', payload, {
@@ -125,9 +130,15 @@ export const fetchReviews = async (placeId) => {
   return response.data;
 };
 
-// --- SAVES API ---
-export const toggleSaveSpot = async (placeId) => {
-  const response = await api.post('/saves/toggle', { placeId });
+// Reviews for bundled/static stays, which have no Mongo ObjectId. The backend
+// stores these against `staySlug` instead of `placeId`.
+export const postStayReview = async (staySlug, data) => {
+  const response = await api.post('/reviews', { staySlug, ...data });
+  return response.data;
+};
+
+export const fetchStayReviews = async (staySlug) => {
+  const response = await api.get('/reviews', { params: { staySlug } });
   return response.data;
 };
 
