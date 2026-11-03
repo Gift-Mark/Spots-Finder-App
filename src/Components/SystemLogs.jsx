@@ -6,6 +6,7 @@ export const SystemLogs = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [levelFilter, setLevelFilter] = useState('All');
+  const [error, setError] = useState('');
 
   // Fetch system logs on mount safely
   useEffect(() => {
@@ -20,14 +21,18 @@ export const SystemLogs = () => {
           }
         });
         const data = await response.json();
-        const logList = Array.isArray(data) ? data : data.data || data.logs || [];
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || `Request failed (${response.status}).`);
+        }
         
         if (isMounted) {
-          setLogs(logList);
+          setLogs(data.logs || []);
+          setError('');
         }
       } catch (err) {
         if (isMounted) {
           console.error('Failed to fetch system logs:', err);
+          setError(err.message || 'Failed to load system logs.');
         }
       } finally {
         if (isMounted) {
@@ -45,16 +50,23 @@ export const SystemLogs = () => {
 
   const reloadLogs = async () => {
     try {
+      setLoading(true);
       const response = await fetch('/api/admin/logs', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
       const data = await response.json();
-      const logList = Array.isArray(data) ? data : data.data || data.logs || [];
-      setLogs(logList);
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || `Request failed (${response.status}).`);
+      }
+      setLogs(data.logs || []);
+      setError('');
     } catch (err) {
       console.error('Failed to reload logs:', err);
+      setError(err.message || 'Failed to reload system logs.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,16 +74,22 @@ export const SystemLogs = () => {
   const handleClearLogs = async () => {
     if (!window.confirm('Are you sure you want to clear all system audit logs?')) return;
     try {
-      await fetch('/api/admin/logs', {
+      const response = await fetch('/api/admin/logs', {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      alert('System logs cleared successfully.');
-      reloadLogs();
-    } catch {
-      alert('Failed to clear logs.');
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || `Request failed (${response.status}).`);
+      }
+      setLogs([]);
+      setError('');
+      alert(data.message || 'System logs cleared successfully.');
+    } catch (err) {
+      console.error('Failed to clear system logs:', err);
+      setError(err.message || 'Failed to clear system logs.');
     }
   };
 
@@ -87,7 +105,7 @@ export const SystemLogs = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
         <div>
           <h2 style={{ margin: 0, fontSize: '20px', fontWeight: '700', color: '#1E293B' }}>System Activity & Audit Logs</h2>
-          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748B' }}>Real-time server terminal telemetry, API requests, and security audits.</p>
+          <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748B' }}>Recent API activity and request errors recorded by the server.</p>
         </div>
 
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -131,6 +149,7 @@ export const SystemLogs = () => {
 
       {/* Terminal Log Output Window */}
       <div style={{ backgroundColor: '#0F172A', borderRadius: '10px', padding: '16px', fontFamily: 'monospace', fontSize: '13px', color: '#E2E8F0', minHeight: '320px', maxHeight: '500px', overflowY: 'auto' }}>
+        {error && <p role="alert" style={{ color: '#FCA5A5', textAlign: 'center' }}>{error}</p>}
         {loading ? (
           <p style={{ color: '#94A3B8', textAlign: 'center', padding: '40px' }}>Loading system telemetry...</p>
         ) : filteredLogs.length === 0 ? (
@@ -148,9 +167,12 @@ export const SystemLogs = () => {
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
                       <span style={{ fontWeight: 'bold', color: '#F8FAFC' }}>{log.action || log.endpoint || 'SYSTEM_EVENT'}</span>
-                      <span style={{ fontSize: '11px', color: '#64748B' }}>{log.timestamp || new Date().toLocaleTimeString()}</span>
+                      <span style={{ fontSize: '11px', color: '#64748B' }}>{log.timestamp ? new Date(log.timestamp).toLocaleString() : ''}</span>
                     </div>
                     <p style={{ margin: 0, color: '#94A3B8', fontSize: '12px' }}>{log.message || log.details || 'Operation executed successfully.'}</p>
+                    <p style={{ margin: '4px 0 0', color: '#64748B', fontSize: '11px' }}>
+                      {log.userId ? `User ${log.userId} · ` : ''}HTTP {log.statusCode} · {log.durationMs} ms
+                    </p>
                   </div>
                 </div>
               );

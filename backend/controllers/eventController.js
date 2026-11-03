@@ -12,7 +12,11 @@ export const getAllEvents = async (req, res) => {
     const query = {};
 
     if (category) query.category = category;
-    query.status = status || "upcoming";
+    query.status = {
+      $in: status
+        ? status.split(",").map((value) => value.trim()).filter(Boolean)
+        : ["upcoming", "ongoing"],
+    };
 
     if (search) {
       query.$or = [
@@ -22,13 +26,15 @@ export const getAllEvents = async (req, res) => {
       ];
     }
 
-    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10);
+    const pageNumber = Math.max(1, Number.parseInt(page, 10) || 1);
+    const pageLimit = Math.min(100, Math.max(1, Number.parseInt(limit, 10) || 10));
+    const skip = (pageNumber - 1) * pageLimit;
 
     const events = await Event.find(query)
       .populate("placeId", "name location address coverImage latitude longitude")
       .sort({ eventDate: 1 })
       .skip(skip)
-      .limit(parseInt(limit, 10));
+      .limit(pageLimit);
 
     const total = await Event.countDocuments(query);
 
@@ -37,7 +43,7 @@ export const getAllEvents = async (req, res) => {
       count: events.length,
       total,
       page: Number(page),
-      pages: Math.ceil(total / limit),
+      pages: Math.ceil(total / pageLimit),
       data: events,
     });
   } catch (error) {
@@ -114,7 +120,7 @@ export const createEvent = async (req, res) => {
       startTime,
       endTime,
       category,
-      image: image || "",
+      image: req.file ? `/uploads/${req.file.filename}` : image || "",
       ticketPrice: ticketPrice || 0,
       availableTickets: availableTickets || 0,
       slug: generatedSlug,
@@ -199,7 +205,9 @@ export const deleteEvent = async (req, res) => {
 // @desc    Get all events for moderation queue
 export const getAdminEvents = async (req, res) => {
   try {
-    const events = await Event.find({}).sort({ createdAt: -1 });
+    const events = await Event.find({})
+      .populate("placeId", "name location address")
+      .sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: events });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

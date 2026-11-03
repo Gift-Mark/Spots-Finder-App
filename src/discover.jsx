@@ -19,11 +19,13 @@ import styles from "./discover.module.css";
 import heroVideo from "./assets/videos/jos_pulse_hero_loop_draft.mp4";
 
 // API Services
-import { fetchPlaces, logUserBehavior } from "../src/api/client.js";
+import { fetchAllEvents, fetchPlaces, logUserBehavior } from "../src/api/client.js";
+import { getEventImageUrl } from "./utils/imageHelpers.js";
 
 export const Discover = () => {
   const navigate = useNavigate();
   const [places, setPlaces] = useState([]);
+  const [featuredEvents, setFeaturedEvents] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [loading, setLoading] = useState(false);
@@ -95,6 +97,61 @@ export const Discover = () => {
     };
   }, [searchQuery, activeCategory, sessionId]);
 
+  useEffect(() => {
+    let active = true;
+
+    fetchAllEvents()
+      .then((events) => {
+        if (!active) return;
+
+        const prioritizedEvent = events.find((event) =>
+          String(event.title || "")
+            .toUpperCase()
+            .replace(/[^A-Z0-9]/g, "")
+            .includes("JTOWNMETAMORPHOSIS2026")
+        );
+        const latestEvent = prioritizedEvent
+          ? [prioritizedEvent]
+          : [...events]
+              .sort((first, second) => {
+                const firstCreated = new Date(first.createdAt || first.eventDate).getTime();
+                const secondCreated = new Date(second.createdAt || second.eventDate).getTime();
+                return secondCreated - firstCreated;
+              })
+              .slice(0, 1);
+
+        setFeaturedEvents(
+          latestEvent.map((event) => {
+            const eventDate = new Date(event.eventDate);
+            const hasValidDate = !Number.isNaN(eventDate.getTime());
+
+            return {
+              id: event.slug || event._id,
+              title: event.title,
+              location: event.placeId?.name || event.placeId?.location || event.organizer || "Jos, Plateau State",
+              month: hasValidDate
+                ? eventDate.toLocaleString("en-US", { month: "short" }).toUpperCase()
+                : "TBA",
+              day: hasValidDate ? String(eventDate.getDate()) : "--",
+              price: event.ticketPrice > 0
+                ? `₦${event.ticketPrice.toLocaleString()}`
+                : "Free",
+              actionText: "VIEW DETAILS",
+              image: getEventImageUrl(event),
+              href: "/events",
+            };
+          })
+        );
+      })
+      .catch((err) => {
+        console.error("Failed to load featured events:", err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // ─── Hero Search and Pill Event Handlers ────────────────────────────────────
   const handleSearch = (query, category) => {
     setSearchQuery(query);
@@ -130,10 +187,6 @@ export const Discover = () => {
   };
 
   // ─── Derived data ────────────────────────────────────────────────────────────
-  const featuredEvents = places.filter(
-    (place) => place.section === "events" || place.section === "recommended"
-  );
-
   // Client-side filter mirrors the API filter for instant UX while results load
   const searchResults = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();

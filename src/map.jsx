@@ -1,11 +1,14 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 import Navbar from "./Components/NavBar";
 import BottomNav from "./Components/BottomNav";
-import places from "../backend/data/places";
+import MapPlaceMarker, {
+  FitAllMapMarkers,
+} from "./Components/MapPlaceMarker";
+import { fetchAllMapPlaces, groupMapPlaces } from "./services/mapPlaces";
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -23,14 +26,41 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function Map() {
-  // Center coordinates for Jos, Plateau State
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const josCenter = [9.9285, 8.8921];
+
+  useEffect(() => {
+    let isMounted = true;
+    fetchAllMapPlaces()
+      .then((mapPlaces) => {
+        if (isMounted) setPlaces(mapPlaces);
+      })
+      .catch(() => {
+        if (isMounted) {
+          setError("Places could not be loaded. Please check your connection and try again.");
+        }
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className={styles.mapPage}>
       <Navbar title="Explore Map" showGear={false} />
 
       <div className={styles.mapContainer}>
+        {loading && <p className={styles.mapStatus}>Loading places...</p>}
+        {error && <p className={styles.mapStatus} role="alert">{error}</p>}
+        {!loading && !error && places.length === 0 && (
+          <p className={styles.mapStatus}>No places with map coordinates are available yet.</p>
+        )}
         <MapContainer
           center={josCenter}
           zoom={13}
@@ -42,61 +72,14 @@ export default function Map() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {/* Places without coordinates cannot be represented as map markers. */}
-          {places
-            .filter((place) => place.latitude && place.longitude)
-            .map((place) => (
-              <Marker
-                key={place.id || place._id}
-                position={[
-                  parseFloat(place.latitude),
-                  parseFloat(place.longitude),
-                ]}
-              >
-                <Popup>
-                  <div style={{ minWidth: "180px", textAlign: "left" }}>
-                    <img
-                      src={place.image || "/images/Jos Museum.jpg"}
-                      alt={place.title}
-                      style={{
-                        width: "100%",
-                        height: "100px",
-                        objectFit: "cover",
-                        borderRadius: "8px",
-                        marginBottom: "8px",
-                      }}
-                    />
-
-                    <h3 style={{ margin: "0 0 4px 0", fontSize: "16px" }}>
-                      {place.title}
-                    </h3>
-
-                    <p style={{ margin: "0 0 4px 0", color: "#666", fontSize: "13px" }}>
-                      📍 {place.location}
-                    </p>
-
-                    {place.rating && (
-                      <p style={{ margin: "0 0 8px 0", fontSize: "13px" }}>
-                        ⭐ {place.rating}
-                      </p>
-                    )}
-
-                    <Link
-                      to={`/place/${place.slug || place.id}`}
-                      style={{
-                        display: "inline-block",
-                        color: "#7c3aed",
-                        fontWeight: "bold",
-                        textDecoration: "none",
-                        fontSize: "13px",
-                      }}
-                    >
-                      View Details &rarr;
-                    </Link>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+          <FitAllMapMarkers places={places} />
+          {groupMapPlaces(places).map(({ place, places: groupedPlaces }) => (
+            <MapPlaceMarker
+              key={place.id}
+              place={place}
+              places={groupedPlaces}
+            />
+          ))}
         </MapContainer>
       </div>
 

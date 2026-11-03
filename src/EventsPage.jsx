@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import Header from './Components/headerNav';
 import Footer from './Components/Footer';
+import { fetchAllEvents } from './api/client';
+import { getEventImageUrl } from './utils/imageHelpers';
 
 // Fallback Plateau State Events (used if database is empty)
 const REAL_WORLD_FALLBACKS = [
@@ -58,6 +60,57 @@ const PROMOTED_FALLBACK = {
   scoutCityUrl: "https://chat.whatsapp.com/scoutcity-plateau-rhythm-2026"
 };
 
+const matchesEventCategory = (eventCategory, selectedCategory) => {
+  if (selectedCategory === "All Events") return true;
+  const category = String(eventCategory || "").toLowerCase();
+  const categoryTerms = {
+    "Music & Festivals": ["music", "concert", "festival"],
+    "Golf & Sports": ["golf", "sport"],
+    Traditional: ["traditional", "culture", "heritage"],
+    Dining: ["dining", "food", "restaurant"],
+  };
+  return (categoryTerms[selectedCategory] || []).some((term) =>
+    category.includes(term)
+  );
+};
+
+const organizeEventsForPage = (events, selectedCategory) => {
+  const filteredEvents = events.filter((item) =>
+    matchesEventCategory(item.category, selectedCategory)
+  );
+  if (!filteredEvents.length) {
+    return {
+      promoted: events.length ? null : PROMOTED_FALLBACK,
+      grid: events.length ? [] : REAL_WORLD_FALLBACKS,
+    };
+  }
+
+  const mapped = filteredEvents.map((item) => ({
+    _id: item._id,
+    title: item.title,
+    category: item.category || "General",
+    dateText: `${item.eventDate ? new Date(item.eventDate).toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }) : "Upcoming"} • ${item.startTime || ""}`,
+    location: item.placeId?.name || item.organizer || "Jos, Plateau",
+    ticketPrice: item.ticketPrice || 0,
+    vipPrice: (item.ticketPrice || 0) * 2.5 || 15000,
+    image: getEventImageUrl(item),
+    description: item.description,
+    scoutCityUrl: item.scoutCityUrl || "",
+    isPromoted: item.status === "upcoming",
+  }));
+  const hero = mapped.find((event) => event.isPromoted) || mapped[0];
+  return {
+    promoted: { ...hero, dateRange: "UPCOMING SEASON", location: hero.location },
+    grid: mapped.filter((event) => event._id !== hero._id),
+  };
+};
+
 export default function RealWorldEventsPage() {
   const [selectedCategory, setSelectedCategory] = useState("All Events");
   const [timeFilter, setTimeFilter] = useState("Upcoming Week");
@@ -65,6 +118,7 @@ export default function RealWorldEventsPage() {
   const [promotedEvent, setPromotedEvent] = useState(PROMOTED_FALLBACK);
   const [eventsList, setEventsList] = useState(REAL_WORLD_FALLBACKS);
   const [loading, setLoading] = useState(true);
+  const [eventsError, setEventsError] = useState("");
   
   // Modal State
   const [activeModalEvent, setActiveModalEvent] = useState(null);
@@ -81,74 +135,46 @@ export default function RealWorldEventsPage() {
     { name: "Dining", icon: "🍽️" }
   ];
 
-  // Helper to format DB dates to UI strings
-  const formatEventDate = (dateStr) => {
-    if (!dateStr) return "Upcoming";
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  };
-
   // --- FETCH REAL EVENTS FROM BACKEND ---
   const loadEventsFromAPI = useCallback(async () => {
+    setLoading(true);
     try {
-      const queryParams = new URLSearchParams();
-      if (selectedCategory !== "All Events") {
-        queryParams.append("category", selectedCategory);
-      }
-      
-      const res = await fetch(`http://localhost:5000/api/v1/events?${queryParams.toString()}`);
-      const result = await res.json();
-
-      if (result?.success && Array.isArray(result.data) && result.data.length > 0) {
-        const mapped = result.data.map(item => ({
-          _id: item._id,
-          title: item.title,
-          category: item.category || "General",
-          dateText: `${formatEventDate(item.eventDate)} • ${item.startTime || ''}`,
-          location: item.placeId?.name || item.organizer || "Jos, Plateau",
-          ticketPrice: item.ticketPrice || 0,
-          vipPrice: (item.ticketPrice || 0) * 2.5 || 15000,
-          image: item.image || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
-          description: item.description,
-          scoutCityUrl: item.scoutCityUrl || "",
-          isPromoted: item.status === 'upcoming'
-        }));
-
-        const hero = mapped.find(e => e.isPromoted) || mapped[0];
-        const gridItems = mapped.filter(e => e._id !== hero._id);
-
-        setPromotedEvent({
-          ...hero,
-          dateRange: "UPCOMING SEASON",
-          location: hero.location
-        });
-
-        if (gridItems.length > 0) {
-          setEventsList(gridItems);
-        }
-      }
+      const events = await fetchAllEvents();
+      const { promoted, grid } = organizeEventsForPage(events, selectedCategory);
+      setPromotedEvent(promoted);
+      setEventsList(grid);
+      setEventsError("");
     } catch (err) {
-      console.error("Failed to load live events, displaying Plateau fallbacks:", err);
+      console.error("Failed to load live events:", err);
+      setEventsError("Live events could not be loaded. Please try again.");
     } finally {
       setLoading(false);
     }
   }, [selectedCategory]);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const initFetch = async () => {
-      setLoading(true);
-      await loadEventsFromAPI();
-      if (!isMounted) return;
-    };
-
-    initFetch();
+    let active = true;
+    fetchAllEvents()
+      .then((events) => {
+        if (!active) return;
+        const { promoted, grid } = organizeEventsForPage(events, selectedCategory);
+        setPromotedEvent(promoted);
+        setEventsList(grid);
+        setEventsError("");
+      })
+      .catch((err) => {
+        if (!active) return;
+        console.error("Failed to load live events:", err);
+        setEventsError("Live events could not be loaded. Please try again.");
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
-      isMounted = false;
+      active = false;
     };
-  }, [selectedCategory, loadEventsFromAPI]);
+  }, [selectedCategory]);
 
   const handleOpenTicketModal = (evt) => {
     setActiveModalEvent(evt);
@@ -269,6 +295,15 @@ export default function RealWorldEventsPage() {
         {/* EVENTS GRID */}
         {loading ? (
           <p style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>Loading upcoming Plateau events...</p>
+        ) : eventsError ? (
+          <div role="alert" style={{ textAlign: 'center', padding: '40px', color: '#B91C1C' }}>
+            <p>{eventsError}</p>
+            <button type="button" onClick={loadEventsFromAPI}>Try again</button>
+          </div>
+        ) : !promotedEvent && eventsList.length === 0 ? (
+          <p style={{ textAlign: 'center', padding: '40px', color: '#64748B' }}>
+            No events match this category yet.
+          </p>
         ) : (
           <section style={styles.eventsGrid}>
             {eventsList.map((evt) => (

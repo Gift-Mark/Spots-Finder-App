@@ -7,9 +7,11 @@ import Place from "../models/Place.js";
  */
 export const getAllPlaces = async (req, res) => {
   try {
-    const { category, subcategory, search, status, page = 1, limit = 12 } = req.query;
+    const { category, subcategory, section, search, status, page = 1, limit = 12 } = req.query;
 
     const query = {};
+
+    if (section) query.section = section;
 
     // Filter by category or subcategory if provided
     if (category) query.category = category;
@@ -18,7 +20,7 @@ export const getAllPlaces = async (req, res) => {
     // Filter by status - only apply filter if status is explicitly provided and not empty
     // This allows admin to fetch ALL places by passing status='' or omitting status
     if (status && status !== '') {
-      query.status = status;
+      query.status = status === "public" ? { $in: [null, "active"] } : status;
     } else if (status === undefined) {
       // Default to 'active' only when status param is completely absent (public views)
       query.status = "active";

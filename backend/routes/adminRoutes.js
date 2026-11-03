@@ -8,7 +8,11 @@ import {
   createAd,
   deleteAd,
   getSystemLogs,
-  clearSystemLogs
+  clearSystemLogs,
+  reviewFlaggedComment,
+  getVendorClaims,
+  reviewVendorClaim,
+  getVendorClaimDocument,
 } from "../controllers/adminController.js";
 import { getAdminEvents } from "../controllers/eventController.js";
 import {getPlaces} from "../controllers/placeController.js";
@@ -23,6 +27,10 @@ router.get("/users", getAllUsers);
 router.delete("/users/:id", deleteUser);
 router.patch("/users/:id/role", updateUserRole);
 router.get("/flagged-content", getFlaggedContent);
+router.patch("/flagged-content/:id", reviewFlaggedComment);
+router.get("/vendor-claims", getVendorClaims);
+router.get("/vendor-claims/:id/document", getVendorClaimDocument);
+router.patch("/vendor-claims/:id", reviewVendorClaim);
 router.get("/events", getAdminEvents);
 
 // Venue Management routes (Mapped directly to your Places database)

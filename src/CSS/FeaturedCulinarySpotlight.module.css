@@ -1,8 +1,8 @@
 .sectionContainer {
   max-width: 1200px;
   scroll-margin-top: 88px;
-  margin: 48px auto 56px;
-  padding: 0 24px;
+  margin: 32px auto 40px;
+  padding: 0 20px;
 }
 
 .headerRow {
@@ -35,7 +35,7 @@
   font-size: 22px;
   font-weight: 800;
   color: #0f172a;
-  margin: 0 0 24px 0;
+  margin: 0 0 18px 0;
   letter-spacing: -0.01em;
 }
 
@@ -82,7 +82,7 @@
 
 /* DETAILS CONTENT */
 .detailsContainer {
-  padding: 32px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -119,18 +119,18 @@
   font-size: 13px;
   color: #64748b;
   line-height: 1.6;
-  margin: 0 0 24px 0;
+  margin: 0 0 16px 0;
 }
 
 /* META GRID */
 .metaGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
   background: #f8fafc;
-  padding: 14px;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .metaItem {
@@ -367,7 +367,7 @@
   }
 
   .detailsContainer {
-    padding: 24px;
+    padding: 20px;
   }
 
   .buttonGroup {

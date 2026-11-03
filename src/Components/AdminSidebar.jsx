@@ -7,7 +7,10 @@ import {
   faUsers, 
   faBullhorn, 
   faTerminal, 
-  faRightFromBracket 
+  faRightFromBracket,
+  faFlag,
+  faGear,
+  faFileCircleCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/AdminSidebar.module.css';
 
@@ -20,6 +23,9 @@ export const AdminSidebar = ({ activeTab = 'Overview', onTabChange, onSignOut })
     { name: 'Users', icon: faUsers },
     { name: 'Ads', icon: faBullhorn },
     { name: 'System Logs', icon: faTerminal },
+    { name: 'Vendor Verification', icon: faFileCircleCheck },
+    { name: 'Flagged Comments', icon: faFlag },
+    { name: 'Settings', icon: faGear },
   ];
 
   return (

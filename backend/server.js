@@ -3,6 +3,7 @@ import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -36,6 +37,8 @@ import faqRoutes from './routes/faqRoutes.js';
 import travelContentRoutes from './routes/travelContentRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import Post from './models/Post.js';
+import User from './models/User.js';
+import systemLogMiddleware from "./middleware/systemLogMiddleware.js";
 
 dotenv.config();
 
@@ -57,6 +60,21 @@ const io = new Server(server, {
   },
 });
 
+io.use(async (socket, next) => {
+  const token = socket.handshake.auth?.token;
+  if (!token) return next();
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "default_secret");
+    const user = await User.findById(decoded.id).select("_id");
+    if (!user) return next(new Error("Not authorized."));
+    socket.data.userId = user._id.toString();
+    next();
+  } catch {
+    next(new Error("Not authorized."));
+  }
+});
+
 // Global Middlewares
 app.use(cors());
 app.use(express.json({ limit: "8mb" }));
@@ -66,6 +84,7 @@ app.use((req, res, next) => {
   req.io = io;
   next();
 });
+app.use(systemLogMiddleware);
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -152,6 +171,7 @@ io.on("connection", (socket) => {
   socket.on("create_post", async (postData = {}, acknowledge) => {
     try {
       const postToSave = new Post({
+        userId: socket.data.userId || null,
         userName: postData.user || postData.userName || "Explorer",
         userAvatar: postData.userAvatar || "/images/John Doe.avif",
         location: postData.location || "Jos Central",
@@ -164,6 +184,7 @@ io.on("connection", (socket) => {
       const broadcastPayload = {
         id: savedPost._id.toString(),
         _id: savedPost._id.toString(),
+        userId: savedPost.userId?.toString() || null,
         userName: savedPost.userName,
         userAvatar: savedPost.userAvatar,
         location: savedPost.location,

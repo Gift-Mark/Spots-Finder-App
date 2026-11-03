@@ -9,10 +9,10 @@ import {
   faMapMarkerAlt 
 } from '@fortawesome/free-solid-svg-icons';
 
-export const EventModeration = () => {
+export const EventModeration = ({ refreshVersion = 0 }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filterTab, setFilterTab] = useState('Pending'); // 'Pending', 'Approved', 'Rejected'
+  const [filterTab, setFilterTab] = useState('upcoming');
 
   // --- READ: Fetch events safely on mount (Lint-safe version) ---
   useEffect(() => {
@@ -26,6 +26,9 @@ export const EventModeration = () => {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
+        if (!response.ok) {
+          throw new Error(`Could not load events (${response.status}).`);
+        }
         const data = await response.json();
         const eventList = Array.isArray(data) 
           ? data 
@@ -50,7 +53,7 @@ export const EventModeration = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [refreshVersion]);
 
   // Helper to reload events after actions
   const reloadEvents = async () => {
@@ -105,8 +108,7 @@ export const EventModeration = () => {
 
   // Filter events based on active sub-tab
   const filteredEvents = events.filter((ev) => {
-    const status = (ev.status || 'Pending').toLowerCase();
-    return status === filterTab.toLowerCase();
+    return String(ev.status || 'upcoming').toLowerCase() === filterTab;
   });
 
   return (
@@ -117,13 +119,13 @@ export const EventModeration = () => {
           Event Submissions & Moderation Hub
         </h2>
         <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748B' }}>
-          Review, verify, and approve community event submissions for Jos Pulse.
+          Review and manage published events across Jos Pulse.
         </p>
       </div>
 
       {/* Moderation Status Tabs */}
       <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', borderBottom: '1px solid #E2E8F0', paddingBottom: '10px' }}>
-        {['Pending', 'Approved', 'Rejected'].map((tab) => (
+        {['upcoming', 'ongoing', 'completed', 'cancelled'].map((tab) => (
           <button
             key={tab}
             type="button"
@@ -139,7 +141,7 @@ export const EventModeration = () => {
               color: filterTab === tab ? '#FFFFFF' : '#475569',
             }}
           >
-            {tab} Queue ({events.filter(e => (e.status || 'Pending').toLowerCase() === tab.toLowerCase()).length})
+            {tab.charAt(0).toUpperCase() + tab.slice(1)} ({events.filter(e => String(e.status || 'upcoming').toLowerCase() === tab).length})
           </button>
         ))}
       </div>
@@ -148,7 +150,7 @@ export const EventModeration = () => {
         <p style={{ color: '#64748B', padding: '20px 0' }}>Loading event queue...</p>
       ) : filteredEvents.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', background: '#F8FAFC', borderRadius: '8px', color: '#64748B' }}>
-          <p style={{ margin: 0, fontWeight: '600' }}>No {filterTab.toLowerCase()} events found in the queue.</p>
+          <p style={{ margin: 0, fontWeight: '600' }}>No {filterTab} events found.</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
@@ -196,22 +198,22 @@ export const EventModeration = () => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '12px', color: '#64748B', marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <FontAwesomeIcon icon={faCalendar} style={{ color: '#F97316' }} />
-                      <span>{event.date || 'TBD'}</span>
+                      <span>{event.eventDate ? new Date(event.eventDate).toLocaleDateString() : event.date || 'TBD'}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <FontAwesomeIcon icon={faClock} style={{ color: '#F97316' }} />
-                      <span>{event.time || 'TBD'}</span>
+                      <span>{event.startTime ? `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''}` : event.time || 'TBD'}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <FontAwesomeIcon icon={faMapMarkerAlt} style={{ color: '#F97316' }} />
-                      <span>{event.venue || event.location || 'Jos, Plateau'}</span>
+                      <span>{event.placeId?.name || event.venue || event.location || 'Jos, Plateau'}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Moderation Actions */}
                 <div style={{ display: 'flex', gap: '8px', paddingTop: '12px', borderTop: '1px solid #F1F5F9' }}>
-                  {filterTab === 'Pending' && (
+                  {filterTab === 'pending' && (
                     <>
                       <button
                         type="button"

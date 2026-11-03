@@ -7,6 +7,7 @@ import StaysSearchPage from "./Components/StaysSearch";
 
 // Load route screens on demand so the initial bundle does not include every page.
 const Discover = lazy(() => import("./discover"));
+const MapPage = lazy(() => import("./map"));
 const Culture = lazy(() => import("./culture"));
 const Golf = lazy(() => import("./Golf"));
 const EventsPage = lazy(() => import("./EventsPage"));
@@ -41,6 +42,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/explore" replace />} />
           <Route path="/explore" element={<Discover />} />
+          <Route path="/map" element={<MapPage />} />
           <Route path="/culture" element={<Culture />} />
           <Route path="/golf" element={<Golf />} />
           <Route path="/flights" element={<Flights />} />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Create an Axios instance with automatic Auth Header insertion
 const api = axios.create({
@@ -67,6 +67,30 @@ export const fetchEvents = async (params = {}) => {
   return response.data;
 };
 
+export const fetchAllEvents = async (params = {}) => {
+  const firstPage = await fetchEvents({ ...params, page: 1, limit: 100 });
+  if (!firstPage?.success || !Array.isArray(firstPage.data)) {
+    throw new Error(firstPage?.message || 'The events service returned an invalid response.');
+  }
+  const pages = Math.max(1, Number(firstPage.pages) || 1);
+  const remainingPages = await Promise.all(
+    Array.from({ length: pages - 1 }, (_, index) =>
+      fetchEvents({ ...params, page: index + 2, limit: 100 })
+    )
+  );
+  const uniqueEvents = new Map();
+  [firstPage, ...remainingPages].forEach((page) => {
+    if (!page?.success || !Array.isArray(page.data)) {
+      throw new Error(page?.message || 'The events service returned an invalid page.');
+    }
+    page.data.forEach((event) => {
+      const eventId = event._id || event.id || event.slug;
+      if (eventId) uniqueEvents.set(String(eventId), event);
+    });
+  });
+  return Array.from(uniqueEvents.values());
+};
+
 export const fetchEventByIdentifier = async (identifier) => {
   const response = await api.get(`/events/${identifier}`);
   return response.data;
@@ -104,11 +128,6 @@ export const registerVenueClaim = async (claimFormData) => {
   return response.data;
 };
 
-// --- AI & BEHAVIOR LOGS ---
-export const askWebsiteSupport = async (prompt, sessionId, pagePath) => {
-  const response = await api.post('/ai/support', { prompt, sessionId, pagePath });
-  return response.data;
-};
 
 export const logUserBehavior = async (sessionId, eventType, payload = {}) => {
   try {
@@ -194,6 +213,39 @@ export const deletePlace = async (id) => {
 export const searchFlights = async (params = {}) => {
   const response = await api.get('/flights/search', { params });
   return response.data;
+};
+
+export const askWebsiteSupport = async (messages, sessionId, pagePath) => {
+  const response = await fetch('/api/ai/support', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      messages, // Sends full conversation array
+      sessionId,
+      pagePath,
+    }),
+  });
+
+  if (!response.ok) {
+    let message = `AI support request failed (${response.status}).`;
+    try {
+      const errorData = await response.json();
+      message = errorData.error || errorData.message || message;
+    } catch {
+      if (response.status === 429) {
+        message = 'Jos Pulse AI is temporarily rate-limited. Please try again later.';
+      }
+    }
+    throw new Error(message);
+  }
+
+  const data = await response.json();
+  if (data.success === false) {
+    throw new Error(data.error || data.message || "AI support could not process the request.");
+  }
+  return data;
 };
 
 export default api;

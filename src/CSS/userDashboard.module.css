@@ -61,7 +61,17 @@
 }
 
 .userAvatar {
-  font-size: 1.2rem;
+  display: inline-flex;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #64748b;
+  font-size: 1.1rem;
   line-height: 1;
 }
 
@@ -710,6 +720,27 @@
   font-size: 13px;
 }
 
+.feedDeleteButton {
+  padding: 6px 10px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background: #fff;
+  color: #b91c1c;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.feedDeleteButton:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.feedDeleteButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .engagementButton {
   display: inline-flex;
   align-items: center;
@@ -920,6 +951,100 @@
   color: #94a3b8;
 }
 
+.settingsPanel {
+  max-width: 720px;
+  padding: 1.25rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.settingsPanel h3 {
+  margin: 1.25rem 0 0.5rem;
+  color: #0f172a;
+  font-size: 0.95rem;
+}
+
+.settingsPanel h3:first-child {
+  margin-top: 0;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+}
+
+.settingRow span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.settingRow strong {
+  color: #0f172a;
+  font-size: 0.85rem;
+}
+
+.settingRow small,
+.settingsHelp {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.settingRow input {
+  width: 18px;
+  height: 18px;
+  accent-color: #f97316;
+}
+
+.settingsHelp {
+  line-height: 1.5;
+}
+
+.deleteAccountForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  max-width: 420px;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #fecaca;
+}
+
+.deleteAccountForm label {
+  color: #7f1d1d;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.deleteAccountForm input {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.deleteAccountButton {
+  align-self: flex-start;
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-radius: 6px;
+  background: #b91c1c;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.deleteAccountButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .uploadAvatarBtn {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
@@ -930,6 +1055,66 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.15s;
+}
+
+.container[data-theme="dark"] {
+  background: #0b1220;
+  color: #e2e8f0;
+}
+
+.container[data-theme="dark"] .header,
+.container[data-theme="dark"] .sidebar,
+.container[data-theme="dark"] .panelSection,
+.container[data-theme="dark"] .actionCard,
+.container[data-theme="dark"] .feedCard,
+.container[data-theme="dark"] .miniLogCard,
+.container[data-theme="dark"] .conciergeBox,
+.container[data-theme="dark"] .settingsPanel {
+  background-color: #111c2e !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.container[data-theme="dark"] .content {
+  background: #0b1220;
+}
+
+.container[data-theme="dark"] .panelSection h2,
+.container[data-theme="dark"] .panelTitle,
+.container[data-theme="dark"] .settingsPanel h3,
+.container[data-theme="dark"] .settingRow strong,
+.container[data-theme="dark"] .userName {
+  color: #f1f5f9;
+}
+
+.container[data-theme="dark"] .topNav a,
+.container[data-theme="dark"] .loadingText,
+.container[data-theme="dark"] .emptyText,
+.container[data-theme="dark"] .settingRow small,
+.container[data-theme="dark"] .settingsHelp,
+.container[data-theme="dark"] .sidebarLabel {
+  color: #94a3b8;
+}
+
+.container[data-theme="dark"] .settingRow,
+.container[data-theme="dark"] .deleteAccountForm {
+  border-color: #334155;
+}
+
+.container[data-theme="dark"] .settingRow input,
+.container[data-theme="dark"] .deleteAccountForm input {
+  color-scheme: dark;
+  background: #0b1220;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.container[data-theme="dark"] .panelSection [style*="background-color"] {
+  background-color: #1e293b !important;
+}
+
+.container[data-theme="dark"] .panelSection [style*="color"] {
+  color: #e2e8f0 !important;
 }
 
 .uploadAvatarBtn:hover {

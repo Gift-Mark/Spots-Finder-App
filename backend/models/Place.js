@@ -50,6 +50,10 @@ const placeSchema = new mongoose.Schema(
     'Golf & Sports Club', 
     'Lounge & Nightlife', 
     'Event Center & Arena', // <--- Add this here
+    "Music & Festivals",
+    "Cultural Landmark",
+    "Attraction",
+    "Nature",
     'Leisure',
     'Historical'
       ],
@@ -80,7 +84,7 @@ const placeSchema = new mongoose.Schema(
     openingHours: { type: String, trim: true, default: "" },
     openingTime: { type: String, trim: true, default: "" },
     closingTime: { type: String, trim: true, default: "" },
-    status: { type: String, enum: ["active", "inactive", "maintenance"], default: "active" },
+    status: { type: String, enum: ["active", "inactive", "maintenance", "pending"], default: "active" },
     displayStatus: { type: String, trim: true, default: "Open Now" }, // "Open Now" / "Closed"
     recommendedVisit: { type: String, trim: true, default: "" },
 

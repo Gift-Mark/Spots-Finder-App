@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass, faBell, faGear } from '@fortawesome/free-solid-svg-icons';
 import styles from '../CSS/AdminHeader.module.css';
 
-export const AdminHeader = ({ onSearch, onNotifications, onSettings, onProfile }) => {
+export const AdminHeader = ({ onSearch, onNotifications, onSettings, onProfile, darkMode = false }) => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const handleSubmit = (e) => {
@@ -14,7 +14,7 @@ export const AdminHeader = ({ onSearch, onNotifications, onSettings, onProfile }
   };
 
   return (
-    <header className={styles.headerContainer}>
+    <header className={styles.headerContainer} data-theme={darkMode ? "dark" : "light"}>
       {/* Platform Search Bar with Enter key support */}
       <form onSubmit={handleSubmit} className={styles.searchWrapper}>
         <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.searchIcon} />

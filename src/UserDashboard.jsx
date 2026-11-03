@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { io } from "socket.io-client";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./CSS/userDashboard.module.css";
 import {
@@ -12,47 +12,21 @@ import {
   fetchMyBookings,
   default as api,
 } from "./api/client";
+import MapPlaceMarker, {
+  FitAllMapMarkers,
+} from "./Components/MapPlaceMarker";
+import { fetchAllMapPlaces, groupMapPlaces } from "./services/mapPlaces";
+import { getImageUrl } from "./utils/imageHelpers";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 const SOCKET_URL =
   import.meta.env.VITE_SOCKET_URL ||
   API_BASE_URL.replace(/\/api\/?$/, "");
-const socket = io(SOCKET_URL);
-
-const SPOTS_GEO = [
-  {
-    id: 1,
-    name: "Rayfield Resort",
-    lat: 9.8358,
-    lng: 8.9131,
-    type: "Resort",
-    price: "₦12,500",
+const socket = io(SOCKET_URL, {
+  auth: {
+    token: localStorage.getItem("token") || localStorage.getItem("jos_pulse_token"),
   },
-  {
-    id: 2,
-    name: "Shere Hills Peak",
-    lat: 9.9542,
-    lng: 9.0225,
-    type: "Scenic",
-    price: "₦3,500",
-  },
-  {
-    id: 3,
-    name: "Jos Wildlife Park",
-    lat: 9.8722,
-    lng: 8.8751,
-    type: "Nature",
-    price: "₦1,500",
-  },
-  {
-    id: 4,
-    name: "Solomon Lar Leisure Gardens",
-    lat: 9.9051,
-    lng: 8.8912,
-    type: "Dining",
-    price: "Free",
-  },
-];
+});
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -108,7 +82,50 @@ export default function Dashboard() {
     navigate("/login", { replace: true });
   };
 
+  const handleDarkModeChange = (enabled) => {
+    setDarkMode(enabled);
+    localStorage.setItem("jos_dashboard_dark_mode", String(enabled));
+  };
+
+  const handleEmailNotificationsChange = (enabled) => {
+    setEmailNotifications(enabled);
+    localStorage.setItem("jos_email_notifications", String(enabled));
+  };
+
+  const handleDeleteAccount = async (event) => {
+    event.preventDefault();
+    setAccountDeleteError("");
+    if (!accountPassword) {
+      setAccountDeleteError("Enter your password to confirm account deletion.");
+      return;
+    }
+    if (!window.confirm("Permanently delete your account and your posts? This cannot be undone.")) {
+      return;
+    }
+
+    setAccountDeleting(true);
+    try {
+      await api.delete("/users/profile", { data: { password: accountPassword } });
+      handleLogout();
+    } catch (error) {
+      setAccountDeleteError(
+        error.response?.data?.message || "Could not delete your account. Please try again."
+      );
+    } finally {
+      setAccountDeleting(false);
+    }
+  };
+
   const [activeNav, setActiveNav] = useState("Overview");
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("jos_dashboard_dark_mode") === "true"
+  );
+  const [emailNotifications, setEmailNotifications] = useState(
+    () => localStorage.getItem("jos_email_notifications") !== "false"
+  );
+  const [accountPassword, setAccountPassword] = useState("");
+  const [accountDeleteError, setAccountDeleteError] = useState("");
+  const [accountDeleting, setAccountDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState("Passes");
   const [behaviorStream, setBehaviorStream] = useState([]);
   const [feedPosts, setFeedPosts] = useState([]);
@@ -122,6 +139,7 @@ export default function Dashboard() {
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
   const [commentInputs, setCommentInputs] = useState({});
   const [feedActionErrors, setFeedActionErrors] = useState({});
+  const [feedDeletingPosts, setFeedDeletingPosts] = useState({});
 
   const [liveStories] = useState([
     {
@@ -161,6 +179,9 @@ export default function Dashboard() {
   const [savedSpots, setSavedSpots] = useState([]);
   const [savedLoading, setSavedLoading] = useState(false);
   const [savedError, setSavedError] = useState("");
+  const [mapPlaces, setMapPlaces] = useState([]);
+  const [mapLoading, setMapLoading] = useState(false);
+  const [mapError, setMapError] = useState("");
   const [myBookings, setMyBookings] = useState([]);
   const [bookingsLoading, setBookingsLoading] = useState(true);
 
@@ -173,8 +194,21 @@ export default function Dashboard() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileMsg, setProfileMsg] = useState("");
-  const [profileImagePreview, setProfileImagePreview] = useState("");
+  const [profileImagePreview, setProfileImagePreview] = useState(
+    currentUser?.profileImage || ""
+  );
+  const [profileImageLoadFailed, setProfileImageLoadFailed] = useState(false);
+  const [selectedProfileImage, setSelectedProfileImage] = useState(null);
   const profileImageInputRef = useRef(null);
+  const userAvatarImage = getImageUrl(
+    { profileImage: profileImagePreview || currentUser?.profileImage },
+    ""
+  );
+
+  useEffect(() => {
+    if (!profileImagePreview?.startsWith("blob:")) return undefined;
+    return () => URL.revokeObjectURL(profileImagePreview);
+  }, [profileImagePreview]);
 
   // Real-time Explorers Counter Listener
   useEffect(() => {
@@ -209,10 +243,17 @@ export default function Dashboard() {
       );
     });
 
+    socket.on("post_deleted", ({ postId }) => {
+      setFeedPosts((prevPosts) =>
+        prevPosts.filter((post) => (post._id || post.id) !== postId)
+      );
+    });
+
     return () => {
       socket.off("realtime_behavior_logged");
       socket.off("post_published");
       socket.off("post_updated");
+      socket.off("post_deleted");
     };
   }, []);
 
@@ -262,6 +303,29 @@ export default function Dashboard() {
     }
   }, [activeNav]);
 
+  useEffect(() => {
+    if (activeNav !== "Map") return undefined;
+    let isMounted = true;
+    setMapLoading(true);
+    setMapError("");
+    fetchAllMapPlaces()
+      .then((places) => {
+        if (isMounted) setMapPlaces(places);
+      })
+      .catch(() => {
+        if (isMounted) {
+          setMapError("Places could not be loaded. Please check your connection and try again.");
+        }
+      })
+      .finally(() => {
+        if (isMounted) setMapLoading(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [activeNav]);
+
   // Fetch bookings
   useEffect(() => {
     if (activeNav === "Bookings" || activeNav === "Overview") {
@@ -288,6 +352,7 @@ export default function Dashboard() {
             profileImage: d.profileImage || "",
           });
           setProfileImagePreview(d.profileImage || "");
+          setProfileImageLoadFailed(false);
         })
         .catch((err) => {
           setProfileMsg(
@@ -309,6 +374,7 @@ export default function Dashboard() {
             const loadedPosts = data.data.map((p) => ({
               id: p._id || p.id,
               userName: p.userName,
+              userId: p.userId?._id || p.userId || null,
               userAvatar: p.userAvatar,
               location: p.location,
               postTime: new Date(p.createdAt).toLocaleTimeString([], {
@@ -366,13 +432,10 @@ export default function Dashboard() {
       return;
     }
     setProfileMsg("");
+    setProfileImageLoadFailed(false);
     const objectUrl = URL.createObjectURL(file);
     setProfileImagePreview(objectUrl);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      setProfileData((prev) => ({ ...prev, profileImage: ev.target.result }));
-    };
-    reader.readAsDataURL(file);
+    setSelectedProfileImage(file);
   };
 
   const logBehavior = async (eventType, payload) => {
@@ -499,6 +562,45 @@ export default function Dashboard() {
     );
   };
 
+  const handleReportComment = async (post, comment) => {
+    const reason = window.prompt("Why are you reporting this comment?");
+    if (!reason?.trim()) return;
+
+    try {
+      await api.post(
+        `/posts/${post._id || post.id}/comments/${comment._id}/report`,
+        { reason: reason.trim() }
+      );
+      window.alert("Thank you. The comment was sent to the moderation team.");
+    } catch (error) {
+      window.alert(
+        error.response?.data?.message || "Could not report this comment. Please try again."
+      );
+    }
+  };
+
+  const handleDeletePost = async (post) => {
+    const postId = post._id || post.id;
+    if (!postId || !window.confirm("Delete this post? This cannot be undone.")) return;
+
+    setFeedActionErrors((prev) => ({ ...prev, [postId]: "" }));
+    setFeedDeletingPosts((prev) => ({ ...prev, [postId]: true }));
+    try {
+      await api.delete(`/posts/${postId}`);
+      setFeedPosts((prevPosts) =>
+        prevPosts.filter((item) => (item._id || item.id) !== postId)
+      );
+    } catch (error) {
+      setFeedActionErrors((prev) => ({
+        ...prev,
+        [postId]:
+          error.response?.data?.message || "Could not delete this post. Check your connection and try again.",
+      }));
+    } finally {
+      setFeedDeletingPosts((prev) => ({ ...prev, [postId]: false }));
+    }
+  };
+
   const renderPostEngagement = (post) => {
     const postId = post._id || post.id;
     const comments = Array.isArray(post.commentItems) ? post.commentItems : [];
@@ -562,6 +664,21 @@ export default function Dashboard() {
                       </div>
                       <p>{comment.text}</p>
                     </div>
+                    <button
+                      type="button"
+                      onClick={() => handleReportComment(post, comment)}
+                      aria-label={`Report comment by ${comment.userName || "Explorer"}`}
+                      style={{
+                        border: "none",
+                        background: "transparent",
+                        color: "#64748B",
+                        cursor: "pointer",
+                        fontSize: 12,
+                        alignSelf: "flex-start",
+                      }}
+                    >
+                      Report
+                    </button>
                   </article>
                 ))
               )}
@@ -608,12 +725,14 @@ export default function Dashboard() {
     setProfileSaving(true);
     setProfileMsg("");
     try {
-      const response = await updateUserProfile({
-        firstName: profileData.firstName,
-        lastName: profileData.lastName,
-        email: profileData.email,
-        profileImage: profileData.profileImage,
-      });
+      const profilePayload = new FormData();
+      profilePayload.append("firstName", profileData.firstName);
+      profilePayload.append("lastName", profileData.lastName);
+      profilePayload.append("email", profileData.email);
+      if (selectedProfileImage) {
+        profilePayload.append("profileImage", selectedProfileImage);
+      }
+      const response = await updateUserProfile(profilePayload);
       const updatedUser = response?.user || response?.data?.user;
       if (updatedUser) {
         setProfileData({
@@ -623,6 +742,8 @@ export default function Dashboard() {
           profileImage: updatedUser.profileImage || "",
         });
         setProfileImagePreview(updatedUser.profileImage || "");
+        setProfileImageLoadFailed(false);
+        setSelectedProfileImage(null);
         localStorage.setItem("user", JSON.stringify(updatedUser));
       }
       setProfileMsg("Profile updated successfully!");
@@ -642,6 +763,7 @@ export default function Dashboard() {
       ...p,
       id: p.id || p._id,
       userName: p.userName || p.user || currentUser?.firstName || "Explorer",
+      userId: p.userId?._id || p.userId || null,
       userAvatar: p.userAvatar || profileImagePreview || "/images/John Doe.avif",
       location: p.location || "Jos Plateau",
       postTime: p.postTime || p.time || "Just now",
@@ -699,7 +821,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-theme={darkMode ? "dark" : "light"}>
       {/* HEADER */}
       <header className={styles.header}>
         <div className={styles.brandGroup}>
@@ -708,6 +830,7 @@ export default function Dashboard() {
             <Link className={styles.active} to="/explore">
               Explore
             </Link>
+            <Link to="/map">Map</Link>
             <Link to="/culture">Culture</Link>
             <Link to="/dining">Restaurants</Link>
             <Link to="/flights">Flights</Link>
@@ -719,9 +842,9 @@ export default function Dashboard() {
           <span className={styles.proBadge}>● PRO MEMBER</span>
           <div className={styles.userInfo}>
             <span className={styles.userAvatar}>
-              {profileImagePreview ? (
+              {userAvatarImage && !profileImageLoadFailed ? (
                 <img
-                  src={profileImagePreview}
+                  src={userAvatarImage}
                   alt="avatar"
                   style={{
                     width: 32,
@@ -729,9 +852,10 @@ export default function Dashboard() {
                     borderRadius: "50%",
                     objectFit: "cover",
                   }}
+                  onError={() => setProfileImageLoadFailed(true)}
                 />
               ) : (
-                "👤"
+                <span aria-label="Default profile avatar" role="img">👤</span>
               )}
             </span>
             <div className={styles.userNameBlock}>
@@ -800,6 +924,13 @@ export default function Dashboard() {
               ⚙️ Profile Settings
             </button>
             <button
+              className={`${styles.sideBtn} ${activeNav === "Settings" ? styles.sideBtnActive : ""}`}
+              onClick={() => changeNav("Settings")}
+              type="button"
+            >
+              ⚙️ Settings
+            </button>
+            <button
               className={`${styles.sideBtn} ${activeNav === "Feed" ? styles.sideBtnActive : ""}`}
               onClick={() => {
                 changeNav("Feed");
@@ -856,7 +987,7 @@ export default function Dashboard() {
             <p>24/7 Plateau travel & dining assistance available.</p>
             <button
               className={styles.settingsBtn}
-              onClick={() => changeNav("Profile")}
+              onClick={() => changeNav("Settings")}
             >
               ⚙️ Settings
             </button>
@@ -1857,6 +1988,20 @@ export default function Dashboard() {
                           📍 {post.location} • {post.postTime}
                         </small>
                       </div>
+                      {(currentUser?._id || currentUser?.id || currentUser?.userId) &&
+                        String(post.userId) === String(
+                          currentUser._id || currentUser.id || currentUser.userId
+                        ) && (
+                          <button
+                            type="button"
+                            className={styles.feedDeleteButton}
+                            onClick={() => handleDeletePost(post)}
+                            disabled={feedDeletingPosts[post.id]}
+                            aria-label={`Delete post by ${post.userName}`}
+                          >
+                            {feedDeletingPosts[post.id] ? "Deleting..." : "Delete"}
+                          </button>
+                        )}
                     </div>
 
                     {post.postText && (
@@ -1907,7 +2052,15 @@ export default function Dashboard() {
 
           {activeNav === "Map" && (
             <section className={styles.panelSection}>
-              <h2>🗺️ Plateau Interactive Map</h2>
+              <h2>
+                🗺️ Plateau Interactive Map
+                {!mapLoading && !mapError && ` · ${mapPlaces.length} places`}
+              </h2>
+              {mapLoading && <p className={styles.loadingText}>Loading all places...</p>}
+              {mapError && <p className={styles.feedActionError} role="alert">{mapError}</p>}
+              {!mapLoading && !mapError && mapPlaces.length === 0 && (
+                <p className={styles.emptyText}>No places with map coordinates are available yet.</p>
+              )}
               <div className={styles.mapContainerBox}>
                 <MapContainer
                   center={[9.9285, 8.8921]}
@@ -1918,26 +2071,88 @@ export default function Dashboard() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution="&copy; OpenStreetMap"
                   />
-                  {SPOTS_GEO.map((s) => (
-                    <Marker
-                      key={s.id}
-                      position={[s.lat, s.lng]}
-                      eventHandlers={{
-                        click: () =>
-                          logBehavior("VENUE_VIEW", {
-                            placeId: s.id,
-                            name: s.name,
-                          }),
-                      }}
-                    >
-                      <Popup>
-                        <strong>{s.name}</strong>
-                        <br />
-                        {s.type} • {s.price}
-                      </Popup>
-                    </Marker>
+                  <FitAllMapMarkers places={mapPlaces} />
+                  {groupMapPlaces(mapPlaces).map(({ place, places: groupedPlaces }) => (
+                    <MapPlaceMarker
+                      key={place.id}
+                      place={place}
+                      places={groupedPlaces}
+                      onClick={() =>
+                        logBehavior("VENUE_VIEW", {
+                          placeId: place.id,
+                          name: place.title,
+                        })
+                      }
+                    />
                   ))}
                 </MapContainer>
+              </div>
+            </section>
+          )}
+
+          {activeNav === "Settings" && (
+            <section className={styles.panelSection}>
+              <h2 className={styles.panelTitle}>⚙️ Account Settings</h2>
+              <div className={styles.settingsPanel}>
+                <h3>Appearance</h3>
+                <label className={styles.settingRow}>
+                  <span>
+                    <strong>Dark mode</strong>
+                    <small>Use a darker theme for your dashboard.</small>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={darkMode}
+                    onChange={(event) => handleDarkModeChange(event.target.checked)}
+                    aria-label="Enable dark mode"
+                  />
+                </label>
+
+                <h3>Notifications</h3>
+                <label className={styles.settingRow}>
+                  <span>
+                    <strong>Email notifications</strong>
+                    <small>Manage whether you want email updates.</small>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={emailNotifications}
+                    onChange={(event) => handleEmailNotificationsChange(event.target.checked)}
+                    aria-label="Enable email notifications"
+                  />
+                </label>
+
+                <h3>Privacy & account</h3>
+                <p className={styles.settingsHelp}>
+                  Your location is only used when you enable location access in your browser.
+                  Review our <Link to="/privacy">Privacy Policy</Link>.
+                </p>
+                <button
+                  type="button"
+                  className={styles.logoutBtn}
+                  onClick={handleLogout}
+                >
+                  ↪ Log Out
+                </button>
+                <form className={styles.deleteAccountForm} onSubmit={handleDeleteAccount}>
+                  <label htmlFor="delete-account-password">
+                    Confirm your password to permanently delete your account and posts.
+                  </label>
+                  <input
+                    id="delete-account-password"
+                    type="password"
+                    autoComplete="current-password"
+                    value={accountPassword}
+                    onChange={(event) => setAccountPassword(event.target.value)}
+                    required
+                  />
+                  {accountDeleteError && (
+                    <p className={styles.feedActionError} role="alert">{accountDeleteError}</p>
+                  )}
+                  <button type="submit" className={styles.deleteAccountButton} disabled={accountDeleting}>
+                    {accountDeleting ? "Deleting account..." : "Delete account"}
+                  </button>
+                </form>
               </div>
             </section>
           )}
@@ -2079,11 +2294,12 @@ export default function Dashboard() {
                 >
                   <div className={styles.profileAvatarRow}>
                     <div className={styles.profileAvatarWrap}>
-                      {profileImagePreview ? (
+                      {userAvatarImage && !profileImageLoadFailed ? (
                         <img
-                          src={profileImagePreview}
+                          src={userAvatarImage}
                           alt="Profile"
                           className={styles.profileAvatarImg}
+                          onError={() => setProfileImageLoadFailed(true)}
                         />
                       ) : (
                         <div className={styles.profileAvatarPlaceholder}>

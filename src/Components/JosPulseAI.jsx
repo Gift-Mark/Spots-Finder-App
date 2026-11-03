@@ -55,7 +55,6 @@ function AiMessageContent({ text }) {
   return (
     <span>
       {lines.map((line, i) => {
-        // Bullet point lines
         if (line.startsWith('• ') || line.startsWith('- ')) {
           return (
             <span key={i} style={{ display: 'block', paddingLeft: '4px' }}>
@@ -77,7 +76,6 @@ function AiMessageContent({ text }) {
 
 // Replace **bold** and /path-style links inside a line
 function renderInline(line) {
-  // Match **bold** and internal /paths mentioned
   const parts = [];
   const regex = /\*\*(.+?)\*\*|(\/([\w-]+))/g;
   let lastIdx = 0;
@@ -87,10 +85,8 @@ function renderInline(line) {
       parts.push(line.slice(lastIdx, match.index));
     }
     if (match[1]) {
-      // **bold**
       parts.push(<strong key={match.index}>{match[1]}</strong>);
     } else if (match[2]) {
-      // /path link
       parts.push(
         <Link key={match.index} to={match[2]} style={{ color: '#f97316', textDecoration: 'underline', fontSize: 'inherit' }}>
           {match[2]}
@@ -122,14 +118,12 @@ export const JosPulseAI = () => {
   const inputRef = useRef(null);
   const [messages, setMessages] = useState(loadStoredMessages);
 
-  // Get suggestions for current page
   const currentSuggestions = PAGE_SUGGESTIONS[location.pathname] || DEFAULT_SUGGESTIONS;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isSending]);
 
-  // Persist conversation
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(messages.slice(-MAX_MESSAGES)));
@@ -138,7 +132,6 @@ export const JosPulseAI = () => {
     }
   }, [messages]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 150);
@@ -155,27 +148,31 @@ export const JosPulseAI = () => {
     const text = String(prompt).trim();
     if (!text || isSending) return;
 
-    setMessages(prev => [...prev, { sender: 'user', text }].slice(-MAX_MESSAGES));
+    const newMessages = [...messages, { sender: 'user', text }].slice(-MAX_MESSAGES);
+    setMessages(newMessages);
     setInput('');
     setShowSuggestions(false);
     setIsSending(true);
 
     try {
-      const response = await askWebsiteSupport(text, sessionId, location.pathname);
+      const response = await askWebsiteSupport(newMessages, sessionId, location.pathname);
       const reply =
         response?.reply ||
         response?.message ||
         "I couldn't find an answer just now — try rephrasing or ask me something else about Jos Pulse.";
       setMessages(prev => [...prev, { sender: 'ai', text: reply }].slice(-MAX_MESSAGES));
-    } catch {
+    } catch (error) {
       setMessages(prev => [
         ...prev,
-        { sender: 'ai', text: 'The support service is temporarily unavailable. Please try again in a moment.' },
+        {
+          sender: 'ai',
+          text: error.message || 'The support service is temporarily unavailable. Please try again in a moment.',
+        },
       ].slice(-MAX_MESSAGES));
     } finally {
       setIsSending(false);
     }
-  }, [isSending, sessionId, location.pathname]);
+  }, [messages, isSending, sessionId, location.pathname]);
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -188,7 +185,6 @@ export const JosPulseAI = () => {
 
   return (
     <div className={styles.chatWrapper}>
-      {/* Floating launch button */}
       {!isOpen && (
         <button
           className={styles.floatingBtn}
@@ -200,10 +196,8 @@ export const JosPulseAI = () => {
         </button>
       )}
 
-      {/* Chat panel */}
       {isOpen && (
         <section className={styles.chatBox} aria-label="Jos Pulse AI assistant" role="dialog">
-          {/* Header */}
           <div className={styles.chatHeader}>
             <div className={styles.headerTitle}>
               <FontAwesomeIcon icon={faRobot} />
@@ -211,7 +205,7 @@ export const JosPulseAI = () => {
                 <div>Jos Pulse AI</div>
                 <div className={styles.onlineStatus}>
                   <span className={styles.onlineDot} />
-                  Online — ask me anything
+                  Online
                 </div>
               </div>
             </div>
@@ -236,7 +230,6 @@ export const JosPulseAI = () => {
             </div>
           </div>
 
-          {/* Messages */}
           <div className={styles.messagesArea} role="log" aria-live="polite">
             {messages.map((msg, idx) => (
               <div
@@ -251,7 +244,6 @@ export const JosPulseAI = () => {
               </div>
             ))}
 
-            {/* Typing indicator */}
             {isSending && (
               <div className={styles.aiMsg}>
                 <div className={styles.typingDots}>
@@ -262,7 +254,6 @@ export const JosPulseAI = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick reply suggestions */}
           {showSuggestions && !isSending && (
             <div className={styles.suggestionsArea}>
               <div className={styles.suggestionsLabel}>
@@ -284,12 +275,10 @@ export const JosPulseAI = () => {
             </div>
           )}
 
-          {/* Privacy note */}
           <p className={styles.privacyNote}>
             Questions are saved with personal details removed to improve support. Don't share passwords or payment info.
           </p>
 
-          {/* Input form */}
           <form onSubmit={handleSend} className={styles.inputArea}>
             <input
               ref={inputRef}

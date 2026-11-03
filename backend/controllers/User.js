@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Save from "../models/Save.js";
+import Post from "../models/Post.js";
 
 // Helper to generate JWT Token
 const generateToken = (id) => {
@@ -144,7 +146,11 @@ export const updateUserProfile = async (req, res) => {
     user.firstName = req.body.firstName || user.firstName;
     user.lastName = req.body.lastName || user.lastName;
     user.middleName = req.body.middleName !== undefined ? req.body.middleName : user.middleName;
-    user.profileImage = req.body.profileImage || user.profileImage;
+    if (req.file) {
+      user.profileImage = `/uploads/${req.file.filename}`;
+    } else if (typeof req.body.profileImage === "string" && req.body.profileImage.trim()) {
+      user.profileImage = req.body.profileImage;
+    }
 
     if (typeof req.body.email === "string" && req.body.email.trim()) {
       const email = req.body.email.trim().toLowerCase();
@@ -189,6 +195,36 @@ export const updateUserProfile = async (req, res) => {
         longitude: updatedUser.longitude,
       },
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const deleteOwnAccount = async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (typeof password !== "string" || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Your password is required to delete your account.",
+      });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({
+        success: false,
+        message: "The password you entered is incorrect.",
+      });
+    }
+
+    await Promise.all([
+      Save.deleteMany({ userId: user._id }),
+      Post.deleteMany({ userId: user._id }),
+    ]);
+    await user.deleteOne();
+
+    res.status(200).json({ success: true, message: "Account deleted successfully." });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

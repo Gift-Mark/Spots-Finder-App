@@ -7,27 +7,27 @@
   /* Spacing Scale */
   --space-xs: 4px;
   --space-sm: 8px;
-  --space-md: 16px;
-  --space-lg: 24px;
-  --space-xl: 32px;
-  --space-2xl: 48px;
-  --space-3xl: 64px;
+  --space-md: 12px;
+  --space-lg: 20px;
+  --space-xl: 28px;
+  --space-2xl: 40px;
+  --space-3xl: 52px;
   
   /* Container Spacing */
   --container-padding-mobile: 16px;
-  --container-padding-tablet: 24px;
-  --container-padding-desktop: 32px;
+  --container-padding-tablet: 20px;
+  --container-padding-desktop: 24px;
   --container-max-width: 1440px;
   
   /* Section Spacing */
-  --section-spacing-mobile: 48px;
-  --section-spacing-tablet: 64px;
-  --section-spacing-desktop: 80px;
+  --section-spacing-mobile: 36px;
+  --section-spacing-tablet: 48px;
+  --section-spacing-desktop: 56px;
   
   /* Component Spacing */
-  --card-padding: 24px;
-  --card-gap: 24px;
-  --grid-gap: 24px;
+  --card-padding: 20px;
+  --card-gap: 20px;
+  --grid-gap: 20px;
 }
 
 /* Global Container */

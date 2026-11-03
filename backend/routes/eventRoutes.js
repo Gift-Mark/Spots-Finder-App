@@ -7,6 +7,7 @@ import {
   deleteEvent,
 } from "../controllers/eventController.js";
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 import {autoDiscoverAndScrapeEvents} from "../jobs/eventCronJob.js";
 
 const router = express.Router();
@@ -15,7 +16,7 @@ router.get("/", getAllEvents);
 router.get("/:identifier", getEventByIdentifier);
 
 // Protected routes for vendors & admins
-router.post("/", protect, authorizeRoles("vendor", "admin"), createEvent);
+router.post("/", protect, authorizeRoles("vendor", "admin"), upload.single("image"), createEvent);
 router.put("/:id", protect, authorizeRoles("vendor", "admin"), updateEvent);
 router.delete("/:id", protect, authorizeRoles("vendor", "admin"), deleteEvent);
 

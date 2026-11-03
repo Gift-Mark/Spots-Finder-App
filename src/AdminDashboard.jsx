@@ -7,22 +7,26 @@ import EventModeration from "./Components/EventModeration";
 import UserManagement from "./Components/UserManagement";
 import AdManagement from "./Components/AdManagement";
 import SystemLogs from "./Components/SystemLogs";
+import VendorVerificationReview from "./Components/VendorVerificationReview";
+import FlaggedCommentsReview from "./Components/FlaggedCommentsReview";
+import AdminSettings from "./Components/AdminSettings";
 import styles from "./CSS/AdminDashboard.module.css";
 
 // API Client Methods
 import {
-  fetchPlaces,
   createPlace,
   updatePlace,
   deletePlace,
-  fetchEvents,
   createVendorEvent,
 } from "./api/client";
 
 export const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("Overview");
+  const [adminDarkMode, setAdminDarkMode] = useState(
+    () => localStorage.getItem("jos_admin_dark_mode") === "true"
+  );
   const [venues, setVenues] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [eventRefreshVersion, setEventRefreshVersion] = useState(0);
   const [adminSearchQuery, setAdminSearchQuery] = useState("");
 
   // State for Concierge Enquiries
@@ -137,24 +141,6 @@ export const AdminDashboard = () => {
     }
   }, []);
 
-  // --- READ: Fetch events ---
-  const loadEvents = useCallback(async () => {
-    try {
-      const response = await fetchEvents();
-
-      let eventList = [];
-      if (Array.isArray(response)) {
-        eventList = response;
-      } else if (response && Array.isArray(response.data)) {
-        eventList = response.data;
-      }
-
-      setEvents(eventList);
-    } catch (err) {
-      console.error("Event load error:", err);
-    }
-  }, []);
-
   // --- DELETE: Delete venue by ID ---
   const handleDeleteVenue = async (id) => {
     if (!window.confirm("Are you sure you want to delete this venue listing?")) return;
@@ -196,17 +182,18 @@ export const AdminDashboard = () => {
       return;
     }
 
-    const payload = {
-      ...eventFormData,
-      image: selectedEventImage ? URL.createObjectURL(selectedEventImage) : "", // In production, upload to backend
-    };
+    const payload = new FormData();
+    Object.entries(eventFormData).forEach(([key, value]) => {
+      payload.append(key, String(value));
+    });
+    if (selectedEventImage) payload.append("image", selectedEventImage);
 
     try {
       await createVendorEvent(payload);
       alert(`✓ Event Published!\n\nTitle: ${eventFormData.title}\nDate: ${eventFormData.eventDate}\nVenue: ${eventFormData.placeId}\n\nEvent will appear on the Events page immediately.`);
       setIsEventModalOpen(false);
       setSelectedEventImage(null);
-      setTimeout(() => loadEvents(), 300);
+      setEventRefreshVersion((version) => version + 1);
     } catch (err) {
       alert("Failed to create event: " + (err.response?.data?.message || err.message));
     }
@@ -239,15 +226,7 @@ export const AdminDashboard = () => {
           console.log(`📊 Dashboard loaded ${venueList.length} total venues`);
         }
 
-        // 2. Fetch Events
-        const eventsResponse = await fetchEvents();
-        let eventList = [];
-        if (Array.isArray(eventsResponse)) eventList = eventsResponse;
-        else if (eventsResponse?.data) eventList = eventsResponse.data;
-        
-        if (isMounted) setEvents(eventList);
-
-        // 3. Fetch Flagged Content
+        // 2. Fetch Flagged Content
         const flaggedResponse = await fetch("/api/admin/flagged-content", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
@@ -258,7 +237,7 @@ export const AdminDashboard = () => {
 
         if (isMounted) setFlaggedItems(itemsList);
 
-        // 4. Fetch Concierge Enquiries
+        // 3. Fetch Concierge Enquiries
         const url = conciergeFilter === "all" 
           ? "http://localhost:5000/api/v1/concierge" 
           : `http://localhost:5000/api/v1/concierge?status=${conciergeFilter}`;
@@ -305,8 +284,15 @@ export const AdminDashboard = () => {
 
   const handleSignOut = () => {
     if (!window.confirm('Are you sure you want to sign out?')) return;
-    localStorage.clear();
+    localStorage.removeItem("token");
+    localStorage.removeItem("jos_pulse_token");
+    localStorage.removeItem("user");
     window.location.href = '/login';
+  };
+
+  const handleAdminDarkModeChange = (enabled) => {
+    setAdminDarkMode(enabled);
+    localStorage.setItem("jos_admin_dark_mode", String(enabled));
   };
 
   const handleSearch = (query) => setAdminSearchQuery(query);
@@ -360,7 +346,6 @@ export const AdminDashboard = () => {
     e.preventDefault();
 
     // Enhanced Category-to-Section mapping with comprehensive coverage
-    let targetSection = "dining"; // default fallback
     const catLower = formData.category.toLowerCase();
 
     // Exact category mapping for robust wiring
@@ -398,10 +383,10 @@ export const AdminDashboard = () => {
     };
 
     // Find matching section from map
-    targetSection = categoryMap[catLower] || 
-                    Object.entries(categoryMap).find(([key]) => 
-                      catLower.includes(key)
-                    )?.[1] || 'explore';
+    const targetSection = categoryMap[catLower] ||
+      Object.entries(categoryMap).find(([key]) =>
+        catLower.includes(key)
+      )?.[1] || 'explore';
 
     const generatedSlug = createSlug(formData.name);
 
@@ -416,7 +401,9 @@ export const AdminDashboard = () => {
     data.append("description", formData.description);
     data.append("summary", formData.summary || formData.description.slice(0, 150));
     data.append("displayStatus", formData.displayStatus);
-    data.append("status", formData.status);
+    if (editingVenue) {
+      data.append("status", formData.status);
+    }
     data.append("phone", formData.phone);
     data.append("openingHours", formData.openingHours);
     data.append("openingTime", formData.openingTime);
@@ -459,7 +446,7 @@ export const AdminDashboard = () => {
   });
 
   return (
-    <div className={styles.adminContainer}>
+    <div className={styles.adminContainer} data-theme={adminDarkMode ? "dark" : "light"}>
       <AdminSidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
@@ -467,11 +454,12 @@ export const AdminDashboard = () => {
       />
 
       <div className={styles.mainWrapper}>
-        <AdminHeader 
+        <AdminHeader
+          darkMode={adminDarkMode}
           onSearch={handleSearch} 
           onNotifications={() => alert(`System Notifications: ${flaggedItems.length} flagged items require review.`)}
-          onSettings={() => setActiveTab("System Logs")}
-          onProfile={handleSignOut}
+          onSettings={() => setActiveTab("Settings")}
+          onProfile={() => setActiveTab("Settings")}
         />
 
         <main className={styles.contentBody}>
@@ -490,7 +478,9 @@ export const AdminDashboard = () => {
                           ? "User Management & Permissions"
                           : activeTab === "Ads"
                             ? "Ads & Sponsored Campaigns"
-                            : "System Activity & Audit Logs"}
+                            : activeTab === "System Logs"
+                              ? "System Activity & Audit Logs"
+                              : activeTab}
               </h1>
               <p className={styles.pageSubtitle}>
                 {activeTab === 'Overview' 
@@ -645,14 +635,18 @@ export const AdminDashboard = () => {
           )}
 
           {activeTab === "Overview" && (
-            <PromotedVenuesTable
-              venues={filteredVenues.slice(0, 8)}
-              onNewListing={handleOpenCreateModal}
-              onEdit={handleOpenEditModal}
-              onDelete={handleDeleteVenue}
-              onFilter={() => alert("Filtering...")}
-              onViewAll={() => setActiveTab("Venue Management")}
-            />
+            <>
+              <PromotedVenuesTable
+                venues={filteredVenues.slice(0, 8)}
+                onNewListing={handleOpenCreateModal}
+                onEdit={handleOpenEditModal}
+                onDelete={handleDeleteVenue}
+                onFilter={() => alert("Filtering...")}
+                onViewAll={() => setActiveTab("Venue Management")}
+              />
+              <VendorVerificationReview />
+              <FlaggedCommentsReview />
+            </>
           )}
 
           {activeTab === "Venue Management" && (
@@ -664,10 +658,22 @@ export const AdminDashboard = () => {
             />
           )}
 
-          {activeTab === "Event Management" && <EventModeration />}
+          {activeTab === "Event Management" && (
+            <EventModeration refreshVersion={eventRefreshVersion} />
+          )}
           {activeTab === "Users" && <UserManagement />}
           {activeTab === "Ads" && <AdManagement />}
           {activeTab === "System Logs" && <SystemLogs />}
+          {activeTab === "Vendor Verification" && <VendorVerificationReview />}
+          {activeTab === "Flagged Comments" && <FlaggedCommentsReview />}
+          {activeTab === "Settings" && (
+            <AdminSettings
+              darkMode={adminDarkMode}
+              onDarkModeChange={handleAdminDarkModeChange}
+              onSignOut={handleSignOut}
+              onOpenLogs={() => setActiveTab("System Logs")}
+            />
+          )}
         </main>
       </div>
 
@@ -752,18 +758,21 @@ export const AdminDashboard = () => {
                   />
                 </div>
 
-                <div>
-                  <label style={modalStyles.label}>Listing Status</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    style={modalStyles.input}
-                  >
-                    <option value="active">✓ Active (Visible to public)</option>
-                    <option value="pending">⏳ Pending (Under review)</option>
-                    <option value="inactive">✕ Inactive (Hidden)</option>
-                  </select>
-                </div>
+                {editingVenue && (
+                  <div>
+                    <label style={modalStyles.label}>Listing Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                      style={modalStyles.input}
+                    >
+                      <option value="active">✓ Active (Visible to public)</option>
+                      <option value="inactive">✕ Inactive (Hidden)</option>
+                      <option value="maintenance">⚠ Maintenance</option>
+                      <option value="pending">⏳ Pending (Under review)</option>
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div>

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null },
     userName: { type: String, required: true },
     userAvatar: { type: String, default: "/images/John Doe.avif" },
     location: { type: String, default: "Jos Central" },

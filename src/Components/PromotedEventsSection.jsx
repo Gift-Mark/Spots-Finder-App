@@ -4,7 +4,6 @@ import { faChevronRight, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icon
 import styles from '../CSS/PromotedEventsSection.module.css';
 
 const nzemBeromImage = '/images/nzem berom.jpg';
-const WaterwayResort = '/images/Waterway Resort.avif';
 const tastyFingersImage = '/images/Tasty Fingers.webp';
 
 const defaultEvents = [
@@ -17,26 +16,15 @@ const defaultEvents = [
     price: 'Free',
     actionText: 'VIEW DETAILS',
     image: nzemBeromImage,
-  },
-  {
-    id: 'plateau-live-music',
-    title: 'Plateau Live Music Night',
-    location: 'Waterway Resort',
-    month: 'OCT',
-    day: '16',
-    price: '₦5,000',
-    actionText: 'BUY TICKETS',
-    image: WaterwayResort,
+    href: '/place/nzem-berom',
   },
 ];
 
-export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) => {
+export const PromotedEventsSection = ({ events = [], onBookTable }) => {
   const navigate = useNavigate();
 
-  const displayEvents = events?.every(
-    (event) => event.month && event.day && event.price && event.actionText && event.image
-  )
-    ? events
+  const displayEvents = events.length > 0
+    ? [...defaultEvents, ...events]
     : defaultEvents;
 
   return (
@@ -97,13 +85,13 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
 
         <div className={styles.eventsGrid}>
           {displayEvents.map((event) => {
-            const placeId = event.slug || event._id || event.id;
+            const eventHref = event.href || '/events';
             return (
-              <div 
-                key={placeId || event.title}
+              <div
+                key={event.slug || event._id || event.id || event.title}
                 className={styles.eventCard}
-                onClick={() => placeId && navigate(`/place/${placeId}`)}
-                style={{ cursor: placeId ? 'pointer' : 'default' }}
+                onClick={() => navigate(eventHref)}
+                style={{ cursor: 'pointer' }}
               >
               <div className={styles.eventImageWrapper}>
                 <img
@@ -126,8 +114,8 @@ export const PromotedEventsSection = ({ events = defaultEvents, onBookTable }) =
 
                 <div className={styles.eventFooter}>
                   <span className={styles.eventPrice}>{event.price}</span>
-                  <Link 
-                    to={placeId ? `/place/${placeId}` : '/events'}
+                  <Link
+                    to={eventHref}
                     className={styles.actionBtn}
                     onClick={(e) => e.stopPropagation()}
                   >

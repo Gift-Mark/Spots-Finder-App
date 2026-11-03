@@ -89,3 +89,18 @@
   height: 100%;
   object-fit: cover;
 }
+
+.headerContainer[data-theme="dark"] {
+  background-color: #111827;
+  border-bottom-color: #334155;
+}
+
+.headerContainer[data-theme="dark"] .searchWrapper {
+  background-color: #0f172a;
+  border-color: #334155;
+}
+
+.headerContainer[data-theme="dark"] .searchInput,
+.headerContainer[data-theme="dark"] .iconBtn {
+  color: #e2e8f0;
+}

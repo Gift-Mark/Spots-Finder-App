@@ -129,6 +129,47 @@ const mockPlaces = {
       addons: [{ id: "guide", name: "Guided Heritage Tour", price: 1000 }]
     }
   },
+  "nzem-berom": {
+    id: "nzem-berom",
+    title: "Nzem Berom Cultural Festival",
+    category: "Traditional Festival",
+    verified: false,
+    rating: 4.9,
+    reviewsCount: 0,
+    managedBy: "Berom Cultural Community",
+    address: "Rwang Pam Stadium, Jos, Plateau State",
+    weather: { temp: 21, condition: "Pleasant" },
+    tags: ["Berom Heritage", "Traditional Music", "Dance", "Harvest Celebration"],
+    status: "Annual Festival",
+    openingHours: "Festival dates vary each year",
+    entryPrice: "Free admission",
+    recommendedVisit: "Check the latest festival schedule before travelling.",
+    heroImage: "/images/nzem berom.jpg",
+    overviewHeading: "Celebrate Berom Culture and Heritage",
+    description: [
+      "Nzem Berom is an annual celebration of Berom culture, bringing together traditional music, dance, food, and community festivities in Jos.",
+      "Festival dates and activities can vary from year to year. Confirm the current schedule with the event organizers before making travel plans."
+    ],
+    quote: {
+      text: "A vibrant gathering celebrating Berom identity, community, and tradition.",
+      author: "JOS PULSE HERITAGE GUIDE"
+    },
+    gallery: ["/images/nzem berom.jpg"],
+    visitorTips: [
+      "Check current event dates before travelling.",
+      "Arrive early for the cultural performances and community activities."
+    ],
+    highlights: [
+      { icon: "🎶", title: "Traditional Music", desc: "Experience music and performances rooted in Berom culture." },
+      { icon: "💃", title: "Cultural Dance", desc: "Watch community dance groups celebrate Berom heritage." },
+      { icon: "🌾", title: "Harvest Celebration", desc: "Learn about the festival's connection to community and harvest traditions." }
+    ],
+    pricing: {
+      adultRate: 0,
+      kidRate: 0,
+      addons: []
+    }
+  },
   "tasty-fingers": {
     id: "tasty-fingers",
     title: "Tasty Fingers Restaurant",

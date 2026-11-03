@@ -1,37 +1,22 @@
 import express from 'express';
-import multer from 'multer';
-import fs from 'fs';
-import path from 'path';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import VendorClaim from '../models/VendorClaim.js';
+import upload from '../middleware/vendorClaimUploadMiddleware.js';
 
 const router = express.Router();
-
-// Ensure 'uploads' directory exists programmatically
-const uploadDir = path.join(process.cwd(), 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// 1. Configure Multer for handling file uploads (ownershipProof)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Ensure an 'uploads' directory exists in /Backend
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
-});
 
 // 2. Claim & Business Account Registration Endpoint
 router.post('/register', upload.single('ownershipProof'), async (req, res) => {
   try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: 'A proof-of-ownership document is required.',
+      });
+    }
+
     const {
       businessName,
       category,
@@ -69,6 +54,19 @@ router.post('/register', upload.single('ownershipProof'), async (req, res) => {
       role: 'business',
     });
 
+    const claim = await VendorClaim.create({
+      userId: newUser._id,
+      businessName,
+      category,
+      address,
+      ownerName,
+      email,
+      phone,
+      ownershipProof: req.file.filename,
+      originalFileName: req.file.originalname,
+      fileMimeType: req.file.mimetype,
+    });
+
     // Create JWT Token
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
@@ -82,6 +80,7 @@ router.post('/register', upload.single('ownershipProof'), async (req, res) => {
       message: 'Venue claim submitted and account created successfully!',
       token,
       claimStatus: 'pending',
+      claimId: claim._id,
       user: {
         _id: newUser._id,
         firstName: newUser.firstName,

@@ -6,7 +6,7 @@ const DEFAULT_PLACEHOLDER = '/images/Rayfield Resort.jpg';
 export const getImageUrl = (item, fallback = DEFAULT_PLACEHOLDER) => {
   if (!item) return fallback;
 
-  const imageFields = ['heroImage', 'coverImage', 'imageUrl', 'image', 'images', 'gallery'];
+  const imageFields = ['profileImage', 'heroImage', 'coverImage', 'imageUrl', 'image', 'images', 'gallery'];
 
   for (const field of imageFields) {
     let imagePath = item[field];
@@ -17,6 +17,9 @@ export const getImageUrl = (item, fallback = DEFAULT_PLACEHOLDER) => {
 
     if (imagePath && typeof imagePath === 'string' && imagePath.trim()) {
       if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+        return imagePath;
+      }
+      if (imagePath.startsWith('data:') || imagePath.startsWith('blob:')) {
         return imagePath;
       }
       if (imagePath.startsWith('/uploads/')) {

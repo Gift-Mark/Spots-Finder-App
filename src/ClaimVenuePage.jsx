@@ -58,7 +58,9 @@ export default function ClaimVenuePage() {
 
     const claimData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== 'confirmPassword' && value !== null) claimData.append(key, value);
+      if (!['confirmPassword', 'venueImage'].includes(key) && value !== null) {
+        claimData.append(key, value);
+      }
     });
 
     setIsSubmitting(true);

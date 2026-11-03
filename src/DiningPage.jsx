@@ -25,7 +25,20 @@ export const DiningPage = () => {
     fetchPlaces({ section: 'dining' })
       .then((response) => {
         if (!isMounted) return;
-        setDiningPlaces(response.data || []);
+        const places = Array.isArray(response.data) ? response.data : [];
+        setDiningPlaces(places.map((place) => ({
+          ...place,
+          title: place.title || place.name,
+          category: Array.isArray(place.category)
+            ? place.category
+            : place.category
+              ? [place.category]
+              : [],
+          image: place.image || place.heroImage || place.coverImage || place.gallery?.[0] || place.images?.[0],
+          price: place.price || place.entryPrice || (place.entryFee ? `₦${place.entryFee}` : ''),
+          description: place.description || place.summary || '',
+          cuisine: place.cuisine || place.subcategory || '',
+        })));
         setPlacesError('');
       })
       .catch(() => {
@@ -46,11 +59,15 @@ export const DiningPage = () => {
     title: featuredPlace.title,
     rating: featuredPlace.rating,
     reviewsCount: featuredPlace.reviewsCount,
-    badges: featuredPlace.category || [],
+    badges: Array.isArray(featuredPlace.category)
+      ? featuredPlace.category
+      : featuredPlace.category
+        ? [featuredPlace.category]
+        : [],
     description: featuredPlace.description,
     location: featuredPlace.location,
     cuisine: featuredPlace.cuisine || featuredPlace.category?.[0],
-    image: featuredPlace.image,
+    image: featuredPlace.image || featuredPlace.heroImage || featuredPlace.coverImage,
   };
 
   const handleSearch = (query) => {
